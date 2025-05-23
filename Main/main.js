@@ -25,6 +25,6 @@ document.addEventListener("DOMContentLoaded", () => {
     localStorage.removeItem("user");
 
     // 로그인 페이지로 이동
-    window.location.href = "/login";
+    window.location.href = "/email-login";
   });
 });
