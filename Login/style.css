@@ -1,0 +1,151 @@
+html {
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+*, *::before, *::after {
+  box-sizing: inherit;
+}
+
+body {
+  font-family: 'Pretendard', sans-serif;
+  line-height: 1.5;
+  overflow-x: hidden;
+}
+
+@media (max-width: 768px) {
+  html {
+    font-size: 14px;
+  }
+}
+
+.login-container {
+  max-width: 480px;
+  width: 90%;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.google-icon {
+  animation: fadeInMove 0.6s ease-out forwards;
+  opacity: 0;
+  animation-fill-mode: forwards;
+  max-width: 100%;
+  height: auto;
+}
+body.loaded .google-icon {
+  opacity: 1;
+}
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* 애니메이션 키프레임 */
+@keyframes fadeInMove {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes rotateG {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes logoPop {
+  from {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* 애니메이션 클래스 */
+
+.fade-in {
+  opacity: 0;
+  pointer-events: auto;
+  max-width: 100%;
+  height: auto;
+}
+
+body.loaded .fade-in {
+  animation: fadeInMove 0.6s ease-out forwards;
+  animation-fill-mode: forwards;
+}
+
+
+.google-button:hover ~ .google-icon {
+  animation: rotateG 0.6s ease;
+  animation-fill-mode: forwards;
+}
+
+.kakao-button:hover ~ .kakao-icon {
+  animation: rotateG 0.6s ease;
+  animation-fill-mode: forwards;
+}
+
+button:hover {
+  transform: scale(1.02);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+  transition: all 0.2s ease;
+}
+
+button, input, .social-button {
+  font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+  padding: 0.6em 1.2em;
+}
+
+input:focus {
+  border-color: #C96342;
+  box-shadow: 0 0 0 2px rgba(201, 99, 66, 0.2);
+  transition: all 0.3s ease;
+}
+
+.logo {
+  animation: logoPop 0.8s ease-out;
+  max-width: 100%;
+  height: auto;
+}
+
+.social-button:hover {
+  background-color: #C96342;
+  color: #F6F0EB;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+form:hover > button {
+  background-color: #C96342 !important;
+}
+
+.google-button:hover + .social-frame,
+.social-button:hover + .social-frame {
+  background-color: #C96342;
+  transition: background-color 0.3s ease;
+}
+
+.rotated-once {
+  animation: rotateG 0.6s ease forwards;
+}
+
+@media (max-width: 480px) {
+  .google-icon, .kakao-icon {
+    width: 48px;
+    height: 48px;
+  }
+
+  button {
+    width: 100%;
+    font-size: 1rem;
+  }
+}

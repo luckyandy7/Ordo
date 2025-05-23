@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Ordo 회원가입</title>
+    <link rel="stylesheet" href="/Login/styles.css" />
+    <style>
+      @font-face {
+        font-family: "Cutive";
+        src: url("/font/Freesentation-2.001/Cutive/Cutive-Regular.ttf")
+          format("truetype");
+        font-weight: 400;
+      }
+      @font-face {
+        font-family: "Freesentation";
+        src: url("/font/Freesentation-2.001/Freesentation-2ExtraLight.ttf")
+          format("truetype");
+        font-weight: 200;
+      }
+      @font-face {
+        font-family: "Freesentation";
+        src: url("/font/Freesentation-2.001/Freesentation-4Regular.ttf")
+          format("truetype");
+        font-weight: 400;
+      }
+      @font-face {
+        font-family: "Freesentation";
+        src: url("/font/Freesentation-2.001/Freesentation-7Bold.ttf")
+          format("truetype");
+        font-weight: 700;
+      }
+      @font-face {
+        font-family: "Freesentation";
+        src: url("/font/Freesentation-2.001/Freesentation-9Black.ttf")
+          format("truetype");
+        font-weight: 900;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="signupForm"
+      style="
+        width: 100%;
+        min-height: 100vh;
+        position: relative;
+        background: #f6f0eb;
+      "
+    >
+      <form
+        id="signupFormElement"
+        style="position: absolute; left: 384px; top: 250px; width: 735px"
+      >
+        <div class="input-group" style="margin-bottom: 20px">
+          <input
+            type="text"
+            id="name"
+            required
+            placeholder="이름"
+            style="
+              width: 100%;
+              padding: 12px;
+              border: 1px solid #a0a0a0;
+              border-radius: 10px;
+              font-size: 16px;
+              font-family: Freesentation;
+            "
+          />
+        </div>
+        <div class="input-group" style="margin-bottom: 20px">
+          <input
+            type="email"
+            id="email"
+            required
+            placeholder="이메일"
+            style="
+              width: 100%;
+              padding: 12px;
+              border: 1px solid #a0a0a0;
+              border-radius: 10px;
+              font-size: 16px;
+              font-family: Freesentation;
+            "
+          />
+        </div>
+        <div class="input-group" style="margin-bottom: 20px">
+          <input
+            type="password"
+            id="password"
+            required
+            placeholder="비밀번호"
+            style="
+              width: 100%;
+              padding: 12px;
+              border: 1px solid #a0a0a0;
+              border-radius: 10px;
+              font-size: 16px;
+              font-family: Freesentation;
+            "
+          />
+        </div>
+        <div class="input-group" style="margin-bottom: 20px">
+          <input
+            type="password"
+            id="confirmPassword"
+            required
+            placeholder="비밀번호 확인"
+            style="
+              width: 100%;
+              padding: 12px;
+              border: 1px solid #a0a0a0;
+              border-radius: 10px;
+              font-size: 16px;
+              font-family: Freesentation;
+            "
+          />
+        </div>
+        <button
+          type="submit"
+          style="
+            cursor: pointer;
+            width: 100%;
+            height: 68px;
+            background: #c96342;
+            border-radius: 10px;
+            border: none;
+            color: #f6f0eb;
+            font-size: 24px;
+            font-family: Freesentation;
+            margin-bottom: 16px;
+          "
+        >
+          회원가입
+        </button>
+        <div
+          style="
+            text-align: center;
+            margin-bottom: 20px;
+            font-family: Freesentation;
+            color: #a0a0a0;
+          "
+        >
+          이미 계정이 있으신가요?
+          <a
+            href="/email-login"
+            style="color: #c96342; text-decoration: none; font-weight: bold"
+            >로그인</a
+          >
+        </div>
+      </form>
+      <div
+        class="fade-in"
+        style="
+          left: 314px;
+          top: 156px;
+          position: absolute;
+          display: flex;
+          flex-direction: column;
+          gap: 0;
+        "
+      >
+        <span
+          style="
+            color: #c96342;
+            font-size: 32px;
+            font-family: Cutive;
+            font-weight: 400;
+            line-height: 48px;
+          "
+          >Ordo
+          <span style="font-family: Freesentation; font-weight: 700"
+            >에 오신 것을 환영합니다</span
+          ></span
+        >
+        <span
+          style="
+            color: #a0a0a0;
+            font-size: 20px;
+            font-family: Freesentation;
+            font-weight: 400;
+            line-height: 30px;
+          "
+        >
+          복잡했던 하루, 이제 <span style="font-family: Cutive">Ordo</span
+          ><span style="font-weight: 300">가 정리해줄게요.</span>
+        </span>
+      </div>
+      <img
+        class="logo"
+        src="/Login/image-8.png"
+        style="
+          width: 107px;
+          height: 107px;
+          left: 21px;
+          top: 17px;
+          position: absolute;
+        "
+      />
+    </div>
+    <script src="/Signup/signup.js"></script>
+  </body>
+  <script>
+    window.addEventListener("DOMContentLoaded", () => {
+      document.body.classList.add("loaded");
+    });
+
+    document
+      .getElementById("signupFormElement")
+      .addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const name = document.getElementById("name").value;
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+        const confirmPassword =
+          document.getElementById("confirmPassword").value;
+
+        if (password !== confirmPassword) {
+          alert("비밀번호가 일치하지 않습니다.");
+          return;
+        }
+
+        try {
+          const response = await fetch("/api/signup", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              name,
+              email,
+              password,
+            }),
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            alert("회원가입이 완료되었습니다.");
+            window.location.href = "/email-login";
+          } else {
+            alert(data.message || "회원가입 중 오류가 발생했습니다.");
+          }
+        } catch (error) {
+          console.error("Error:", error);
+          alert("회원가입 중 오류가 발생했습니다.");
+        }
+      });
+  </script>
+</html>

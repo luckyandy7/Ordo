@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Ordo 로그인</title>
+    <link rel="stylesheet" href="/Login/styles.css" />
+  </head>
+  <body>
+    <div
+      id="loginForm"
+      style="
+        width: 100%;
+        min-height: 100vh;
+        position: relative;
+        background: #f6f0eb;
+      "
+    >
+      <form
+        id="loginFormElement"
+        style="position: absolute; left: 384px; top: 250px; width: 735px"
+      >
+        <div class="input-group" style="margin-bottom: 20px">
+          <input
+            type="email"
+            id="email"
+            required
+            placeholder="이메일"
+            style="
+              width: 100%;
+              padding: 12px;
+              border: 1px solid #a0a0a0;
+              border-radius: 10px;
+              font-size: 16px;
+              font-family: Freesentation;
+            "
+          />
+        </div>
+        <div class="input-group" style="margin-bottom: 20px">
+          <input
+            type="password"
+            id="password"
+            required
+            placeholder="비밀번호"
+            style="
+              width: 100%;
+              padding: 12px;
+              border: 1px solid #a0a0a0;
+              border-radius: 10px;
+              font-size: 16px;
+              font-family: Freesentation;
+            "
+          />
+        </div>
+        <button
+          type="submit"
+          style="
+            cursor: pointer;
+            width: 100%;
+            height: 68px;
+            background: #c96342;
+            border-radius: 10px;
+            border: none;
+            color: #f6f0eb;
+            font-size: 24px;
+            font-family: Freesentation;
+            margin-bottom: 16px;
+          "
+        >
+          로그인
+        </button>
+        <div
+          style="
+            text-align: center;
+            margin-bottom: 20px;
+            font-family: Freesentation;
+            color: #a0a0a0;
+          "
+        >
+          아직 계정이 없으신가요?
+          <a
+            href="/Signup/signup.html"
+            style="color: #c96342; text-decoration: none; font-weight: bold"
+            >회원가입</a
+          >
+        </div>
+      </form>
+      <div
+        class="fade-in"
+        style="
+          left: 314px;
+          top: 156px;
+          position: absolute;
+          display: flex;
+          flex-direction: column;
+          gap: 0;
+        "
+      >
+        <span
+          style="
+            color: #c96342;
+            font-size: 32px;
+            font-family: Cutive;
+            font-weight: 400;
+            line-height: 48px;
+          "
+          >Ordo
+          <span style="font-family: Freesentation; font-weight: 700"
+            >에 로그인</span
+          ></span
+        >
+        <span
+          style="
+            color: #a0a0a0;
+            font-size: 20px;
+            font-family: Freesentation;
+            font-weight: 400;
+            line-height: 30px;
+          "
+        >
+          복잡했던 하루, 이제 <span style="font-family: Cutive">Ordo</span
+          ><span style="font-weight: 300">가 정리해줄게요.</span>
+        </span>
+      </div>
+      <div
+        class="social-login"
+        style="position: absolute; left: 384px; top: 520px; width: 735px"
+      >
+        <div
+          class="social-button"
+          style="
+            margin-bottom: 20px;
+            width: 100%;
+            height: 55px;
+            border-radius: 10px;
+            border: 1px solid #a0a0a0;
+            background-color: white;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            cursor: pointer;
+          "
+          onclick="location.href='/auth/google'"
+        >
+          <img
+            class="google-icon"
+            src="/Login/logo-google-g-icon-1.svg"
+            style="width: 32px; height: 32px; margin-right: 12px"
+          />
+          <span
+            style="
+              color: black;
+              font-size: 18px;
+              font-family: Cutive;
+              font-weight: 400;
+            "
+            >Google로 계속하기</span
+          >
+        </div>
+        <div
+          class="social-button"
+          style="
+            width: 100%;
+            height: 55px;
+            border-radius: 10px;
+            border: 1px solid #a0a0a0;
+            background-color: white;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            cursor: pointer;
+          "
+          onclick="loginWithKakao()"
+        >
+          <img
+            class="kakao-icon"
+            src="/Login/KakaoTalk_logo.svg"
+            style="width: 32px; height: 32px; margin-right: 12px"
+          />
+          <span
+            style="
+              color: black;
+              font-size: 18px;
+              font-family: Cutive;
+              font-weight: 400;
+            "
+            >Kakao로 계속하기</span
+          >
+        </div>
+      </div>
+      <img
+        class="logo"
+        src="/Login/image-8.png"
+        style="
+          width: 107px;
+          height: 107px;
+          left: 21px;
+          top: 17px;
+          position: absolute;
+        "
+      />
+    </div>
+    <script src="/Login/login.js"></script>
+  </body>
+  <script>
+    window.addEventListener("DOMContentLoaded", () => {
+      document.body.classList.add("loaded");
+    });
+
+    document
+      .getElementById("loginFormElement")
+      .addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+
+        try {
+          const response = await fetch("/api/login", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              email,
+              password,
+            }),
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            localStorage.setItem("token", data.token);
+            window.location.href = "/Main/index.html";
+          } else {
+            alert(data.message || "로그인에 실패했습니다.");
+          }
+        } catch (error) {
+          console.error("Error:", error);
+          alert("로그인 중 오류가 발생했습니다.");
+        }
+      });
+  </script>
+  <script>
+    const googleLogo = document.querySelector(".google-icon");
+    const googleButton = document.querySelector(".google-button");
+    const kakaoLogo = document.querySelector(".kakao-icon");
+    const kakaoButton = document.querySelector(".kakao-button");
+
+    let googleRotated = false;
+    let kakaoRotated = false;
+
+    googleButton.addEventListener("mouseenter", () => {
+      if (!googleRotated) {
+        // ⚠️ Ensure the 'rotated-once' class is defined in CSS with rotation animation
+        googleLogo.classList.add("rotated-once");
+        googleRotated = true;
+      }
+    });
+
+    kakaoButton.addEventListener("mouseenter", () => {
+      if (!kakaoRotated) {
+        // ⚠️ Ensure the 'rotated-once' class is defined in CSS with rotation animation
+        kakaoLogo.classList.add("rotated-once");
+        kakaoRotated = true;
+      }
+    });
+  </script>
+  <!-- ⚠️ Do not expose Kakao JavaScript key in production. Use environment variable instead -->
+  <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
+  <script>
+    Kakao.init("26c5560d99c31e4d37f7488343d18d09");
+
+    function loginWithKakao() {
+      Kakao.Auth.login({
+        success: function (authObj) {
+          Kakao.API.request({
+            url: "/v2/user/me",
+            success: function (response) {
+              console.log(response);
+              alert("카카오 계정으로 로그인되었습니다.");
+              window.location.href = "/main";
+            },
+            fail: function (error) {
+              console.error(error);
+            },
+          });
+        },
+        fail: function (err) {
+          console.error(err);
+        },
+      });
+    }
+  </script>
+</html>

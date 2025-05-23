@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ordo - Calendar</title>
+    <link rel="stylesheet" href="/Main/styles.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cutive&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      @font-face {
+        font-family: "Freesentation";
+        src: url("/font/Freesentation.ttf") format("truetype");
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="logo">
+        <img src="/Login/image-8.png" alt="Logo" class="logo-image" />
+      </div>
+      <div class="header">
+        <div class="brand">Ordo</div>
+        <button id="logoutBtn" class="logout-button">로그아웃</button>
+      </div>
+      <div class="welcome-message">
+        <h1 class="freesentation-bold">
+          반가워요, <span id="userName">사용자</span>님!
+        </h1>
+        <p class="subtitle freesentation-light">오늘도 함께 힘내봐요</p>
+      </div>
+      <div class="calendar-section">
+        <h2>Calendar</h2>
+        <div class="month">May</div>
+        <div class="dates">
+          <span>12</span>
+          <span>13</span>
+          <span>14</span>
+          <span class="active">15</span>
+          <span>16</span>
+          <span>17</span>
+          <span>18</span>
+        </div>
+        <div class="timeline">
+          <div class="time-slot">
+            <span class="time red">8AM</span>
+            <div class="event meeting">Meeting</div>
+          </div>
+          <div class="time-slot">
+            <span class="time">10AM</span>
+          </div>
+          <div class="time-slot">
+            <span class="time">12PM</span>
+          </div>
+          <div class="time-slot">
+            <span class="time">2PM</span>
+            <div class="event lunch">Lunch</div>
+          </div>
+          <div class="time-slot">
+            <span class="time">4PM</span>
+            <div class="event project">Project</div>
+          </div>
+          <div class="time-slot">
+            <span class="time">6PM</span>
+          </div>
+        </div>
+      </div>
+      <div class="bottom-buttons">
+        <button class="horae-button">
+          <img
+            src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='53' height='53' viewBox='0 0 53 53'%3E%3Ccircle cx='26.5' cy='26.5' r='26.5' fill='%23C96342'/%3E%3C/svg%3E"
+            alt="Horae"
+          />
+          <span
+            ><span class="cutive">Horae</span
+            ><span class="freesentation">의 추천 일정</span></span
+          >
+        </button>
+        <button class="daily-button">
+          <span class="cutive">Daily </span
+          ><span class="freesentation-bold">한마디</span>
+        </button>
+      </div>
+    </div>
+    <script src="/Main/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ordo - 메인</title>
+    <link rel="stylesheet" href="/Main/styles.css" />
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cutive&family=Poppins:wght@400;700;900&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      @font-face {
+        font-family: "Cutive";
+        src: url("./font/Freesentation-2.001/Cutive/Cutive-Regular.ttf")
+          format("truetype");
+        font-weight: 400;
+      }
+      @font-face {
+        font-family: "Freesentation";
+        src: url("./font/Freesentation-2.001/Freesentation-2ExtraLight.ttf")
+          format("truetype");
+        font-weight: 200;
+      }
+      @font-face {
+        font-family: "Freesentation";
+        src: url("./font/Freesentation-2.001/Freesentation-4Regular.ttf")
+          format("truetype");
+        font-weight: 400;
+      }
+      @font-face {
+        font-family: "Freesentation";
+        src: url("./font/Freesentation-2.001/Freesentation-7Bold.ttf")
+          format("truetype");
+        font-weight: 700;
+      }
+      @font-face {
+        font-family: "Freesentation";
+        src: url("./font/Freesentation-2.001/Freesentation-9Black.ttf")
+          format("truetype");
+        font-weight: 900;
+      }
+      :root {
+        --font-freesentation: "Freesentation", sans-serif;
+        --font-cutive: "Cutive", serif;
+      }
+      body {
+        margin: 0;
+        padding: 0;
+        background-color: #f6f0eb;
+        font-family: var(--font-freesentation);
+        min-width: 1200px;
+        overflow-x: auto;
+      }
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 32px 80px;
+        position: relative;
+        min-width: 1200px;
+        margin: 0 auto;
+      }
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        position: absolute;
+        left: 80px;
+      }
+      .logo img {
+        width: 64px;
+        height: 64px;
+        object-fit: contain;
+      }
+      .logo-text {
+        font-size: 24px;
+        font-family: var(--font-cutive);
+        color: #c96342;
+        font-weight: 400;
+      }
+      .nav-buttons {
+        display: flex;
+        align-items: center;
+        gap: 32px;
+        overflow: visible;
+        position: absolute;
+        right: 80px;
+      }
+      .text-login {
+        font-size: 18px;
+        font-weight: 700;
+        color: #c96342;
+        padding: 12px 20px;
+        border-radius: 8px;
+        font-family: var(--font-freesentation);
+        cursor: pointer;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        transform-origin: center center;
+        text-decoration: none;
+        border: 2px solid #c96342;
+      }
+      .text-login:hover {
+        transform: scale(1.05);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        background-color: #c96342;
+        color: #f6f0eb;
+      }
+      .text-login:active {
+        transform: scale(0.95);
+        transition: transform 0.1s ease;
+      }
+      .cta-btn {
+        background-color: #c96342;
+        color: #f6f0eb;
+        padding: 12px 20px;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 900;
+        font-family: var(--font-freesentation);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        cursor: pointer;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        transform-origin: center center;
+        display: inline-flex;
+        width: fit-content;
+        max-width: 100%;
+      }
+      .cta-btn:hover {
+        transform: scale(1.05);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+      }
+      .cta-btn:active,
+      .cta-btn.large:active {
+        transform: scale(0.95);
+        transition: transform 0.1s ease;
+      }
+      main {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 80px 10px;
+        min-width: 1200px;
+        margin: 0 auto;
+        gap: 40px;
+        padding-top: 80px;
+      }
+      .main-left {
+        flex: 1;
+        max-width: 600px;
+        min-width: 500px;
+        animation: fadeInUp 0.8s ease-out both;
+        margin-top: 40px;
+      }
+      .text-heading {
+        font-size: 72px;
+        font-weight: 900;
+        line-height: 1.35;
+        margin-bottom: 12px;
+        color: black;
+      }
+      .text-subheading {
+        font-size: 20px;
+        font-weight: 200;
+        margin-bottom: 32px;
+        color: #888888;
+      }
+      .main-right {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .main-right img {
+        width: 560px;
+        height: auto;
+        object-fit: contain;
+        margin: 40px auto 0;
+        animation: fadeInUp 1.4s ease-out both 0.3s;
+      }
+      /* Fade In Up Animation */
+      @keyframes fadeInUp {
+        0% {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes zoomIn {
+        0% {
+          opacity: 0;
+          transform: scale(0.8);
+        }
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+      #typing-text {
+        min-height: 2.7em;
+        white-space: pre-line;
+      }
+      .cursor {
+        display: inline-block;
+        animation: blink 1s step-end infinite;
+      }
+      @keyframes blink {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="logo">
+        <img src="/Login/image-8.png" alt="Logo" />
+        <span class="logo-text">Ordo</span>
+      </div>
+      <div class="nav-buttons">
+        <a href="/email-login" class="text-login">로그인</a>
+        <a href="/email-login" class="cta-btn">시작하기</a>
+      </div>
+    </header>
+    <main>
+      <div class="main-left">
+        <h1 id="typing-text" class="text-heading"></h1>
+        <p id="subheading" class="text-subheading" style="opacity: 0">
+          AI가 정리하고, 보다 나은 우리의 삶을
+        </p>
+        <a
+          href="/email-login"
+          id="cta-button"
+          class="cta-btn large"
+          style="opacity: 0"
+          >시작하기</a
+        >
+      </div>
+      <div class="main-right">
+        <img src="/public/images/image-6.png" alt="Main illustration" />
+      </div>
+    </main>
+    <script>
+      const target = document.getElementById("typing-text");
+      const text = "당신의 하루,\n지금보다 더 질서있게.";
+      let index = 0;
+
+      function typeChar() {
+        if (index <= text.length) {
+          const visibleText = text.substring(0, index);
+          const cursor = '<span class="cursor">|</span>';
+          const display = visibleText.replace(/\n/g, "<br>") + cursor;
+          target.innerHTML = display;
+          index++;
+          setTimeout(typeChar, 130);
+        } else {
+          document.getElementById("subheading").style.animation =
+            "fadeInUp 1s ease-out both";
+          document.getElementById("cta-button").style.animation =
+            "zoomIn 0.8s ease-out both";
+        }
+      }
+
+      window.addEventListener("DOMContentLoaded", typeChar);
+    </script>
+  </body>
+</html>

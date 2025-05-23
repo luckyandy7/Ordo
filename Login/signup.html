@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ordo - 회원가입</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cutive&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      @font-face {
+        font-family: "Freesentation";
+        src: url("../font/Freesentation.ttf") format("truetype");
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="login-box">
+        <h1 class="brand">Ordo</h1>
+        <form id="signupForm" class="login-form">
+          <div class="input-group">
+            <label for="name">이름</label>
+            <input type="text" id="name" name="name" required />
+          </div>
+          <div class="input-group">
+            <label for="email">이메일</label>
+            <input type="email" id="email" name="email" required />
+          </div>
+          <div class="input-group">
+            <label for="password">비밀번호</label>
+            <input type="password" id="password" name="password" required />
+          </div>
+          <div class="input-group">
+            <label for="confirmPassword">비밀번호 확인</label>
+            <input
+              type="password"
+              id="confirmPassword"
+              name="confirmPassword"
+              required
+            />
+          </div>
+          <button type="submit" class="login-button">회원가입</button>
+        </form>
+        <p class="signup-text">
+          이미 계정이 있으신가요? <a href="/login">로그인</a>
+        </p>
+      </div>
+    </div>
+    <script src="signup.js"></script>
+  </body>
+</html>
