@@ -484,18 +484,27 @@ async function renderCalendar() {
       column.classList.add("today-column");
     }
 
-    // 클릭 이벤트 추가
-    column.addEventListener("click", (e) => {
-      if (e.target === column) {
-        const rect = column.getBoundingClientRect();
-        const y = e.clientY - rect.top;
-        const hour = Math.floor(y / 60);
-        const minutes = Math.round((y % 60) / (60 / 60));
+    // 클릭 이벤트 추가 (클로저 문제 해결)
+    column.addEventListener(
+      "click",
+      ((currentDate) => {
+        return (e) => {
+          if (e.target === column) {
+            const rect = column.getBoundingClientRect();
+            const y = e.clientY - rect.top;
+            const hour = Math.floor(y / 60);
+            const minutes = Math.round((y % 60) / (60 / 60));
 
-        selectedDate = columnDate;
-        showAddEventModal(hour, minutes);
-      }
-    });
+            selectedDate = new Date(currentDate); // 새로운 Date 객체 생성
+            console.log(
+              "클릭된 날짜:",
+              selectedDate.toISOString().split("T")[0]
+            );
+            showAddEventModal(hour, minutes);
+          }
+        };
+      })(new Date(columnDate))
+    ); // 현재 날짜를 즉시 실행 함수로 캡처
 
     eventGrid.appendChild(column);
   }
