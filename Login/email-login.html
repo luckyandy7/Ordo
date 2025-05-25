@@ -267,6 +267,7 @@
             if (data.data && data.data.token && data.data.user) {
               localStorage.setItem("token", data.data.token);
               localStorage.setItem("user", JSON.stringify(data.data.user));
+              localStorage.setItem("userName", data.data.user.name);
 
               console.log("로그인 성공:", data.data.user);
 
