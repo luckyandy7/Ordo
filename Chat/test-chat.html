@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>채팅 테스트</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        #messages {
+            border: 1px solid #ccc;
+            height: 400px;
+            overflow-y: auto;
+            padding: 10px;
+            margin-bottom: 10px;
+            background: #f9f9f9;
+        }
+        .message {
+            margin-bottom: 10px;
+            padding: 8px;
+            border-radius: 5px;
+        }
+        .own {
+            background: #007bff;
+            color: white;
+            text-align: right;
+        }
+        .other {
+            background: #e9ecef;
+        }
+        .system {
+            background: #28a745;
+            color: white;
+            text-align: center;
+            font-style: italic;
+        }
+        #messageForm {
+            display: flex;
+            gap: 10px;
+        }
+        #messageInput {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        #status {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .connected {
+            background: #d4edda;
+            color: #155724;
+        }
+        .disconnected {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        #logs {
+            margin-top: 20px;
+            padding: 10px;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            height: 200px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <h1>실시간 채팅 테스트</h1>
+    
+    <div id="status" class="disconnected">연결 중...</div>
+    
+    <div>
+        <label>사용자 이름: </label>
+        <input type="text" id="userName" placeholder="이름을 입력하세요" value="테스트사용자">
+        <button onclick="connect()">연결</button>
+        <button onclick="disconnect()">연결 해제</button>
+    </div>
+    
+    <div id="messages"></div>
+    
+    <form id="messageForm">
+        <input type="text" id="messageInput" placeholder="메시지를 입력하세요..." disabled>
+        <button type="submit" disabled>전송</button>
+    </form>
+    
+    <div>
+        <h3>디버그 로그</h3>
+        <div id="logs"></div>
+        <button onclick="clearLogs()">로그 지우기</button>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        let socket = null;
+        let connected = false;
+        
+        const statusEl = document.getElementById('status');
+        const messagesEl = document.getElementById('messages');
+        const messageForm = document.getElementById('messageForm');
+        const messageInput = document.getElementById('messageInput');
+        const userNameInput = document.getElementById('userName');
+        const logsEl = document.getElementById('logs');
+        
+        function log(message) {
+            const time = new Date().toLocaleTimeString();
+            logsEl.innerHTML += `[${time}] ${message}<br>`;
+            logsEl.scrollTop = logsEl.scrollHeight;
+            console.log(message);
+        }
+        
+        function clearLogs() {
+            logsEl.innerHTML = '';
+        }
+        
+        function updateStatus(isConnected) {
+            connected = isConnected;
+            if (isConnected) {
+                statusEl.textContent = '연결됨';
+                statusEl.className = 'connected';
+                messageInput.disabled = false;
+                messageForm.querySelector('button').disabled = false;
+            } else {
+                statusEl.textContent = '연결 해제됨';
+                statusEl.className = 'disconnected';
+                messageInput.disabled = true;
+                messageForm.querySelector('button').disabled = true;
+            }
+        }
+        
+        function addMessage(content, type = 'other', sender = '') {
+            const messageEl = document.createElement('div');
+            messageEl.className = `message ${type}`;
+            
+            if (type === 'system') {
+                messageEl.textContent = content;
+            } else if (type === 'own') {
+                messageEl.textContent = content;
+            } else {
+                messageEl.textContent = `${sender}: ${content}`;
+            }
+            
+            messagesEl.appendChild(messageEl);
+            messagesEl.scrollTop = messagesEl.scrollHeight;
+        }
+        
+        function connect() {
+            const userName = userNameInput.value.trim();
+            if (!userName) {
+                alert('사용자 이름을 입력하세요.');
+                return;
+            }
+            
+            if (socket) {
+                socket.disconnect();
+            }
+            
+            log('Socket.IO 연결 시도...');
+            
+            socket = io({
+                transports: ['websocket', 'polling'],
+                upgrade: true,
+                rememberUpgrade: true,
+                timeout: 20000,
+                forceNew: true
+            });
+            
+            socket.on('connect', () => {
+                log(`Socket.IO 연결 성공: ${socket.id}`);
+                log(`Transport: ${socket.io.engine.transport.name}`);
+                updateStatus(true);
+                
+                // 모든 이벤트 리스너 등록
+                setupEventListeners();
+                
+                // 채팅방 참가
+                socket.emit('join', {
+                    userId: 'test-' + Date.now(),
+                    userName: userName,
+                    chatRoom: 'general'
+                });
+                
+                log('채팅방 참가 요청 전송');
+            });
+            
+            function setupEventListeners() {
+                // 기존 리스너 제거 후 새로 등록
+                socket.off('new_message');
+                socket.off('user_joined');
+                socket.off('user_left');
+                socket.off('online_users');
+                socket.off('recent_messages');
+                socket.off('error');
+                
+                socket.on('new_message', (message) => {
+                    log(`새 메시지 수신: ${JSON.stringify(message)}`);
+                    console.log('새 메시지 전체 데이터:', message);
+                    const isOwn = message.senderName === userName;
+                    addMessage(message.content, isOwn ? 'own' : 'other', message.senderName);
+                });
+                
+                socket.on('recent_messages', (messages) => {
+                    log(`최근 메시지 ${messages.length}개 수신`);
+                    messagesEl.innerHTML = '';
+                    messages.forEach(msg => {
+                        addMessage(msg.content, 'other', msg.senderName);
+                    });
+                });
+                
+                socket.on('user_joined', (data) => {
+                    log(`사용자 참가: ${data.message}`);
+                    addMessage(data.message, 'system');
+                });
+                
+                socket.on('user_left', (data) => {
+                    log(`사용자 퇴장: ${data.message}`);
+                    addMessage(data.message, 'system');
+                });
+                
+                socket.on('online_users', (users) => {
+                    log(`온라인 사용자 ${users.length}명`);
+                });
+                
+                socket.on('error', (error) => {
+                    log(`Socket 오류: ${error.message}`);
+                });
+            }
+            
+            socket.on('disconnect', () => {
+                log('Socket.IO 연결 해제');
+                updateStatus(false);
+            });
+            
+            socket.on('connect_error', (error) => {
+                log(`연결 오류: ${error.message}`);
+                updateStatus(false);
+            });
+            
+
+        }
+        
+        function disconnect() {
+            if (socket) {
+                socket.disconnect();
+                socket = null;
+            }
+            updateStatus(false);
+            log('연결 해제됨');
+        }
+        
+        messageForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const content = messageInput.value.trim();
+            if (!content || !connected) return;
+            
+            log(`메시지 전송: ${content}`);
+            
+            socket.emit('send_message', {
+                content: content,
+                messageType: 'text'
+            });
+            
+            messageInput.value = '';
+        });
+        
+        // 페이지 로드 시 자동 연결
+        window.addEventListener('load', () => {
+            log('페이지 로드 완료');
+        });
+    </script>
+</body>
+</html> 

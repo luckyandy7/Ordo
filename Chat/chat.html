@@ -97,7 +97,7 @@
           </div>
 
           <!-- 메시지 영역 -->
-          <div class="messages-container">
+          <div class="messages-container" id="messagesContainer">
             <div class="message-group">
               <div class="message-date">오늘</div>
 
@@ -164,16 +164,17 @@
               <button class="emoji-btn" title="이모지">😊</button>
               <input
                 type="text"
+                id="messageInput"
                 placeholder="메시지를 입력하세요..."
                 maxlength="1000"
               />
               <button class="attach-btn" title="파일 첨부">📎</button>
-              <button class="send-btn" title="전송">
+              <button class="send-btn" id="sendBtn" title="전송">
                 <span>➤</span>
               </button>
             </div>
-            <div class="typing-indicator">
-              <span>김철수님이 입력 중입니다...</span>
+            <div class="typing-indicator" id="typingIndicator" style="display: none;">
+              <span id="typingText">누군가 입력 중입니다...</span>
             </div>
           </div>
         </div>
@@ -214,5 +215,10 @@
         </form>
       </div>
     </div>
+
+    <!-- Socket.IO 클라이언트 라이브러리 -->
+    <script src="/socket.io/socket.io.js"></script>
+    <!-- 실시간 채팅 JavaScript -->
+    <script src="chat-realtime.js"></script>
   </body>
 </html>

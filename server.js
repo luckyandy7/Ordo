@@ -36,6 +36,7 @@ app.use(express.static(path.join(__dirname)));
 app.use("/public", express.static(path.join(__dirname, "Main/public")));
 app.use("/Login", express.static(path.join(__dirname, "Login")));
 app.use("/Main", express.static(path.join(__dirname, "Main")));
+app.use("/Chat", express.static(path.join(__dirname, "Chat")));
 app.use("/font", express.static(path.join(__dirname, "font")));
 app.use("/css", express.static(path.join(__dirname, "css")));
 app.use("/js", express.static(path.join(__dirname, "js")));
@@ -510,6 +511,10 @@ pageRoutes.get("/main", (req, res) => {
   res.sendFile(path.join(__dirname, "Main", "index.html"));
 });
 
+pageRoutes.get("/chat", (req, res) => {
+  res.sendFile(path.join(__dirname, "Chat", "chat.html"));
+});
+
 // 페이지 라우트 등록
 app.use("/", pageRoutes);
 
@@ -521,8 +526,187 @@ app.use((req, res) => {
   });
 });
 
+// Socket.IO 설정
+const http = require('http');
+const socketIo = require('socket.io');
+const Message = require('./models/Message');
+
+const server = http.createServer(app);
+const io = socketIo(server, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"]
+  }
+});
+
+// 온라인 사용자 관리
+const onlineUsers = new Map();
+
+// Socket.IO 연결 처리
+io.on('connection', (socket) => {
+  console.log('[Socket.IO] 사용자 연결:', socket.id);
+  console.log('[Socket.IO] 연결된 클라이언트 수:', io.engine.clientsCount);
+
+  // 사용자 인증 및 채팅방 참가
+  socket.on('join', async (data) => {
+    try {
+      const { userId, userName, chatRoom = 'general' } = data;
+      
+      // 사용자 정보 저장
+      socket.userId = userId;
+      socket.userName = userName;
+      socket.chatRoom = chatRoom;
+      
+      // 온라인 사용자 목록에 추가
+      onlineUsers.set(socket.id, {
+        userId,
+        userName,
+        chatRoom,
+        socketId: socket.id
+      });
+      
+      // 채팅방 참가
+      socket.join(chatRoom);
+      
+      // 최근 메시지 로드 (최근 50개)
+      const recentMessages = await Message.find({ chatRoom })
+        .populate('sender', 'name')
+        .sort({ timestamp: -1 })
+        .limit(50)
+        .lean();
+      
+      // 시간순으로 정렬
+      recentMessages.reverse();
+      
+      // 클라이언트에 최근 메시지 전송
+      socket.emit('recent_messages', recentMessages);
+      
+      // 다른 사용자들에게 새 사용자 참가 알림
+      socket.to(chatRoom).emit('user_joined', {
+        userName,
+        message: `${userName}님이 채팅방에 참가했습니다.`,
+        timestamp: new Date()
+      });
+      
+      // 온라인 사용자 목록 업데이트
+      const roomUsers = Array.from(onlineUsers.values())
+        .filter(user => user.chatRoom === chatRoom);
+      io.to(chatRoom).emit('online_users', roomUsers);
+      
+      console.log(`[Socket.IO] ${userName} 채팅방 참가: ${chatRoom}`);
+    } catch (error) {
+      console.error('[Socket.IO] 채팅방 참가 오류:', error);
+      socket.emit('error', { message: '채팅방 참가에 실패했습니다.' });
+    }
+  });
+
+  // 메시지 전송 처리
+  socket.on('send_message', async (data) => {
+    try {
+      const { content, messageType = 'text' } = data;
+      
+      if (!socket.userId || !socket.userName || !content.trim()) {
+        return socket.emit('error', { message: '잘못된 메시지 데이터입니다.' });
+      }
+      
+      // userId가 유효한 ObjectId인지 확인하고, 아니면 새로 생성
+      let senderId = socket.userId;
+      if (typeof socket.userId === 'string' && socket.userId.startsWith('test-')) {
+        senderId = new mongoose.Types.ObjectId();
+      }
+      
+      // 메시지 데이터베이스에 저장
+      const newMessage = new Message({
+        content: content.trim(),
+        sender: senderId,
+        senderName: socket.userName,
+        chatRoom: socket.chatRoom,
+        messageType
+      });
+      
+      await newMessage.save();
+      
+      // 메시지 객체 생성
+      const messageData = {
+        _id: newMessage._id,
+        content: newMessage.content,
+        sender: {
+          _id: senderId,
+          name: socket.userName
+        },
+        senderName: socket.userName,
+        chatRoom: socket.chatRoom,
+        messageType: newMessage.messageType,
+        timestamp: newMessage.timestamp,
+        createdAt: newMessage.createdAt
+      };
+      
+      // 채팅방의 모든 사용자에게 메시지 전송
+      console.log(`[Socket.IO] 메시지 데이터 전송:`, JSON.stringify(messageData, null, 2));
+      io.to(socket.chatRoom).emit('new_message', messageData);
+      
+      console.log(`[Socket.IO] 메시지 전송 - ${socket.userName}: ${content}`);
+      console.log(`[Socket.IO] 채팅방 ${socket.chatRoom}의 클라이언트 수:`, io.sockets.adapter.rooms.get(socket.chatRoom)?.size || 0);
+      
+      // 채팅방의 모든 소켓에게 개별적으로도 전송 (디버깅용)
+      const room = io.sockets.adapter.rooms.get(socket.chatRoom);
+      if (room) {
+        console.log(`[Socket.IO] 채팅방 ${socket.chatRoom}의 소켓 ID들:`, Array.from(room));
+        room.forEach(socketId => {
+          const targetSocket = io.sockets.sockets.get(socketId);
+          if (targetSocket) {
+            console.log(`[Socket.IO] 소켓 ${socketId}에게 메시지 전송`);
+          }
+        });
+      }
+    } catch (error) {
+      console.error('[Socket.IO] 메시지 전송 오류:', error);
+      socket.emit('error', { message: '메시지 전송에 실패했습니다.' });
+    }
+  });
+
+  // 타이핑 상태 처리
+  socket.on('typing_start', () => {
+    socket.to(socket.chatRoom).emit('user_typing', {
+      userName: socket.userName,
+      isTyping: true
+    });
+  });
+
+  socket.on('typing_stop', () => {
+    socket.to(socket.chatRoom).emit('user_typing', {
+      userName: socket.userName,
+      isTyping: false
+    });
+  });
+
+  // 연결 해제 처리
+  socket.on('disconnect', () => {
+    if (socket.userName && socket.chatRoom) {
+      // 온라인 사용자 목록에서 제거
+      onlineUsers.delete(socket.id);
+      
+      // 다른 사용자들에게 사용자 퇴장 알림
+      socket.to(socket.chatRoom).emit('user_left', {
+        userName: socket.userName,
+        message: `${socket.userName}님이 채팅방을 나갔습니다.`,
+        timestamp: new Date()
+      });
+      
+      // 온라인 사용자 목록 업데이트
+      const roomUsers = Array.from(onlineUsers.values())
+        .filter(user => user.chatRoom === socket.chatRoom);
+      io.to(socket.chatRoom).emit('online_users', roomUsers);
+      
+      console.log(`[Socket.IO] ${socket.userName} 연결 해제`);
+    }
+    console.log('[Socket.IO] 사용자 연결 해제:', socket.id);
+  });
+});
+
 // 서버 시작
 const PORT = process.env.PORT || 5001;
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`[서버 로그] 서버 시작: http://localhost:${PORT}`);
+  console.log(`[Socket.IO] Socket.IO 서버 준비 완료`);
 });
