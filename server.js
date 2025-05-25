@@ -9,13 +9,22 @@ const app = express();
 
 // MongoDB Atlas 연결 설정
 const MONGODB_URI =
+  process.env.MONGODB_URI ||
   "mongodb+srv://suhwan522:OnAlF6A3hyWuanpc@cluster0.qvdmkxf.mongodb.net/ordo?retryWrites=true&w=majority";
 
 // MongoDB 연결 옵션
 const mongooseOptions = {
-  serverSelectionTimeoutMS: 5000,
+  serverSelectionTimeoutMS: 30000, // 30초로 증가
   socketTimeoutMS: 45000,
+  maxPoolSize: 10,
+  retryWrites: true,
+  w: "majority",
 };
+
+console.log(
+  "[서버 로그] MongoDB URI:",
+  MONGODB_URI.replace(/\/\/.*:.*@/, "//***:***@")
+); // 비밀번호 숨김
 
 // 기본 미들웨어
 app.use(cors());
@@ -33,14 +42,30 @@ app.use("/js", express.static(path.join(__dirname, "js")));
 app.use("/images", express.static(path.join(__dirname, "images")));
 
 // MongoDB 연결
+console.log("[서버 로그] MongoDB 연결 시도 중...");
 mongoose
   .connect(MONGODB_URI, mongooseOptions)
   .then(() => {
     console.log("[서버 로그] MongoDB Atlas 연결 성공");
+    console.log("[서버 로그] 연결된 데이터베이스:", mongoose.connection.name);
   })
   .catch((error) => {
-    console.error("[서버 로그] MongoDB Atlas 연결 실패:", error);
+    console.error("[서버 로그] MongoDB Atlas 연결 실패:", error.message);
+    console.error("[서버 로그] 전체 에러:", error);
   });
+
+// MongoDB 연결 이벤트 리스너
+mongoose.connection.on("connected", () => {
+  console.log("[서버 로그] Mongoose가 MongoDB에 연결되었습니다");
+});
+
+mongoose.connection.on("error", (err) => {
+  console.error("[서버 로그] Mongoose 연결 에러:", err);
+});
+
+mongoose.connection.on("disconnected", () => {
+  console.log("[서버 로그] Mongoose가 MongoDB에서 연결 해제되었습니다");
+});
 
 // User 스키마 정의
 const userSchema = new mongoose.Schema({
@@ -197,6 +222,58 @@ apiRoutes.post("/login", async (req, res) => {
     res.status(500).json({
       status: "error",
       message: "서버 오류가 발생했습니다.",
+    });
+  }
+});
+
+// 데이터베이스 상태 확인 API (테스트용)
+apiRoutes.get("/db-status", async (req, res) => {
+  try {
+    console.log("[서버 로그] DB 상태 확인 요청");
+
+    // MongoDB 연결 상태 확인
+    const dbState = mongoose.connection.readyState;
+    const stateNames = {
+      0: "disconnected",
+      1: "connected",
+      2: "connecting",
+      3: "disconnecting",
+    };
+
+    // 사용자 수 확인
+    const userCount = await User.countDocuments();
+    console.log("[서버 로그] 총 사용자 수:", userCount);
+
+    // 최근 사용자 몇 명 조회 (비밀번호 제외)
+    const recentUsers = await User.find({})
+      .select("-password")
+      .limit(5)
+      .sort({ createdAt: -1 });
+    console.log(
+      "[서버 로그] 최근 사용자들:",
+      recentUsers.map((u) => ({ name: u.name, email: u.email }))
+    );
+
+    res.json({
+      status: "success",
+      data: {
+        mongooseState: stateNames[dbState],
+        dbName: mongoose.connection.name,
+        userCount,
+        recentUsers: recentUsers.map((u) => ({
+          id: u._id,
+          name: u.name,
+          email: u.email,
+          createdAt: u.createdAt,
+        })),
+      },
+    });
+  } catch (error) {
+    console.error("[서버 로그] DB 상태 확인 에러:", error);
+    res.status(500).json({
+      status: "error",
+      message: "데이터베이스 상태 확인 실패",
+      error: error.message,
     });
   }
 });
