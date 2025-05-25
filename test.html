@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JavaScript 테스트</title>
+  </head>
+  <body>
+    <h1>JavaScript 테스트 페이지</h1>
+    <button id="testBtn">테스트 버튼</button>
+    <div id="result"></div>
+
+    <script>
+      console.log("JavaScript 로드됨");
+
+      document.addEventListener("DOMContentLoaded", () => {
+        console.log("DOM 로드 완료");
+
+        const testBtn = document.getElementById("testBtn");
+        const result = document.getElementById("result");
+
+        if (testBtn) {
+          testBtn.addEventListener("click", () => {
+            result.innerHTML =
+              "버튼 클릭 성공! " + new Date().toLocaleTimeString();
+            console.log("버튼 클릭됨");
+          });
+          console.log("이벤트 리스너 등록 완료");
+        } else {
+          console.error("버튼을 찾을 수 없음");
+        }
+      });
+    </script>
+  </body>
+</html>

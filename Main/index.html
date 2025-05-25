@@ -18,72 +18,275 @@
   </head>
   <body>
     <div class="container">
-      <div class="logo">
-        <img src="/Login/image-8.png" alt="Logo" class="logo-image" />
-      </div>
-      <div class="header">
-        <div class="brand">Ordo</div>
-        <button id="logoutBtn" class="logout-button">로그아웃</button>
-      </div>
+      <header class="header">
+        <div class="brand-container">
+          <img src="/Login/image-8.png" alt="Logo" class="logo-image" />
+          <div class="brand">Ordo</div>
+        </div>
+        <div class="header-controls">
+          <button id="themeToggle" class="theme-toggle" title="다크모드 토글">
+            <span class="theme-icon">🌙</span>
+            <div class="theme-tooltip">다크모드 토글</div>
+          </button>
+          <button id="profileBtn" class="profile-button">
+            <img
+              src="/Main/public/images/private user.png"
+              alt="Profile"
+              class="profile-icon"
+            />
+            <div class="profile-tooltip">개인정보 변경</div>
+          </button>
+          <button id="logoutBtn" class="logout-button">로그아웃</button>
+        </div>
+      </header>
+
       <div class="welcome-message">
         <h1 class="freesentation-bold">
           반가워요, <span id="userName">사용자</span>님!
         </h1>
-        <p class="subtitle freesentation-light">오늘도 함께 힘내봐요</p>
+        <p class="subtitle freesentation-light"></p>
       </div>
+
+      <!-- 대시보드 위젯 섹션 -->
+      <div class="dashboard-widgets">
+        <div class="widget-row">
+          <div class="widget today-summary">
+            <div class="widget-header">
+              <h3>오늘의 일정</h3>
+              <span class="widget-icon">📅</span>
+            </div>
+            <div class="widget-content">
+              <div class="summary-item">
+                <span class="summary-number" id="todayEventsCount">0</span>
+                <span class="summary-label">개의 일정</span>
+              </div>
+              <div class="next-event" id="nextEvent">
+                <span class="next-label">다음 일정:</span>
+                <span class="next-time">없음</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="widget weather-widget">
+            <div class="widget-header">
+              <h3>오늘 날씨</h3>
+              <span class="widget-icon">🌤️</span>
+            </div>
+            <div class="widget-content">
+              <div class="weather-info">
+                <span class="temperature">22°C</span>
+                <span class="weather-desc">맑음</span>
+              </div>
+              <div class="weather-tip">일정 관리하기 좋은 날씨예요!</div>
+            </div>
+          </div>
+
+          <div class="widget productivity-widget">
+            <div class="widget-header">
+              <h3>이번 주 통계</h3>
+              <span class="widget-icon">📊</span>
+            </div>
+            <div class="widget-content">
+              <div class="stat-item">
+                <span class="stat-number" id="weekEventsCount">0</span>
+                <span class="stat-label">총 일정</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-number" id="completedEvents">0</span>
+                <span class="stat-label">완료</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 퀵 액션 카드들 -->
+        <div class="quick-actions">
+          <h3 class="section-title">Q-task</h3>
+          <div class="action-cards">
+            <div class="action-card" id="quickAddEvent">
+              <div class="action-icon">➕</div>
+              <div class="action-content">
+                <h4>새 일정 추가</h4>
+                <p>빠르게 일정을 추가하세요</p>
+              </div>
+            </div>
+
+            <div class="action-card" id="viewToday">
+              <div class="action-icon">📋</div>
+              <div class="action-content">
+                <h4>오늘 일정 보기</h4>
+                <p>오늘의 모든 일정을 확인하세요</p>
+              </div>
+            </div>
+
+            <div class="action-card" id="weekSummary">
+              <div class="action-icon">📈</div>
+              <div class="action-content">
+                <h4>주간 요약</h4>
+                <p>이번 주 일정을 요약해서 보세요</p>
+              </div>
+            </div>
+
+            <div class="action-card" id="settings">
+              <div class="action-icon">⚙️</div>
+              <div class="action-content">
+                <h4>설정</h4>
+                <p>캘린더 설정을 변경하세요</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 최근 활동 -->
+        <div class="recent-activity">
+          <div class="activity-header">
+            <h3 class="section-title">Recent Activity</h3>
+            <button
+              id="clearAllActivity"
+              class="clear-all-btn"
+              title="모든 활동 삭제"
+            >
+              🗑️ 전체 삭제
+            </button>
+          </div>
+          <div class="activity-list" id="activityList">
+            <div class="activity-item">
+              <div class="activity-icon">✅</div>
+              <div class="activity-content">
+                <span class="activity-text">새로운 일정이 추가되었습니다</span>
+                <span class="activity-time">방금 전</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="calendar-section">
-        <h2>Calendar</h2>
-        <div class="month">May</div>
-        <div class="dates">
-          <span>12</span>
-          <span>13</span>
-          <span>14</span>
-          <span class="active">15</span>
-          <span>16</span>
-          <span>17</span>
-          <span>18</span>
+        <div class="calendar-header">
+          <h2>Calendar</h2>
+          <div class="calendar-controls">
+            <button id="prevWeek" class="week-btn">&lt;</button>
+            <div class="current-week"></div>
+            <button id="nextWeek" class="week-btn">&gt;</button>
+          </div>
         </div>
-        <div class="timeline">
-          <div class="time-slot">
-            <span class="time red">8AM</span>
-            <div class="event meeting">Meeting</div>
+        <div class="calendar-grid">
+          <div class="time-header">
+            <div class="time-cell"></div>
+            <div class="weekday-cells">
+              <!-- 요일과 날짜는 JavaScript에서 동적으로 생성됩니다 -->
+            </div>
           </div>
-          <div class="time-slot">
-            <span class="time">10AM</span>
-          </div>
-          <div class="time-slot">
-            <span class="time">12PM</span>
-          </div>
-          <div class="time-slot">
-            <span class="time">2PM</span>
-            <div class="event lunch">Lunch</div>
-          </div>
-          <div class="time-slot">
-            <span class="time">4PM</span>
-            <div class="event project">Project</div>
-          </div>
-          <div class="time-slot">
-            <span class="time">6PM</span>
+          <div class="calendar-body">
+            <div class="time-column">
+              <!-- 시간은 JavaScript로 동적 생성 -->
+            </div>
+            <div class="event-grid">
+              <!-- 이벤트 그리드는 JavaScript로 동적 생성 -->
+            </div>
           </div>
         </div>
       </div>
+
       <div class="bottom-buttons">
-        <button class="horae-button">
-          <img
-            src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='53' height='53' viewBox='0 0 53 53'%3E%3Ccircle cx='26.5' cy='26.5' r='26.5' fill='%23C96342'/%3E%3C/svg%3E"
-            alt="Horae"
-          />
-          <span
-            ><span class="cutive">Horae</span
-            ><span class="freesentation">의 추천 일정</span></span
-          >
+        <button class="floating-button" id="floatingBtn">
+          <img src="/Main/public/images/horae.png" alt="Menu" />
         </button>
-        <button class="daily-button">
-          <span class="cutive">Daily </span
-          ><span class="freesentation-bold">한마디</span>
-        </button>
+        <div class="floating-menu" id="floatingMenu">
+          <a href="#" class="menu-item" id="horaeBtn">
+            <img src="/Main/public/images/horae.png" alt="Horae" />
+            <div>
+              <span class="cutive">Horae</span>
+              <span class="freesentation">의 추천 일정</span>
+            </div>
+          </a>
+          <a href="#" class="menu-item" id="dailyBtn">
+            <img src="/Main/public/images/horae.png" alt="Daily" />
+            <div>
+              <span class="cutive">Daily </span>
+              <span class="freesentation-bold">한마디</span>
+            </div>
+          </a>
+          <a href="#" class="menu-item" id="collaborationBtn">
+            <div class="menu-icon">👥</div>
+            <div>
+              <span class="cutive">Collaboration</span>
+              <span class="freesentation">공동작업</span>
+            </div>
+          </a>
+          <a href="#" class="menu-item" id="chatBtn">
+            <div class="menu-icon">💬</div>
+            <div>
+              <span class="cutive">Real-time Chat</span>
+              <span class="freesentation">실시간 채팅</span>
+            </div>
+          </a>
+        </div>
       </div>
     </div>
+
+    <!-- 일정 추가 모달 -->
+    <div id="eventModal" class="modal">
+      <div class="modal-content">
+        <h3>새 일정 추가</h3>
+        <form id="eventForm">
+          <div class="form-group">
+            <label for="eventTitle">제목</label>
+            <input
+              type="text"
+              id="eventTitle"
+              required
+              placeholder="일정 제목을 입력하세요"
+            />
+          </div>
+          <div class="form-group">
+            <label for="eventStartTime">시작 시간</label>
+            <input type="time" id="eventStartTime" required />
+          </div>
+          <div class="form-group">
+            <label for="eventEndTime">종료 시간</label>
+            <input type="time" id="eventEndTime" required />
+          </div>
+          <div class="form-group">
+            <label for="eventColor">색상</label>
+            <select id="eventColor">
+              <option value="#FFE5E5">빨강</option>
+              <option value="#E5FFE5">초록</option>
+              <option value="#E5E5FF">파랑</option>
+              <option value="#FFE5CC">주황</option>
+              <option value="#F5E5FF">보라</option>
+            </select>
+          </div>
+          <div class="form-buttons">
+            <button type="button" class="cancel-btn">취소</button>
+            <button type="submit" class="submit-btn">추가</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- 커스텀 확인 모달 -->
+    <div id="confirmModal" class="modal">
+      <div class="modal-content confirm-modal">
+        <div class="confirm-icon">🗑️</div>
+        <h3 id="confirmTitle">확인</h3>
+        <p id="confirmMessage">정말로 실행하시겠습니까?</p>
+        <div class="confirm-buttons">
+          <button type="button" class="cancel-btn" id="confirmCancel">
+            취소
+          </button>
+          <button type="button" class="danger-btn" id="confirmOk">확인</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="/Main/js/messages.js"></script>
     <script src="/Main/main.js"></script>
+    <script>
+      // 페이지 로드 시 응원 메시지 업데이트
+      document.addEventListener("DOMContentLoaded", () => {
+        updateEncouragingMessage();
+      });
+    </script>
   </body>
 </html>

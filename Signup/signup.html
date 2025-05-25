@@ -2,211 +2,376 @@
 <html lang="ko">
   <head>
     <meta charset="UTF-8" />
-    <title>Ordo 회원가입</title>
-    <link rel="stylesheet" href="/Login/styles.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ordo - Sign up</title>
+    <link rel="stylesheet" href="/Signup/styles.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cutive:wght@400&family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
     <style>
       @font-face {
-        font-family: "Cutive";
-        src: url("/font/Freesentation-2.001/Cutive/Cutive-Regular.ttf")
-          format("truetype");
-        font-weight: 400;
-      }
-      @font-face {
         font-family: "Freesentation";
-        src: url("/font/Freesentation-2.001/Freesentation-2ExtraLight.ttf")
-          format("truetype");
-        font-weight: 200;
-      }
-      @font-face {
-        font-family: "Freesentation";
-        src: url("/font/Freesentation-2.001/Freesentation-4Regular.ttf")
-          format("truetype");
-        font-weight: 400;
-      }
-      @font-face {
-        font-family: "Freesentation";
-        src: url("/font/Freesentation-2.001/Freesentation-7Bold.ttf")
-          format("truetype");
-        font-weight: 700;
-      }
-      @font-face {
-        font-family: "Freesentation";
-        src: url("/font/Freesentation-2.001/Freesentation-9Black.ttf")
-          format("truetype");
-        font-weight: 900;
+        src: url("/font/Freesentation.ttf") format("truetype");
       }
     </style>
   </head>
-  <body>
-    <div
-      id="signupForm"
-      style="
-        width: 100%;
-        min-height: 100vh;
-        position: relative;
-        background: #f6f0eb;
-      "
-    >
-      <form
-        id="signupFormElement"
-        style="position: absolute; left: 384px; top: 250px; width: 735px"
-      >
-        <div class="input-group" style="margin-bottom: 20px">
-          <input
-            type="text"
-            id="name"
-            required
-            placeholder="이름"
-            style="
-              width: 100%;
-              padding: 12px;
-              border: 1px solid #a0a0a0;
-              border-radius: 10px;
-              font-size: 16px;
-              font-family: Freesentation;
-            "
-          />
-        </div>
-        <div class="input-group" style="margin-bottom: 20px">
-          <input
-            type="email"
-            id="email"
-            required
-            placeholder="이메일"
-            style="
-              width: 100%;
-              padding: 12px;
-              border: 1px solid #a0a0a0;
-              border-radius: 10px;
-              font-size: 16px;
-              font-family: Freesentation;
-            "
-          />
-        </div>
-        <div class="input-group" style="margin-bottom: 20px">
-          <input
-            type="password"
-            id="password"
-            required
-            placeholder="비밀번호"
-            style="
-              width: 100%;
-              padding: 12px;
-              border: 1px solid #a0a0a0;
-              border-radius: 10px;
-              font-size: 16px;
-              font-family: Freesentation;
-            "
-          />
-        </div>
-        <div class="input-group" style="margin-bottom: 20px">
-          <input
-            type="password"
-            id="confirmPassword"
-            required
-            placeholder="비밀번호 확인"
-            style="
-              width: 100%;
-              padding: 12px;
-              border: 1px solid #a0a0a0;
-              border-radius: 10px;
-              font-size: 16px;
-              font-family: Freesentation;
-            "
-          />
-        </div>
-        <button
-          type="submit"
-          style="
-            cursor: pointer;
-            width: 100%;
-            height: 68px;
-            background: #c96342;
-            border-radius: 10px;
-            border: none;
-            color: #f6f0eb;
-            font-size: 24px;
-            font-family: Freesentation;
-            margin-bottom: 16px;
-          "
-        >
-          회원가입
-        </button>
-        <div
-          style="
-            text-align: center;
-            margin-bottom: 20px;
-            font-family: Freesentation;
-            color: #a0a0a0;
-          "
-        >
-          이미 계정이 있으신가요?
-          <a
-            href="/email-login"
-            style="color: #c96342; text-decoration: none; font-weight: bold"
-            >로그인</a
-          >
-        </div>
-      </form>
-      <div
-        class="fade-in"
-        style="
-          left: 314px;
-          top: 156px;
-          position: absolute;
-          display: flex;
-          flex-direction: column;
-          gap: 0;
-        "
-      >
-        <span
-          style="
-            color: #c96342;
-            font-size: 32px;
-            font-family: Cutive;
-            font-weight: 400;
-            line-height: 48px;
-          "
-          >Ordo
-          <span style="font-family: Freesentation; font-weight: 700"
-            >에 오신 것을 환영합니다</span
-          ></span
-        >
-        <span
-          style="
-            color: #a0a0a0;
-            font-size: 20px;
-            font-family: Freesentation;
-            font-weight: 400;
-            line-height: 30px;
-          "
-        >
-          복잡했던 하루, 이제 <span style="font-family: Cutive">Ordo</span
-          ><span style="font-weight: 300">가 정리해줄게요.</span>
-        </span>
-      </div>
-      <img
-        class="logo"
-        src="/Login/image-8.png"
-        style="
-          width: 107px;
-          height: 107px;
-          left: 21px;
-          top: 17px;
-          position: absolute;
-        "
-      />
-    </div>
-    <script src="/Signup/signup.js"></script>
-  </body>
-  <script>
-    window.addEventListener("DOMContentLoaded", () => {
-      document.body.classList.add("loaded");
-    });
+  <body class="loaded">
+    <div class="container">
+      <!-- 테마 토글 버튼 -->
+      <button id="themeToggle" class="theme-toggle" title="다크모드 토글">
+        <span class="theme-icon">🌙</span>
+      </button>
 
-    document
-      .getElementById("signupFormElement")
-      .addEventListener("submit", async (e) => {
+      <!-- 왼쪽 브랜딩 섹션 -->
+      <div class="branding-section">
+        <div class="brand-content">
+          <div class="brand-header">
+            <img src="/Login/image-8.png" alt="Ordo Logo" class="brand-logo" />
+            <h1 class="brand-title font-cutive">Ordo</h1>
+          </div>
+          <h2 class="brand-headline">
+            <span class="font-cutive">Your life,</span><br />
+            <span class="highlight font-cutive">more organized</span>
+          </h2>
+          <p class="brand-description">
+            AI가 정리하고, 당신은 집중하세요.<br />
+            체계적이고 효율적인 일상을 시작해보세요.
+          </p>
+        </div>
+      </div>
+
+      <!-- 오른쪽 회원가입 폼 -->
+      <div class="form-section">
+        <div class="signup-card">
+          <div class="signup-header">
+            <h2 class="signup-title">
+              <span class="font-cutive">Create account</span>
+            </h2>
+            <p class="signup-subtitle">Ordo와 함께 새로운 시작을 해보세요</p>
+          </div>
+
+          <form id="signupForm" class="signup-form">
+            <div class="form-group">
+              <label for="name">이름</label>
+              <div class="input-wrapper">
+                <span class="input-icon">👤</span>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  placeholder="이름을 입력하세요"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="email">이메일</label>
+              <div class="input-wrapper">
+                <span class="input-icon">📧</span>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  placeholder="이메일을 입력하세요"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="password">비밀번호</label>
+              <div class="input-wrapper">
+                <span class="input-icon">🔒</span>
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  placeholder="비밀번호를 입력하세요"
+                  required
+                />
+                <button
+                  type="button"
+                  class="password-toggle"
+                  id="passwordToggle"
+                >
+                  👁️
+                </button>
+              </div>
+              <div class="password-strength">
+                <div class="strength-bar">
+                  <div class="strength-fill"></div>
+                </div>
+                <span class="strength-text">비밀번호 강도</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="confirmPassword">비밀번호 확인</label>
+              <div class="input-wrapper">
+                <span class="input-icon">🔐</span>
+                <input
+                  type="password"
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  placeholder="비밀번호를 다시 입력하세요"
+                  required
+                />
+                <button
+                  type="button"
+                  class="password-toggle"
+                  id="confirmPasswordToggle"
+                >
+                  👁️
+                </button>
+              </div>
+              <div class="password-match" id="passwordMatch"></div>
+            </div>
+
+            <div class="form-options">
+              <label class="terms-agree">
+                <input type="checkbox" id="agreeTerms" required />
+                <span class="checkmark"></span>
+                <span class="terms-text">
+                  <a
+                    href="#"
+                    class="terms-link"
+                    onclick="showTermsMessage(event)"
+                    >이용약관</a
+                  >
+                  및
+                  <a
+                    href="#"
+                    class="privacy-link"
+                    onclick="showPrivacyMessage(event)"
+                    >개인정보처리방침</a
+                  >에 동의합니다
+                </span>
+              </label>
+            </div>
+
+            <button type="submit" class="signup-btn">
+              <span class="btn-text font-cutive">Create account</span>
+              <div class="btn-loader"></div>
+            </button>
+          </form>
+
+          <!-- 소셜 회원가입 -->
+          <div class="divider">
+            <span class="font-cutive">or</span>
+          </div>
+
+          <div class="social-signup">
+            <button
+              class="social-btn google-btn"
+              onclick="location.href='/auth/google'"
+            >
+              <img src="/Login/logo-google-g-icon-1.svg" alt="Google" />
+              <span class="font-cutive">Continue with Google</span>
+            </button>
+
+            <button class="social-btn kakao-btn" onclick="signupWithKakao()">
+              <img src="/Login/KakaoTalk_logo.svg" alt="Kakao" />
+              <span>Kakao로 계속하기</span>
+            </button>
+          </div>
+
+          <!-- 로그인 링크 -->
+          <div class="login-section">
+            <p class="login-text">
+              <span class="font-cutive">Already have an account?</span>
+              <a href="/Login/email-login.html" class="login-link font-cutive"
+                >Sign in</a
+              >
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 배경 장식 -->
+      <div class="bg-decoration">
+        <div class="decoration-circle circle-1"></div>
+        <div class="decoration-circle circle-2"></div>
+        <div class="decoration-circle circle-3"></div>
+      </div>
+    </div>
+
+    <!-- 로딩 오버레이 -->
+    <div id="loadingOverlay" class="loading-overlay">
+      <div class="loading-spinner"></div>
+      <p class="loading-text">회원가입 중...</p>
+    </div>
+
+    <!-- 알림 모달 -->
+    <div id="alertModal" class="alert-modal">
+      <div class="alert-content">
+        <div class="alert-icon">⚠️</div>
+        <h3 id="alertTitle">알림</h3>
+        <p id="alertMessage">메시지</p>
+        <button id="alertOk" class="alert-btn">확인</button>
+      </div>
+    </div>
+
+    <script>
+      // 테마 관리
+      let currentTheme = localStorage.getItem("theme") || "light";
+
+      // 페이지 로드 시 테마 적용
+      document.addEventListener("DOMContentLoaded", () => {
+        applyTheme(currentTheme);
+        initializeSignup();
+        initializeScrollAnimations();
+
+        // 로딩 애니메이션
+        setTimeout(() => {
+          document.body.classList.remove("loading");
+          document.body.classList.add("loaded");
+        }, 100);
+      });
+
+      // 테마 적용 함수
+      function applyTheme(theme) {
+        document.documentElement.setAttribute("data-theme", theme);
+        const themeIcon = document.querySelector(".theme-icon");
+        if (themeIcon) {
+          themeIcon.textContent = theme === "dark" ? "☀️" : "🌙";
+        }
+        localStorage.setItem("theme", theme);
+      }
+
+      // 회원가입 초기화
+      function initializeSignup() {
+        // 테마 토글
+        const themeToggle = document.getElementById("themeToggle");
+        if (themeToggle) {
+          themeToggle.addEventListener("click", () => {
+            currentTheme = currentTheme === "light" ? "dark" : "light";
+            applyTheme(currentTheme);
+          });
+        }
+
+        // 비밀번호 표시/숨김
+        setupPasswordToggle("passwordToggle", "password");
+        setupPasswordToggle("confirmPasswordToggle", "confirmPassword");
+
+        // 비밀번호 강도 체크
+        const passwordInput = document.getElementById("password");
+        if (passwordInput) {
+          passwordInput.addEventListener("input", checkPasswordStrength);
+        }
+
+        // 비밀번호 일치 체크
+        const confirmPasswordInput = document.getElementById("confirmPassword");
+        if (confirmPasswordInput) {
+          confirmPasswordInput.addEventListener("input", checkPasswordMatch);
+        }
+
+        // 폼 제출
+        const signupForm = document.getElementById("signupForm");
+        if (signupForm) {
+          signupForm.addEventListener("submit", handleSignup);
+        }
+
+        // 입력 필드 포커스 효과
+        const inputs = document.querySelectorAll("input");
+        inputs.forEach((input) => {
+          input.addEventListener("focus", () => {
+            input.parentElement.classList.add("focused");
+          });
+
+          input.addEventListener("blur", () => {
+            if (!input.value) {
+              input.parentElement.classList.remove("focused");
+            }
+          });
+        });
+      }
+
+      // 비밀번호 토글 설정
+      function setupPasswordToggle(toggleId, inputId) {
+        const toggle = document.getElementById(toggleId);
+        const input = document.getElementById(inputId);
+
+        if (toggle && input) {
+          toggle.addEventListener("click", () => {
+            const type =
+              input.getAttribute("type") === "password" ? "text" : "password";
+            input.setAttribute("type", type);
+            toggle.textContent = type === "password" ? "👁️" : "🙈";
+          });
+        }
+      }
+
+      // 비밀번호 강도 체크
+      function checkPasswordStrength() {
+        const password = document.getElementById("password").value;
+        const strengthBar = document.querySelector(".strength-fill");
+        const strengthText = document.querySelector(".strength-text");
+
+        let strength = 0;
+        let text = "매우 약함";
+        let color = "#f44336";
+
+        if (password.length >= 8) strength++;
+        if (/[a-z]/.test(password)) strength++;
+        if (/[A-Z]/.test(password)) strength++;
+        if (/[0-9]/.test(password)) strength++;
+        if (/[^A-Za-z0-9]/.test(password)) strength++;
+
+        switch (strength) {
+          case 0:
+          case 1:
+            text = "매우 약함";
+            color = "#f44336";
+            break;
+          case 2:
+            text = "약함";
+            color = "#ff9800";
+            break;
+          case 3:
+            text = "보통";
+            color = "#ffeb3b";
+            break;
+          case 4:
+            text = "강함";
+            color = "#8bc34a";
+            break;
+          case 5:
+            text = "매우 강함";
+            color = "#4caf50";
+            break;
+        }
+
+        strengthBar.style.width = `${(strength / 5) * 100}%`;
+        strengthBar.style.backgroundColor = color;
+        strengthText.textContent = `비밀번호 강도: ${text}`;
+        strengthText.style.color = color;
+      }
+
+      // 비밀번호 일치 체크
+      function checkPasswordMatch() {
+        const password = document.getElementById("password").value;
+        const confirmPassword =
+          document.getElementById("confirmPassword").value;
+        const matchDiv = document.getElementById("passwordMatch");
+
+        if (confirmPassword === "") {
+          matchDiv.textContent = "";
+          return;
+        }
+
+        if (password === confirmPassword) {
+          matchDiv.textContent = "✅ 비밀번호가 일치합니다";
+          matchDiv.style.color = "#4caf50";
+        } else {
+          matchDiv.textContent = "❌ 비밀번호가 일치하지 않습니다";
+          matchDiv.style.color = "#f44336";
+        }
+      }
+
+      // 회원가입 처리
+      async function handleSignup(e) {
         e.preventDefault();
 
         const name = document.getElementById("name").value;
@@ -214,11 +379,27 @@
         const password = document.getElementById("password").value;
         const confirmPassword =
           document.getElementById("confirmPassword").value;
+        const agreeTerms = document.getElementById("agreeTerms").checked;
 
-        if (password !== confirmPassword) {
-          alert("비밀번호가 일치하지 않습니다.");
+        if (!name || !email || !password || !confirmPassword) {
+          showAlert("입력 오류", "모든 필드를 입력해주세요.");
           return;
         }
+
+        if (password !== confirmPassword) {
+          showAlert("비밀번호 오류", "비밀번호가 일치하지 않습니다.");
+          return;
+        }
+
+        if (!agreeTerms) {
+          showAlert(
+            "약관 동의",
+            "이용약관 및 개인정보처리방침에 동의해주세요."
+          );
+          return;
+        }
+
+        showLoading(true);
 
         try {
           const response = await fetch("/api/signup", {
@@ -236,15 +417,262 @@
           const data = await response.json();
 
           if (response.ok) {
-            alert("회원가입이 완료되었습니다.");
-            window.location.href = "/email-login";
+            // 회원가입 성공 시 자동 로그인 처리
+            if (data.data && data.data.token && data.data.user) {
+              // 토큰과 사용자 정보 저장
+              localStorage.setItem("token", data.data.token);
+              localStorage.setItem("user", JSON.stringify(data.data.user));
+
+              console.log("회원가입 성공 - 자동 로그인 처리:", data.data.user);
+
+              showAlert(
+                "회원가입 완료",
+                `환영합니다, ${data.data.user.name}님! 메인 페이지로 이동합니다.`,
+                () => {
+                  window.location.href = "/Main/index.html";
+                }
+              );
+            } else {
+              // 토큰이 없으면 로그인 페이지로
+              showAlert(
+                "회원가입 완료",
+                "환영합니다! 로그인 페이지로 이동합니다.",
+                () => {
+                  window.location.href = "/Login/email-login.html";
+                }
+              );
+            }
           } else {
-            alert(data.message || "회원가입 중 오류가 발생했습니다.");
+            showAlert(
+              "회원가입 실패",
+              data.message || "회원가입에 실패했습니다."
+            );
           }
         } catch (error) {
-          console.error("Error:", error);
-          alert("회원가입 중 오류가 발생했습니다.");
+          console.error("Signup error:", error);
+          showAlert(
+            "연결 오류",
+            "서버에 연결할 수 없습니다. 잠시 후 다시 시도해주세요."
+          );
+        } finally {
+          showLoading(false);
         }
-      });
-  </script>
+      }
+
+      // 로딩 표시
+      function showLoading(show) {
+        const overlay = document.getElementById("loadingOverlay");
+        const signupBtn = document.querySelector(".signup-btn");
+
+        if (show) {
+          overlay.classList.add("show");
+          signupBtn.classList.add("loading");
+          signupBtn.disabled = true;
+        } else {
+          overlay.classList.remove("show");
+          signupBtn.classList.remove("loading");
+          signupBtn.disabled = false;
+        }
+      }
+
+      // 알림 모달
+      function showAlert(title, message, callback) {
+        const modal = document.getElementById("alertModal");
+        const titleEl = document.getElementById("alertTitle");
+        const messageEl = document.getElementById("alertMessage");
+        const okBtn = document.getElementById("alertOk");
+
+        titleEl.textContent = title;
+        messageEl.textContent = message;
+        modal.classList.add("show");
+
+        okBtn.onclick = () => {
+          modal.classList.remove("show");
+          if (callback) callback();
+        };
+      }
+
+      // 카카오 회원가입
+      function signupWithKakao() {
+        showAlert("준비 중", "카카오 회원가입 기능은 준비 중입니다.");
+      }
+
+      // 이용약관 메시지
+      function showTermsMessage(event) {
+        event.preventDefault();
+        showAlert(
+          "🎉 이용약관",
+          "수환, 도현, 건우, 강일이에게 100점을 주겠다고 약속합니다!\n\n(진짜 이용약관 같은건 없어요 😄)"
+        );
+      }
+
+      // 개인정보처리방침 메시지
+      function showPrivacyMessage(event) {
+        event.preventDefault();
+        showAlert(
+          "🎉 개인정보처리방침",
+          "수환, 도현, 건우, 강일이에게 100점을 주겠다고 약속합니다!\n\n(진짜 개인정보처리방침 같은건 없어요 😄)"
+        );
+      }
+
+      // 스크롤 애니메이션 초기화
+      function initializeScrollAnimations() {
+        const logoImage = document.querySelector(".logo-image");
+        const brandText = document.querySelector(".brand-text");
+        const signupCard = document.querySelector(".signup-card");
+
+        // Intersection Observer 설정
+        const observerOptions = {
+          threshold: [0, 0.1, 0.3, 0.5, 0.7, 1],
+          rootMargin: "-50px 0px -50px 0px",
+        };
+
+        const logoObserver = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            const ratio = entry.intersectionRatio;
+            const target = entry.target;
+
+            if (target === logoImage) {
+              // 로고 이미지 애니메이션
+              const rotation = ratio * 360;
+              const scale = 0.5 + ratio * 0.5;
+              const opacity = ratio;
+
+              target.style.transform = `rotate(${rotation}deg) scale(${scale})`;
+              target.style.opacity = opacity;
+            }
+
+            if (target === brandText) {
+              // 브랜드 텍스트 애니메이션
+              const translateY = (1 - ratio) * 50;
+              const opacity = ratio;
+
+              target.style.transform = `translateY(${translateY}px)`;
+              target.style.opacity = opacity;
+            }
+          });
+        }, observerOptions);
+
+        // 카드 애니메이션을 위한 별도 Observer
+        const cardObserver = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              const ratio = entry.intersectionRatio;
+              const translateX = (1 - ratio) * 100;
+              const opacity = ratio;
+              const scale = 0.8 + ratio * 0.2;
+
+              entry.target.style.transform = `translateX(${translateX}px) scale(${scale})`;
+              entry.target.style.opacity = opacity;
+            });
+          },
+          {
+            threshold: [0, 0.2, 0.4, 0.6, 0.8, 1],
+            rootMargin: "-100px 0px -100px 0px",
+          }
+        );
+
+        // 스크롤 기반 패럴랙스 효과
+        let ticking = false;
+
+        function updateScrollAnimations() {
+          const scrollY = window.scrollY;
+          const windowHeight = window.innerHeight;
+          const documentHeight = document.documentElement.scrollHeight;
+          const scrollProgress = scrollY / (documentHeight - windowHeight);
+
+          // 배경 장식 원들의 패럴랙스 효과
+          const circles = document.querySelectorAll(".decoration-circle");
+          circles.forEach((circle, index) => {
+            const speed = (index + 1) * 0.5;
+            const yPos = scrollY * speed;
+            const rotation = scrollProgress * 360 * (index + 1);
+
+            circle.style.transform = `translateY(${yPos}px) rotate(${rotation}deg)`;
+          });
+
+          // 로고 추가 효과
+          if (logoImage) {
+            const logoRect = logoImage.getBoundingClientRect();
+            const logoCenter = logoRect.top + logoRect.height / 2;
+            const windowCenter = windowHeight / 2;
+            const distance = Math.abs(logoCenter - windowCenter);
+            const maxDistance = windowHeight / 2;
+            const proximity = Math.max(0, 1 - distance / maxDistance);
+
+            // 중앙에 가까울수록 더 밝게
+            const brightness = 1 + proximity * 0.3;
+            const hueRotate = proximity * 20;
+
+            logoImage.style.filter = `
+              drop-shadow(0 8px 16px var(--shadow-color))
+              brightness(${brightness})
+              hue-rotate(${hueRotate}deg)
+            `;
+          }
+
+          ticking = false;
+        }
+
+        function requestScrollUpdate() {
+          if (!ticking) {
+            requestAnimationFrame(updateScrollAnimations);
+            ticking = true;
+          }
+        }
+
+        // 이벤트 리스너 등록
+        window.addEventListener("scroll", requestScrollUpdate, {
+          passive: true,
+        });
+
+        // Observer 등록 (데스크톱에서만)
+        if (!isMobile) {
+          if (logoImage) logoObserver.observe(logoImage);
+          if (brandText) logoObserver.observe(brandText);
+          if (signupCard) cardObserver.observe(signupCard);
+        }
+
+        // 초기 상태 설정 (모바일에서는 애니메이션 비활성화)
+        const isMobile = window.innerWidth <= 1024;
+
+        if (logoImage && !isMobile) {
+          logoImage.style.transition =
+            "transform 0.3s ease, opacity 0.3s ease, filter 0.3s ease";
+          logoImage.style.transform = "rotate(0deg) scale(0.5)";
+          logoImage.style.opacity = "0";
+        } else if (logoImage) {
+          logoImage.style.opacity = "1";
+          logoImage.style.transform = "rotate(0deg) scale(1)";
+        }
+
+        if (brandText && !isMobile) {
+          brandText.style.transition = "transform 0.3s ease, opacity 0.3s ease";
+          brandText.style.transform = "translateY(50px)";
+          brandText.style.opacity = "0";
+        } else if (brandText) {
+          brandText.style.opacity = "1";
+          brandText.style.transform = "translateY(0px)";
+        }
+
+        if (signupCard && !isMobile) {
+          signupCard.style.transition =
+            "transform 0.3s ease, opacity 0.3s ease";
+          signupCard.style.transform = "translateX(100px) scale(0.8)";
+          signupCard.style.opacity = "0";
+        } else if (signupCard) {
+          signupCard.style.opacity = "1";
+          signupCard.style.transform = "translateX(0px) scale(1)";
+        }
+
+        // 페이지 로드 후 잠시 뒤에 애니메이션 시작
+        setTimeout(() => {
+          updateScrollAnimations();
+        }, 100);
+      }
+    </script>
+
+    <!-- Kakao SDK -->
+    <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
+  </body>
 </html>

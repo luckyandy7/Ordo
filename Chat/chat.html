@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ordo - Real-time Chat</title>
+    <link rel="stylesheet" href="/Chat/styles.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cutive&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      @font-face {
+        font-family: "Freesentation";
+        src: url("/font/Freesentation.ttf") format("truetype");
+      }
+    </style>
+  </head>
+  <body class="loaded">
+    <div class="container">
+      <!-- 헤더 -->
+      <header class="header">
+        <div class="brand-container">
+          <img src="/Login/image-8.png" alt="Logo" class="logo-image" />
+          <div class="brand">Ordo</div>
+          <span class="page-title">Real-time Chat</span>
+        </div>
+        <div class="header-controls">
+          <button class="theme-toggle" title="다크모드 토글">
+            <span class="theme-icon">🌙</span>
+          </button>
+          <button class="back-button"><span>←</span> 메인으로</button>
+        </div>
+      </header>
+
+      <!-- 채팅 메인 컨테이너 -->
+      <div class="chat-container">
+        <!-- 사이드바 -->
+        <div class="sidebar">
+          <div class="sidebar-header">
+            <h3>채팅방</h3>
+            <button class="new-chat-btn">+ 새 채팅</button>
+          </div>
+
+          <div class="chat-list">
+            <div class="chat-item active">
+              <div class="chat-avatar">👥</div>
+              <div class="chat-info">
+                <div class="chat-name">일반 채팅</div>
+                <div class="chat-preview">안녕하세요! 환영합니다</div>
+              </div>
+              <div class="chat-badge">3</div>
+            </div>
+
+            <div class="chat-item">
+              <div class="chat-avatar">🚀</div>
+              <div class="chat-info">
+                <div class="chat-name">팀 프로젝트</div>
+                <div class="chat-preview">회의 일정 공유드립니다</div>
+              </div>
+            </div>
+
+            <div class="chat-item">
+              <div class="chat-avatar">📚</div>
+              <div class="chat-info">
+                <div class="chat-name">스터디 그룹</div>
+                <div class="chat-preview">오늘 과제 어떻게 하셨나요?</div>
+              </div>
+              <div class="chat-badge">1</div>
+            </div>
+          </div>
+
+          <div class="sidebar-footer">
+            <div class="user-status">
+              <div class="status-indicator online"></div>
+              <span>온라인</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 채팅 영역 -->
+        <div class="chat-area">
+          <!-- 채팅 헤더 -->
+          <div class="chat-header">
+            <div class="chat-title">
+              <div class="chat-avatar-large">👥</div>
+              <div class="chat-details">
+                <h3>일반 채팅</h3>
+                <span class="member-count">3명 참여 중</span>
+              </div>
+            </div>
+            <div class="chat-actions">
+              <button class="action-btn" title="파일 공유">📎</button>
+              <button class="action-btn" title="화상 통화">📹</button>
+              <button class="action-btn" title="설정">⚙️</button>
+            </div>
+          </div>
+
+          <!-- 메시지 영역 -->
+          <div class="messages-container">
+            <div class="message-group">
+              <div class="message-date">오늘</div>
+
+              <div class="message other">
+                <div class="message-avatar">👤</div>
+                <div class="message-content">
+                  <div class="message-header">
+                    <span class="sender-name">김철수</span>
+                    <span class="message-time">오후 2:30</span>
+                  </div>
+                  <div class="message-text">
+                    안녕하세요! Ordo 채팅방에 오신 것을 환영합니다! 🎉
+                  </div>
+                </div>
+              </div>
+
+              <div class="message other">
+                <div class="message-avatar">👩</div>
+                <div class="message-content">
+                  <div class="message-header">
+                    <span class="sender-name">이영희</span>
+                    <span class="message-time">오후 2:32</span>
+                  </div>
+                  <div class="message-text">
+                    와! 정말 깔끔한 디자인이네요 👍
+                  </div>
+                </div>
+              </div>
+
+              <div class="message own">
+                <div class="message-content">
+                  <div class="message-header">
+                    <span class="message-time">오후 2:35</span>
+                  </div>
+                  <div class="message-text">
+                    감사합니다! 실시간 채팅 기능이 곧 완성될 예정입니다
+                  </div>
+                </div>
+              </div>
+
+              <div class="system-message">
+                <span>🤖 AI 어시스턴트가 참여했습니다</span>
+              </div>
+
+              <div class="message other">
+                <div class="message-avatar">🤖</div>
+                <div class="message-content">
+                  <div class="message-header">
+                    <span class="sender-name">Horae AI</span>
+                    <span class="message-time">오후 2:40</span>
+                  </div>
+                  <div class="message-text">
+                    안녕하세요! 일정 관련 질문이 있으시면 언제든 말씀해주세요!
+                    📅
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 메시지 입력 영역 -->
+          <div class="message-input-area">
+            <div class="input-container">
+              <button class="emoji-btn" title="이모지">😊</button>
+              <input
+                type="text"
+                placeholder="메시지를 입력하세요..."
+                maxlength="1000"
+              />
+              <button class="attach-btn" title="파일 첨부">📎</button>
+              <button class="send-btn" title="전송">
+                <span>➤</span>
+              </button>
+            </div>
+            <div class="typing-indicator">
+              <span>김철수님이 입력 중입니다...</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 새 채팅 모달 -->
+    <div class="modal">
+      <div class="modal-content">
+        <h3>새 채팅방 만들기</h3>
+        <form>
+          <div class="form-group">
+            <label>채팅방 이름</label>
+            <input
+              type="text"
+              required
+              placeholder="채팅방 이름을 입력하세요"
+            />
+          </div>
+          <div class="form-group">
+            <label>채팅방 유형</label>
+            <select>
+              <option value="public">공개 채팅</option>
+              <option value="private">비공개 채팅</option>
+              <option value="direct">1:1 채팅</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>설명 (선택사항)</label>
+            <textarea
+              placeholder="채팅방에 대한 간단한 설명을 입력하세요"
+            ></textarea>
+          </div>
+          <div class="form-buttons">
+            <button type="button" class="cancel-btn">취소</button>
+            <button type="submit" class="submit-btn">만들기</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>

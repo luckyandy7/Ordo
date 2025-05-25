@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ordo - Collaboration</title>
+    <link rel="stylesheet" href="/Collaboration/styles.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cutive&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      @font-face {
+        font-family: "Freesentation";
+        src: url("/font/Freesentation.ttf") format("truetype");
+      }
+    </style>
+  </head>
+  <body class="loaded">
+    <div class="container">
+      <!-- 헤더 -->
+      <header class="header">
+        <div class="brand-container">
+          <img src="/Login/image-8.png" alt="Logo" class="logo-image" />
+          <div class="brand">Ordo</div>
+          <span class="page-title">Collaboration</span>
+        </div>
+        <div class="header-controls">
+          <button class="theme-toggle" title="다크모드 토글">
+            <span class="theme-icon">🌙</span>
+          </button>
+          <button class="back-button"><span>←</span> 메인으로</button>
+        </div>
+      </header>
+
+      <!-- 메인 컨텐츠 -->
+      <div class="main-content">
+        <!-- 사이드바 -->
+        <div class="sidebar">
+          <div class="sidebar-header">
+            <h3>워크스페이스</h3>
+            <button class="new-workspace-btn">+ 새 워크스페이스</button>
+          </div>
+
+          <div class="workspace-list">
+            <div class="workspace-item active">
+              <div class="workspace-avatar">🚀</div>
+              <div class="workspace-info">
+                <div class="workspace-name">Team Alpha</div>
+                <div class="workspace-members">5명</div>
+              </div>
+              <div class="workspace-status online"></div>
+            </div>
+
+            <div class="workspace-item">
+              <div class="workspace-avatar">💼</div>
+              <div class="workspace-info">
+                <div class="workspace-name">Project Beta</div>
+                <div class="workspace-members">3명</div>
+              </div>
+              <div class="workspace-status away"></div>
+            </div>
+
+            <div class="workspace-item">
+              <div class="workspace-avatar">📚</div>
+              <div class="workspace-info">
+                <div class="workspace-name">Study Group</div>
+                <div class="workspace-members">8명</div>
+              </div>
+              <div class="workspace-status online"></div>
+            </div>
+          </div>
+
+          <div class="sidebar-footer">
+            <div class="user-info">
+              <div class="user-avatar">👤</div>
+              <div class="user-details">
+                <div class="user-name">사용자</div>
+                <div class="user-role">관리자</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 협업 영역 -->
+        <div class="collaboration-area">
+          <!-- 워크스페이스 헤더 -->
+          <div class="workspace-header">
+            <div class="workspace-title">
+              <div class="workspace-avatar-large">🚀</div>
+              <div class="workspace-details">
+                <h2>Team Alpha</h2>
+                <span class="workspace-description">프로젝트 협업 공간</span>
+              </div>
+            </div>
+            <div class="workspace-actions">
+              <button class="action-btn" title="멤버 초대">👥</button>
+              <button class="action-btn" title="설정">⚙️</button>
+              <button class="action-btn" title="공유">📤</button>
+            </div>
+          </div>
+
+          <!-- 탭 네비게이션 -->
+          <div class="tab-navigation">
+            <button class="tab-btn active">📅 공유 캘린더</button>
+            <button class="tab-btn">✅ 작업 관리</button>
+            <button class="tab-btn">📁 파일 공유</button>
+            <button class="tab-btn">👥 멤버</button>
+          </div>
+
+          <!-- 탭 컨텐츠 -->
+          <div class="tab-content">
+            <!-- 공유 캘린더 탭 -->
+            <div class="tab-pane active">
+              <div class="calendar-section">
+                <div class="calendar-header">
+                  <h3>팀 캘린더</h3>
+                  <div class="calendar-controls">
+                    <button class="calendar-btn">+ 팀 일정 추가</button>
+                    <button class="calendar-btn">🔄 동기화</button>
+                  </div>
+                </div>
+
+                <div class="shared-events">
+                  <div class="event-item">
+                    <div class="event-time">오늘 14:00</div>
+                    <div class="event-content">
+                      <div class="event-title">팀 회의</div>
+                      <div class="event-participants">
+                        <span class="participant">👤 김철수</span>
+                        <span class="participant">👩 이영희</span>
+                        <span class="participant">👨 박민수</span>
+                      </div>
+                    </div>
+                    <div class="event-status confirmed">확정</div>
+                  </div>
+
+                  <div class="event-item">
+                    <div class="event-time">내일 10:00</div>
+                    <div class="event-content">
+                      <div class="event-title">프로젝트 리뷰</div>
+                      <div class="event-participants">
+                        <span class="participant">👩‍💼 정수진</span>
+                        <span class="participant">👨‍💻 최개발</span>
+                      </div>
+                    </div>
+                    <div class="event-status pending">대기중</div>
+                  </div>
+
+                  <div class="event-item">
+                    <div class="event-time">금요일 16:00</div>
+                    <div class="event-content">
+                      <div class="event-title">주간 회고</div>
+                      <div class="event-participants">
+                        <span class="participant">전체 팀원</span>
+                      </div>
+                    </div>
+                    <div class="event-status confirmed">확정</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 작업 관리 탭 -->
+            <div class="tab-pane">
+              <div class="tasks-section">
+                <div class="tasks-header">
+                  <h3>팀 작업</h3>
+                  <button class="task-btn">+ 작업 추가</button>
+                </div>
+
+                <div class="task-board">
+                  <div class="task-column">
+                    <div class="column-header">
+                      <h4>할 일</h4>
+                      <span class="task-count">3</span>
+                    </div>
+                    <div class="task-list">
+                      <div class="task-card">
+                        <div class="task-title">UI 디자인 완성</div>
+                        <div class="task-assignee">👩 이영희</div>
+                        <div class="task-due">마감: 내일</div>
+                        <div class="task-priority high">높음</div>
+                      </div>
+                      <div class="task-card">
+                        <div class="task-title">API 문서 작성</div>
+                        <div class="task-assignee">👨‍💻 최개발</div>
+                        <div class="task-due">마감: 3일 후</div>
+                        <div class="task-priority medium">보통</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="task-column">
+                    <div class="column-header">
+                      <h4>진행 중</h4>
+                      <span class="task-count">2</span>
+                    </div>
+                    <div class="task-list">
+                      <div class="task-card">
+                        <div class="task-title">데이터베이스 설계</div>
+                        <div class="task-assignee">👤 김철수</div>
+                        <div class="task-due">마감: 1주일 후</div>
+                        <div class="task-priority medium">보통</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="task-column">
+                    <div class="column-header">
+                      <h4>완료</h4>
+                      <span class="task-count">5</span>
+                    </div>
+                    <div class="task-list">
+                      <div class="task-card completed">
+                        <div class="task-title">프로젝트 기획</div>
+                        <div class="task-assignee">👩‍💼 정수진</div>
+                        <div class="task-due">완료됨</div>
+                        <div class="task-priority low">낮음</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 파일 공유 탭 -->
+            <div class="tab-pane">
+              <div class="files-section">
+                <div class="files-header">
+                  <h3>공유 파일</h3>
+                  <button class="file-btn">📤 파일 업로드</button>
+                </div>
+
+                <div class="file-list">
+                  <div class="file-item">
+                    <div class="file-icon">📄</div>
+                    <div class="file-info">
+                      <div class="file-name">프로젝트_기획서.pdf</div>
+                      <div class="file-meta">정수진 • 2일 전 • 2.5MB</div>
+                    </div>
+                    <div class="file-actions">
+                      <button class="file-action-btn" title="다운로드">
+                        ⬇️
+                      </button>
+                      <button class="file-action-btn" title="공유">🔗</button>
+                    </div>
+                  </div>
+
+                  <div class="file-item">
+                    <div class="file-icon">🖼️</div>
+                    <div class="file-info">
+                      <div class="file-name">UI_목업.figma</div>
+                      <div class="file-meta">이영희 • 1일 전 • 15.2MB</div>
+                    </div>
+                    <div class="file-actions">
+                      <button class="file-action-btn" title="다운로드">
+                        ⬇️
+                      </button>
+                      <button class="file-action-btn" title="공유">🔗</button>
+                    </div>
+                  </div>
+
+                  <div class="file-item">
+                    <div class="file-icon">📊</div>
+                    <div class="file-info">
+                      <div class="file-name">진행상황_보고서.xlsx</div>
+                      <div class="file-meta">김철수 • 3시간 전 • 1.8MB</div>
+                    </div>
+                    <div class="file-actions">
+                      <button class="file-action-btn" title="다운로드">
+                        ⬇️
+                      </button>
+                      <button class="file-action-btn" title="공유">🔗</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 멤버 탭 -->
+            <div class="tab-pane">
+              <div class="members-section">
+                <div class="members-header">
+                  <h3>팀 멤버</h3>
+                  <button class="member-btn">+ 멤버 초대</button>
+                </div>
+
+                <div class="member-list">
+                  <div class="member-item">
+                    <div class="member-avatar">👩‍💼</div>
+                    <div class="member-info">
+                      <div class="member-name">정수진</div>
+                      <div class="member-email">sujin@example.com</div>
+                    </div>
+                    <div class="member-role admin">관리자</div>
+                    <div class="member-status online">온라인</div>
+                  </div>
+
+                  <div class="member-item">
+                    <div class="member-avatar">👤</div>
+                    <div class="member-info">
+                      <div class="member-name">김철수</div>
+                      <div class="member-email">chulsu@example.com</div>
+                    </div>
+                    <div class="member-role member">멤버</div>
+                    <div class="member-status online">온라인</div>
+                  </div>
+
+                  <div class="member-item">
+                    <div class="member-avatar">👩</div>
+                    <div class="member-info">
+                      <div class="member-name">이영희</div>
+                      <div class="member-email">younghee@example.com</div>
+                    </div>
+                    <div class="member-role member">멤버</div>
+                    <div class="member-status away">자리비움</div>
+                  </div>
+
+                  <div class="member-item">
+                    <div class="member-avatar">👨‍💻</div>
+                    <div class="member-info">
+                      <div class="member-name">최개발</div>
+                      <div class="member-email">developer@example.com</div>
+                    </div>
+                    <div class="member-role member">멤버</div>
+                    <div class="member-status offline">오프라인</div>
+                  </div>
+
+                  <div class="member-item">
+                    <div class="member-avatar">👨</div>
+                    <div class="member-info">
+                      <div class="member-name">박민수</div>
+                      <div class="member-email">minsu@example.com</div>
+                    </div>
+                    <div class="member-role member">멤버</div>
+                    <div class="member-status online">온라인</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 새 워크스페이스 모달 -->
+    <div class="modal">
+      <div class="modal-content">
+        <h3>새 워크스페이스 만들기</h3>
+        <form>
+          <div class="form-group">
+            <label>워크스페이스 이름</label>
+            <input
+              type="text"
+              required
+              placeholder="워크스페이스 이름을 입력하세요"
+            />
+          </div>
+          <div class="form-group">
+            <label>유형</label>
+            <select>
+              <option value="project">프로젝트</option>
+              <option value="team">팀</option>
+              <option value="study">스터디</option>
+              <option value="personal">개인</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>설명 (선택사항)</label>
+            <textarea
+              placeholder="워크스페이스에 대한 간단한 설명을 입력하세요"
+            ></textarea>
+          </div>
+          <div class="form-buttons">
+            <button type="button" class="cancel-btn">취소</button>
+            <button type="submit" class="submit-btn">만들기</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- 멤버 초대 모달 -->
+    <div class="modal">
+      <div class="modal-content">
+        <h3>멤버 초대</h3>
+        <form>
+          <div class="form-group">
+            <label>이메일 주소</label>
+            <input
+              type="email"
+              required
+              placeholder="초대할 멤버의 이메일을 입력하세요"
+            />
+          </div>
+          <div class="form-group">
+            <label>권한</label>
+            <select>
+              <option value="member">멤버</option>
+              <option value="admin">관리자</option>
+              <option value="viewer">뷰어</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>초대 메시지 (선택사항)</label>
+            <textarea placeholder="초대 메시지를 입력하세요"></textarea>
+          </div>
+          <div class="form-buttons">
+            <button type="button" class="cancel-btn">취소</button>
+            <button type="submit" class="submit-btn">초대 보내기</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>
