@@ -481,10 +481,10 @@ apiRoutes.delete("/profile", authenticateToken, async (req, res) => {
   }
 });
 
-// 이벤트 라우트 등록
+// 이벤트 라우트 등록 (더 구체적인 경로를 먼저)
 app.use("/api/events", eventRoutes);
 
-// API 라우트 등록
+// API 라우트 등록 (일반적인 경로를 나중에)
 app.use("/api", apiRoutes);
 
 // HTML 페이지 라우트

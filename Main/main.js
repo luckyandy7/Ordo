@@ -520,10 +520,19 @@ async function loadEvents(startDate, endDate) {
   try {
     console.log("일정 로드 시작 - 날짜 범위:", { startDate, endDate });
 
-    // 먼저 전체 일정을 조회해서 디버깅
-    const allEvents = await fetchAPI("");
-    console.log("전체 일정 수:", allEvents.length);
-    console.log("전체 일정 목록:", allEvents);
+    // 전체 일정을 조회 (더 안정적인 방법)
+    let allEvents = [];
+    try {
+      allEvents = await fetchAPI("");
+      console.log("전체 일정 수:", allEvents.length);
+      console.log("전체 일정 목록:", allEvents);
+    } catch (apiError) {
+      console.error("전체 일정 조회 실패, 날짜별 조회 시도:", apiError);
+      // 전체 조회 실패 시 오늘 날짜로 조회
+      const today = new Date();
+      allEvents = await fetchAPI(`/date/${today.toISOString()}`);
+      console.log("오늘 일정 조회 결과:", allEvents);
+    }
 
     // 주간 범위에 해당하는 일정만 필터링
     const events = allEvents.filter((event) => {
