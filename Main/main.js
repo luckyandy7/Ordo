@@ -520,28 +520,66 @@ async function loadEvents(startDate, endDate) {
   try {
     console.log("일정 로드 시작 - 날짜 범위:", { startDate, endDate });
 
-    // 전체 일정을 조회 (더 안정적인 방법)
+    // 주간 범위의 모든 날짜에 대해 일정 조회
     let allEvents = [];
-    try {
-      allEvents = await fetchAPI("");
-      console.log("전체 일정 수:", allEvents.length);
-      console.log("전체 일정 목록:", allEvents);
-    } catch (apiError) {
-      console.error("전체 일정 조회 실패, 날짜별 조회 시도:", apiError);
-      // 전체 조회 실패 시 오늘 날짜로 조회
-      const today = new Date();
-      allEvents = await fetchAPI(`/date/${today.toISOString()}`);
-      console.log("오늘 일정 조회 결과:", allEvents);
+
+    // 주간 범위의 각 날짜별로 조회
+    for (
+      let d = new Date(startDate);
+      d <= endDate;
+      d.setDate(d.getDate() + 1)
+    ) {
+      try {
+        const dayEvents = await fetchAPI(`/date/${d.toISOString()}`);
+        console.log(
+          `${d.toISOString().split("T")[0]} 일정:`,
+          dayEvents.length,
+          "개"
+        );
+        allEvents = allEvents.concat(dayEvents);
+      } catch (dayError) {
+        console.error(
+          `${d.toISOString().split("T")[0]} 일정 조회 실패:`,
+          dayError
+        );
+      }
     }
 
-    // 주간 범위에 해당하는 일정만 필터링
-    const events = allEvents.filter((event) => {
+    console.log("전체 로드된 일정 수:", allEvents.length);
+    console.log("전체 일정 목록:", allEvents);
+
+    // 중복 제거 (같은 ID의 일정이 여러 번 조회될 수 있음)
+    const uniqueEvents = allEvents.filter(
+      (event, index, self) =>
+        index === self.findIndex((e) => e._id === event._id)
+    );
+
+    console.log("중복 제거 후 일정 수:", uniqueEvents.length);
+
+    // 날짜 범위 재확인 (더 정확한 필터링)
+    const events = uniqueEvents.filter((event) => {
       const eventDate = new Date(event.date);
-      return eventDate >= startDate && eventDate <= endDate;
+      const eventDateOnly = new Date(
+        eventDate.getFullYear(),
+        eventDate.getMonth(),
+        eventDate.getDate()
+      );
+      const startDateOnly = new Date(
+        startDate.getFullYear(),
+        startDate.getMonth(),
+        startDate.getDate()
+      );
+      const endDateOnly = new Date(
+        endDate.getFullYear(),
+        endDate.getMonth(),
+        endDate.getDate()
+      );
+
+      return eventDateOnly >= startDateOnly && eventDateOnly <= endDateOnly;
     });
 
-    console.log("주간 범위 일정 수:", events.length);
-    console.log("주간 범위 일정들:", events);
+    console.log("최종 주간 범위 일정 수:", events.length);
+    console.log("최종 주간 범위 일정들:", events);
 
     events.forEach((event) => {
       const eventDate = new Date(event.date);
@@ -1265,9 +1303,12 @@ async function updateTodayStats() {
 
     console.log("로드된 오늘 일정:", events);
 
+    // 더 정확한 날짜 필터링
     const todayEvents = events.filter((event) => {
-      const eventDate = new Date(event.date).toISOString().split("T")[0];
-      return eventDate === todayStr;
+      const eventDate = new Date(event.date);
+      const eventDateStr = eventDate.toISOString().split("T")[0];
+      console.log("이벤트 날짜 비교:", eventDateStr, "vs", todayStr);
+      return eventDateStr === todayStr;
     });
 
     console.log("필터링된 오늘 일정:", todayEvents);
