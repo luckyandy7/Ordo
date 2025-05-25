@@ -757,18 +757,48 @@ body {
   width: 80px;
   height: 80px;
   border-radius: 50%;
-  background: white;
+  background: var(--primary-color);
   border: none;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 12px var(--shadow-color);
-  transition: all 0.3s ease;
+  box-shadow: 0 8px 25px rgba(201, 99, 66, 0.3),
+    0 4px 12px rgba(201, 99, 66, 0.15);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   padding: 0;
   overflow: hidden;
   animation: float 3s ease-in-out infinite;
+}
+
+.floating-button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.2),
+    transparent,
+    rgba(255, 255, 255, 0.1)
+  );
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.floating-button:hover::before {
+  opacity: 1;
+}
+
+.floating-button.active {
+  transform: rotate(45deg) scale(1.1);
+  box-shadow: 0 12px 35px rgba(201, 99, 66, 0.4),
+    0 6px 20px rgba(201, 99, 66, 0.2);
+  animation-play-state: paused;
 }
 
 .floating-button img {
@@ -776,125 +806,220 @@ body {
   height: 100%;
   object-fit: cover;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  filter: brightness(0) saturate(100%) invert(100%) sepia(0%) hue-rotate(93deg)
+    brightness(103%) contrast(103%);
 }
 
 .floating-button:hover {
+  background: white;
   transform: translateY(-3px);
   box-shadow: 0 8px 25px rgba(201, 99, 66, 0.3);
 }
 
 .floating-button:hover img {
   transform: scale(1.1);
-  filter: brightness(1.2) saturate(1.3);
+  filter: brightness(0) saturate(100%) invert(39%) sepia(18%) saturate(1352%)
+    hue-rotate(346deg) brightness(95%) contrast(89%);
 }
 
-@keyframes pulse-glow {
-  0%,
-  100% {
-    transform: scale(1);
-    box-shadow: 0 0 0 0 rgba(201, 99, 66, 0.7);
-  }
-  50% {
-    transform: scale(1.05);
-    box-shadow: 0 0 0 10px rgba(201, 99, 66, 0);
-  }
-}
+/* 빛나는 효과 애니메이션 제거됨 */
 
 .floating-button.active {
-  animation: pulse-glow 0.6s ease-out;
+  /* 빛나는 효과 제거 */
 }
 
 /* 다크모드 플로팅 버튼 효과 */
+[data-theme="dark"] .floating-button {
+  background: var(--copper-primary);
+}
+
+[data-theme="dark"] .floating-button img {
+  filter: brightness(0) saturate(100%) invert(100%) sepia(0%) saturate(0%)
+    hue-rotate(93deg) brightness(103%) contrast(103%);
+}
+
 [data-theme="dark"] .floating-button:hover {
+  background: white;
   box-shadow: 0 8px 25px rgba(184, 115, 51, 0.4);
 }
 
-[data-theme="dark"] .floating-button.active {
-  animation: pulse-glow-dark 0.6s ease-out;
+[data-theme="dark"] .floating-button:hover img {
+  filter: brightness(0) saturate(100%) invert(55%) sepia(29%) saturate(1068%)
+    hue-rotate(21deg) brightness(96%) contrast(85%);
 }
 
-@keyframes pulse-glow-dark {
-  0%,
-  100% {
-    transform: scale(1);
-    box-shadow: 0 0 0 0 rgba(184, 115, 51, 0.7);
-  }
-  50% {
-    transform: scale(1.05);
-    box-shadow: 0 0 0 10px rgba(184, 115, 51, 0);
-  }
-}
+/* 다크모드 빛나는 효과 애니메이션도 제거됨 */
 
 .floating-menu {
-  background: white;
-  border-radius: 12px;
-  padding: 8px;
-  box-shadow: 0 4px 12px var(--shadow-color);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  padding: 12px;
+  box-shadow: 0 20px 40px rgba(201, 99, 66, 0.15),
+    0 8px 16px rgba(201, 99, 66, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.3);
   position: absolute;
-  bottom: 80px;
+  bottom: 90px;
   right: 0;
-  min-width: 200px;
+  min-width: 240px;
   display: none;
   flex-direction: column;
-  gap: 8px;
-  transform: translateY(10px);
-  transition: all 0.3s ease;
+  gap: 4px;
+  transform: translateY(20px) scale(0.8);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   opacity: 0;
   visibility: hidden;
+  z-index: 1000;
+  overflow: hidden;
+}
+
+.floating-menu::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--primary-color), var(--primary-dark));
+  border-radius: 20px 20px 0 0;
 }
 
 .floating-menu.show {
   display: flex;
-  transform: translateY(0);
+  transform: translateY(0) scale(1);
   opacity: 1;
   visibility: visible;
+  animation: menuSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .menu-item {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 12px;
-  border-radius: 8px;
+  padding: 14px 16px;
+  border-radius: 12px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   color: var(--gray-color);
   text-decoration: none;
   opacity: 0;
-  transform: translateX(-10px);
+  transform: translateX(-20px) scale(0.9);
+  position: relative;
+  overflow: hidden;
+}
+
+.menu-item::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(201, 99, 66, 0.1),
+    transparent
+  );
+  transition: left 0.5s ease;
+}
+
+.menu-item:hover::before {
+  left: 100%;
 }
 
 .menu-item:hover {
-  background: var(--primary-light);
+  background: linear-gradient(
+    135deg,
+    var(--primary-light),
+    rgba(201, 99, 66, 0.1)
+  );
   color: var(--primary-color);
+  transform: translateX(4px) scale(1.02);
+  box-shadow: 0 4px 12px rgba(201, 99, 66, 0.15);
 }
 
 .menu-item img {
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   object-fit: cover;
   border-radius: 50%;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(201, 99, 66, 0.2);
+}
+
+.menu-item:hover img {
+  transform: scale(1.1) rotate(5deg);
+  box-shadow: 0 4px 15px rgba(201, 99, 66, 0.3);
 }
 
 .floating-menu.show .menu-item {
   opacity: 1;
-  transform: translateX(0);
+  transform: translateX(0) scale(1);
+  animation: menuItemSlideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 .floating-menu.show .menu-item:nth-child(1) {
-  transition-delay: 0.1s;
+  animation-delay: 0.1s;
 }
 
 .floating-menu.show .menu-item:nth-child(2) {
-  transition-delay: 0.2s;
+  animation-delay: 0.15s;
 }
 
 .floating-menu.show .menu-item:nth-child(3) {
-  transition-delay: 0.3s;
+  animation-delay: 0.2s;
 }
 
 .floating-menu.show .menu-item:nth-child(4) {
-  transition-delay: 0.4s;
+  animation-delay: 0.25s;
+}
+
+/* 메뉴 애니메이션 키프레임 */
+@keyframes menuSlideIn {
+  0% {
+    transform: translateY(20px) scale(0.8);
+    opacity: 0;
+  }
+  50% {
+    transform: translateY(-5px) scale(1.05);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes menuItemSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateX(-20px) scale(0.9);
+  }
+  60% {
+    transform: translateX(5px) scale(1.05);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+/* 메뉴 닫힐 때 애니메이션 */
+.floating-menu.hide {
+  animation: menuSlideOut 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes menuSlideOut {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(20px) scale(0.8);
+    opacity: 0;
+  }
 }
 
 /* 새로운 메뉴 아이템들을 위한 아이콘 스타일 */
@@ -2447,22 +2572,24 @@ body {
 }
 
 .clear-all-btn {
-  background: rgba(255, 99, 99, 0.1);
-  border: 1px solid rgba(255, 99, 99, 0.3);
+  background: #c96342;
+  border: 1px solid #c96342;
   border-radius: 8px;
   padding: 8px 12px;
   font-size: 16px;
+  font-family: "Freesentation", sans-serif;
   cursor: pointer;
   transition: all 0.3s ease;
-  color: #ff6363;
+  color: white;
   display: flex;
   align-items: center;
   gap: 4px;
 }
 
 .clear-all-btn:hover {
-  background: rgba(255, 99, 99, 0.2);
-  border-color: #ff6363;
+  background: transparent;
+  border-color: #c96342;
+  color: #c96342;
   transform: scale(1.05);
 }
 
@@ -2487,7 +2614,7 @@ body {
   position: absolute;
   top: 8px;
   right: 8px;
-  background: rgba(255, 99, 99, 0.8);
+  background: rgba(201, 99, 66, 0.8);
   border: none;
   border-radius: 50%;
   width: 20px;
@@ -2508,20 +2635,30 @@ body {
 }
 
 .activity-delete-btn:hover {
-  background: #ff4444;
+  background: #c96342;
   transform: scale(1.1);
 }
 
 /* 다크모드 스타일 */
 [data-theme="dark"] .clear-all-btn {
-  background: rgba(255, 99, 99, 0.15);
-  border-color: rgba(255, 99, 99, 0.4);
-  color: #ff8a80;
+  background: #d4a574;
+  border-color: #d4a574;
+  color: white;
+  font-family: "Freesentation", sans-serif;
 }
 
 [data-theme="dark"] .clear-all-btn:hover {
-  background: rgba(255, 99, 99, 0.25);
-  border-color: #ff8a80;
+  background: transparent;
+  border-color: #d4a574;
+  color: #d4a574;
+}
+
+[data-theme="dark"] .activity-delete-btn {
+  background: rgba(184, 115, 51, 0.8);
+}
+
+[data-theme="dark"] .activity-delete-btn:hover {
+  background: #d4a574;
 }
 
 /* 활동 삭제 애니메이션 */
@@ -2844,4 +2981,59 @@ body {
   box-shadow: 0 12px 30px rgba(184, 115, 51, 0.4),
     0 6px 15px rgba(184, 115, 51, 0.2);
   border-color: rgba(255, 255, 255, 0.3);
+}
+
+[data-theme="dark"] .floating-button:hover img {
+  filter: brightness(0) saturate(100%) invert(55%) sepia(29%) saturate(1068%)
+    hue-rotate(21deg) brightness(96%) contrast(85%);
+}
+
+[data-theme="dark"] .floating-button.active {
+  transform: rotate(45deg) scale(1.1);
+  box-shadow: 0 12px 35px rgba(184, 115, 51, 0.5),
+    0 6px 20px rgba(184, 115, 51, 0.3);
+}
+
+/* 다크모드 플로팅 메뉴 */
+[data-theme="dark"] .floating-menu {
+  background: rgba(58, 47, 31, 0.95);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--copper-primary);
+  box-shadow: 0 20px 40px rgba(184, 115, 51, 0.25),
+    0 8px 16px rgba(184, 115, 51, 0.15);
+}
+
+[data-theme="dark"] .floating-menu::before {
+  background: linear-gradient(90deg, var(--copper-primary), var(--copper-dark));
+}
+
+[data-theme="dark"] .menu-item {
+  color: var(--dark-text);
+}
+
+[data-theme="dark"] .menu-item::before {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(184, 115, 51, 0.15),
+    transparent
+  );
+}
+
+[data-theme="dark"] .menu-item:hover {
+  background: linear-gradient(
+    135deg,
+    rgba(184, 115, 51, 0.2),
+    rgba(184, 115, 51, 0.1)
+  );
+  color: var(--copper-primary);
+  box-shadow: 0 4px 12px rgba(184, 115, 51, 0.2);
+}
+
+[data-theme="dark"] .menu-item img {
+  box-shadow: 0 2px 8px rgba(184, 115, 51, 0.3);
+}
+
+[data-theme="dark"] .menu-item:hover img {
+  box-shadow: 0 4px 15px rgba(184, 115, 51, 0.4);
 }

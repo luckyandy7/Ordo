@@ -397,27 +397,98 @@ body {
 
 .chat-actions {
   display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.action-group {
+  display: flex;
   gap: 8px;
+  align-items: center;
+}
+
+.primary-actions {
+  padding: 4px;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 16px;
+  border: 1px solid rgba(201, 99, 66, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+.secondary-actions {
+  padding: 4px;
+  background: rgba(244, 67, 54, 0.1);
+  border-radius: 16px;
+  border: 1px solid rgba(244, 67, 54, 0.2);
+  backdrop-filter: blur(10px);
 }
 
 .action-btn {
-  width: 40px;
-  height: 40px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 14px;
   border: none;
-  border-radius: 50%;
-  background: var(--primary-light);
+  border-radius: 12px;
+  background: transparent;
   cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: "Freesentation", sans-serif;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.action-btn .btn-icon {
+  font-size: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 16px;
-  transition: all 0.3s ease;
+  width: 20px;
+  height: 20px;
 }
 
-.action-btn:hover {
-  background: var(--primary-color);
+.action-btn .btn-text {
+  font-size: 12px;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+
+/* 초대 버튼 */
+.invite-btn {
+  color: var(--primary-color);
+}
+
+.invite-btn:hover {
+  background: linear-gradient(135deg, var(--primary-color), #e67e22);
   color: white;
-  transform: scale(1.1);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(201, 99, 66, 0.3);
+}
+
+/* 파일 버튼 */
+.file-btn {
+  color: var(--primary-color);
+}
+
+.file-btn:hover {
+  background: linear-gradient(135deg, #4caf50, #45a049);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+}
+
+/* 나가기 버튼 */
+.leave-btn {
+  color: #f44336;
+}
+
+.leave-btn:hover {
+  background: linear-gradient(135deg, #f44336, #d32f2f);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(244, 67, 54, 0.3);
 }
 
 /* 메시지 영역 */
@@ -797,6 +868,76 @@ body {
   color: var(--dark-text);
 }
 
+[data-theme="dark"] .invite-send-btn {
+  background: linear-gradient(
+    135deg,
+    var(--copper-primary),
+    var(--copper-accent)
+  ) !important;
+  box-shadow: 0 4px 12px rgba(184, 115, 51, 0.3);
+}
+
+[data-theme="dark"] .invite-send-btn:hover {
+  background: linear-gradient(
+    135deg,
+    var(--copper-accent),
+    var(--copper-primary)
+  ) !important;
+  box-shadow: 0 6px 20px rgba(184, 115, 51, 0.4);
+}
+
+/* 다크모드 채팅 액션 버튼들 */
+[data-theme="dark"] .primary-actions {
+  background: rgba(58, 47, 31, 0.8);
+  border: 1px solid rgba(184, 115, 51, 0.2);
+}
+
+[data-theme="dark"] .secondary-actions {
+  background: rgba(244, 67, 54, 0.15);
+  border: 1px solid rgba(244, 67, 54, 0.3);
+}
+
+[data-theme="dark"] .invite-btn,
+[data-theme="dark"] .file-btn {
+  color: var(--copper-primary);
+}
+
+[data-theme="dark"] .invite-btn:hover {
+  background: linear-gradient(
+    135deg,
+    var(--copper-primary),
+    var(--copper-accent)
+  );
+}
+
+[data-theme="dark"] .file-btn:hover {
+  background: linear-gradient(135deg, #66bb6a, #4caf50);
+}
+
+[data-theme="dark"] .header-controls .invitation-btn {
+  background: linear-gradient(
+    135deg,
+    var(--copper-primary),
+    var(--copper-accent)
+  );
+  border: 1px solid rgba(184, 115, 51, 0.3);
+}
+
+[data-theme="dark"] .header-controls .invitation-btn:hover {
+  background: linear-gradient(
+    135deg,
+    var(--copper-accent),
+    var(--copper-primary)
+  );
+  box-shadow: 0 4px 12px rgba(184, 115, 51, 0.4);
+}
+
+[data-theme="dark"] .header-controls .invitation-count {
+  background: rgba(58, 47, 31, 0.95);
+  color: var(--copper-primary);
+  border: 1px solid rgba(184, 115, 51, 0.3);
+}
+
 /* 애니메이션 */
 @keyframes slideInUp {
   from {
@@ -915,4 +1056,676 @@ body {
     margin-left: 0;
     padding-left: 0;
   }
+
+  /* 모바일에서 채팅 액션 버튼 조정 */
+  .chat-actions {
+    gap: 8px;
+  }
+
+  .action-group {
+    gap: 4px;
+  }
+
+  .action-btn {
+    padding: 8px 10px;
+    font-size: 11px;
+  }
+
+  .action-btn .btn-text {
+    display: none;
+  }
+
+  .action-btn .btn-icon {
+    font-size: 14px;
+  }
+
+  .primary-actions,
+  .secondary-actions {
+    padding: 2px;
+  }
+
+  /* 헤더 초대 버튼 모바일 조정 */
+  .header-controls .invitation-btn {
+    padding: 6px 12px;
+    font-size: 11px;
+    margin-right: 8px;
+  }
+
+  .header-controls .notification-text {
+    display: none;
+  }
+
+  .header-controls .notification-icon {
+    font-size: 12px;
+  }
+
+  .header-controls .invitation-count {
+    min-width: 16px;
+    height: 16px;
+    font-size: 9px;
+  }
+}
+
+/* 헤더 내 초대 알림 버튼 */
+.header-controls .invitation-btn {
+  background: linear-gradient(135deg, var(--primary-color), #e67e22);
+  color: white;
+  border: none;
+  border-radius: 25px;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(201, 99, 66, 0.3);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: "Freesentation", sans-serif;
+  margin-right: 12px;
+  position: relative;
+  overflow: hidden;
+}
+
+.header-controls .invitation-btn::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: left 0.6s ease;
+}
+
+.header-controls .invitation-btn:hover::before {
+  left: 100%;
+}
+
+.header-controls .invitation-btn:hover {
+  background: linear-gradient(135deg, #e67e22, var(--primary-color));
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(201, 99, 66, 0.4);
+}
+
+.header-controls .notification-icon {
+  font-size: 14px;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
+}
+
+.header-controls .notification-text {
+  font-size: 12px;
+  letter-spacing: 0.3px;
+  font-weight: 600;
+}
+
+.header-controls .invitation-count {
+  background: rgba(255, 255, 255, 0.95);
+  color: var(--primary-color);
+  border-radius: 10px;
+  min-width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 0 4px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(201, 99, 66, 0.2);
+  margin-left: 2px;
+}
+
+.header-controls .invitation-count:empty,
+.header-controls .invitation-count[data-count="0"] {
+  display: none;
+}
+
+/* 사용자 초대 모달 스타일 */
+.invite-modal .modal-content {
+  max-width: 500px;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.user-search-input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+
+.search-results {
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
+.user-search-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.user-search-item:last-child {
+  border-bottom: none;
+}
+
+.user-search-item:hover {
+  background: var(--primary-light);
+}
+
+.user-search-item.selected {
+  background: var(--primary-color);
+  color: white;
+}
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--primary-color);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.user-info h4 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.user-info p {
+  margin: 0;
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+.selected-users {
+  margin-bottom: 16px;
+}
+
+.selected-users h4 {
+  margin: 0 0 12px 0;
+  font-size: 14px;
+  color: var(--gray-color);
+}
+
+.selected-users-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.selected-user-tag {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--primary-light);
+  color: var(--primary-color);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.selected-user-tag .remove-btn {
+  background: none;
+  border: none;
+  color: var(--primary-color);
+  cursor: pointer;
+  font-size: 14px;
+  padding: 0;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.selected-user-tag .remove-btn:hover {
+  background: var(--primary-color);
+  color: white;
+}
+
+.invite-message {
+  width: 100%;
+  min-height: 80px;
+  padding: 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 14px;
+  resize: vertical;
+  font-family: inherit;
+}
+
+/* 초대 목록 스타일 */
+.invitations-list {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.invitation-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  margin-bottom: 12px;
+  background: white;
+}
+
+.invitation-info {
+  flex: 1;
+}
+
+.invitation-info h4 {
+  margin: 0 0 4px 0;
+  font-size: 16px;
+  color: var(--text-color);
+}
+
+.invitation-info p {
+  margin: 0;
+  font-size: 14px;
+  color: var(--gray-color);
+}
+
+.invitation-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.accept-btn,
+.decline-btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.accept-btn {
+  background: #4caf50;
+  color: white;
+}
+
+.accept-btn:hover {
+  background: #45a049;
+}
+
+.decline-btn {
+  background: #f44336;
+  color: white;
+}
+
+.decline-btn:hover {
+  background: #da190b;
+}
+
+/* 초대 보내기 버튼 스타일 */
+.invite-send-btn {
+  background: linear-gradient(135deg, var(--primary-color), #e67e22) !important;
+  color: white !important;
+  border: none;
+  padding: 14px 28px;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: "Freesentation", sans-serif;
+  box-shadow: 0 4px 12px rgba(201, 99, 66, 0.3);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.invite-send-btn:hover {
+  background: linear-gradient(135deg, #e67e22, var(--primary-color)) !important;
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 6px 20px rgba(201, 99, 66, 0.4);
+  color: white !important;
+}
+
+.invite-send-btn:before {
+  content: "📨";
+  font-size: 16px;
+}
+
+/* 채팅방 나가기 버튼 스타일 */
+.leave-btn {
+  background: #f44336 !important;
+  color: white !important;
+}
+
+.leave-btn:hover {
+  background: #da190b !important;
+}
+
+/* 빈 상태 메시지 */
+.empty-invitations {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--gray-color);
+}
+
+.empty-invitations p {
+  margin: 0;
+  font-size: 14px;
+}
+
+/* Ordo 커스텀 알림 시스템 */
+.ordo-notification {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.8);
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(25px);
+  border: 2px solid var(--primary-color);
+  border-radius: 24px;
+  padding: 32px 40px;
+  box-shadow: 0 25px 50px rgba(201, 99, 66, 0.25),
+    0 0 0 1px rgba(255, 255, 255, 0.1);
+  z-index: 10000;
+  min-width: 400px;
+  max-width: 500px;
+  opacity: 0;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: "Freesentation", sans-serif;
+}
+
+.ordo-notification.show {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.ordo-notification-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(8px);
+  z-index: 9999;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.ordo-notification-overlay.show {
+  opacity: 1;
+}
+
+.ordo-notification-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.ordo-notification-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.ordo-notification-icon.info {
+  background: linear-gradient(
+    135deg,
+    var(--primary-color),
+    var(--primary-dark)
+  );
+  color: white;
+}
+
+.ordo-notification-icon.warning {
+  background: linear-gradient(135deg, var(--warning-color), #f57c00);
+  color: white;
+}
+
+.ordo-notification-icon.error {
+  background: linear-gradient(135deg, var(--danger-color), #d32f2f);
+  color: white;
+}
+
+.ordo-notification-icon.success {
+  background: linear-gradient(135deg, var(--success-color), #388e3c);
+  color: white;
+}
+
+.ordo-notification-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--gray-color);
+  margin: 0;
+}
+
+.ordo-notification-message {
+  color: var(--light-gray);
+  font-size: 16px;
+  line-height: 1.5;
+  margin-bottom: 24px;
+}
+
+.ordo-notification-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.ordo-notification-btn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 12px;
+  font-family: "Freesentation", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 80px;
+}
+
+.ordo-notification-btn.primary {
+  background: linear-gradient(
+    135deg,
+    var(--primary-color),
+    var(--primary-dark)
+  );
+  color: white;
+}
+
+.ordo-notification-btn.primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(201, 99, 66, 0.3);
+}
+
+.ordo-notification-btn.secondary {
+  background: var(--hover-color);
+  color: var(--gray-color);
+  border: 1px solid var(--border-color);
+}
+
+.ordo-notification-btn.secondary:hover {
+  background: var(--border-color);
+  transform: translateY(-1px);
+}
+
+/* 다크모드 알림 스타일 */
+[data-theme="dark"] .ordo-notification {
+  background: rgba(42, 33, 23, 0.98);
+  border-color: var(--copper-primary);
+  box-shadow: 0 25px 50px rgba(184, 115, 51, 0.3),
+    0 0 0 1px rgba(212, 165, 116, 0.1);
+}
+
+[data-theme="dark"] .ordo-notification-title {
+  color: var(--dark-text);
+}
+
+[data-theme="dark"] .ordo-notification-message {
+  color: var(--dark-text-secondary);
+}
+
+[data-theme="dark"] .ordo-notification-btn.primary {
+  background: linear-gradient(
+    135deg,
+    var(--copper-primary),
+    var(--copper-dark)
+  );
+}
+
+[data-theme="dark"] .ordo-notification-btn.secondary {
+  background: var(--dark-surface);
+  color: var(--dark-text);
+  border-color: var(--dark-border);
+}
+
+[data-theme="dark"] .ordo-notification-btn.secondary:hover {
+  background: var(--dark-card);
+}
+
+/* 파일 메시지 스타일 */
+.file-message {
+  background: rgba(255, 255, 255, 0.95);
+  border: 2px solid var(--primary-color);
+  border-radius: 16px;
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  max-width: 300px;
+  margin: 4px 0;
+}
+
+.file-message:hover {
+  background: var(--primary-light);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(201, 99, 66, 0.2);
+}
+
+.file-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.file-icon {
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.file-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.file-name {
+  font-weight: 600;
+  color: var(--gray-color);
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 4px;
+}
+
+.file-size {
+  font-size: 12px;
+  color: var(--light-gray);
+}
+
+.file-download {
+  font-size: 20px;
+  color: var(--primary-color);
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.file-message:hover .file-download {
+  transform: scale(1.2);
+}
+
+.file-preview {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-color);
+  font-size: 12px;
+  color: var(--light-gray);
+  text-align: center;
+}
+
+/* 내 파일 메시지 스타일 */
+.message.own .file-message {
+  background: rgba(201, 99, 66, 0.1);
+  border-color: var(--primary-color);
+}
+
+.message.own .file-message:hover {
+  background: rgba(201, 99, 66, 0.2);
+}
+
+.message.own .file-name {
+  color: var(--primary-color);
+}
+
+/* 다크모드 파일 메시지 스타일 */
+[data-theme="dark"] .file-message {
+  background: rgba(58, 47, 31, 0.95);
+  border-color: var(--copper-primary);
+}
+
+[data-theme="dark"] .file-message:hover {
+  background: var(--dark-surface);
+}
+
+[data-theme="dark"] .file-name {
+  color: var(--dark-text);
+}
+
+[data-theme="dark"] .file-size {
+  color: var(--dark-text-secondary);
+}
+
+[data-theme="dark"] .file-download {
+  color: var(--copper-primary);
+}
+
+[data-theme="dark"] .message.own .file-message {
+  background: rgba(184, 115, 51, 0.15);
+  border-color: var(--copper-primary);
+}
+
+[data-theme="dark"] .message.own .file-message:hover {
+  background: rgba(184, 115, 51, 0.25);
+}
+
+[data-theme="dark"] .message.own .file-name {
+  color: var(--copper-primary);
 }
