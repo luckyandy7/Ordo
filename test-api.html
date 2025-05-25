@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>API 테스트</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+      }
+      .test-section {
+        margin: 20px 0;
+        padding: 15px;
+        border: 1px solid #ddd;
+      }
+      button {
+        padding: 10px 15px;
+        margin: 5px;
+        background: #007bff;
+        color: white;
+        border: none;
+        cursor: pointer;
+      }
+      button:hover {
+        background: #0056b3;
+      }
+      .result {
+        margin-top: 10px;
+        padding: 10px;
+        background: #f8f9fa;
+        border: 1px solid #dee2e6;
+        white-space: pre-wrap;
+      }
+      .error {
+        background: #f8d7da;
+        border-color: #f5c6cb;
+        color: #721c24;
+      }
+      .success {
+        background: #d4edda;
+        border-color: #c3e6cb;
+        color: #155724;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Ordo API 테스트</h1>
+
+    <div class="test-section">
+      <h3>1. 로그인 테스트</h3>
+      <input
+        type="email"
+        id="email"
+        placeholder="이메일"
+        value="suhwan1234@gmail.com"
+      />
+      <input type="password" id="password" placeholder="비밀번호" value="" />
+      <button onclick="testLogin()">로그인</button>
+      <div id="loginResult" class="result"></div>
+    </div>
+
+    <div class="test-section">
+      <h3>2. 전체 일정 조회</h3>
+      <button onclick="testGetAllEvents()">전체 일정 조회</button>
+      <div id="allEventsResult" class="result"></div>
+    </div>
+
+    <div class="test-section">
+      <h3>3. 오늘 일정 조회</h3>
+      <button onclick="testGetTodayEvents()">오늘 일정 조회</button>
+      <div id="todayEventsResult" class="result"></div>
+    </div>
+
+    <div class="test-section">
+      <h3>4. 일정 추가</h3>
+      <input
+        type="text"
+        id="eventTitle"
+        placeholder="일정 제목"
+        value="테스트 일정"
+      />
+      <input type="datetime-local" id="eventDate" />
+      <button onclick="testAddEvent()">일정 추가</button>
+      <div id="addEventResult" class="result"></div>
+    </div>
+
+    <script>
+      let token = localStorage.getItem("token");
+
+      // 현재 시간을 datetime-local 형식으로 설정
+      document.getElementById("eventDate").value = new Date()
+        .toISOString()
+        .slice(0, 16);
+
+      async function testLogin() {
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+        const resultDiv = document.getElementById("loginResult");
+
+        try {
+          const response = await fetch("/api/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password }),
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            token = data.data.token;
+            localStorage.setItem("token", token);
+            localStorage.setItem("user", JSON.stringify(data.data.user));
+            resultDiv.className = "result success";
+            resultDiv.textContent =
+              "로그인 성공!\n" + JSON.stringify(data, null, 2);
+          } else {
+            resultDiv.className = "result error";
+            resultDiv.textContent = "로그인 실패: " + data.message;
+          }
+        } catch (error) {
+          resultDiv.className = "result error";
+          resultDiv.textContent = "오류: " + error.message;
+        }
+      }
+
+      async function testGetAllEvents() {
+        const resultDiv = document.getElementById("allEventsResult");
+
+        if (!token) {
+          resultDiv.className = "result error";
+          resultDiv.textContent = "먼저 로그인하세요.";
+          return;
+        }
+
+        try {
+          const response = await fetch("/api/events/", {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            resultDiv.className = "result success";
+            resultDiv.textContent =
+              `전체 일정 ${data.length}개:\n` + JSON.stringify(data, null, 2);
+          } else {
+            resultDiv.className = "result error";
+            resultDiv.textContent =
+              "조회 실패: " + JSON.stringify(data, null, 2);
+          }
+        } catch (error) {
+          resultDiv.className = "result error";
+          resultDiv.textContent = "오류: " + error.message;
+        }
+      }
+
+      async function testGetTodayEvents() {
+        const resultDiv = document.getElementById("todayEventsResult");
+
+        if (!token) {
+          resultDiv.className = "result error";
+          resultDiv.textContent = "먼저 로그인하세요.";
+          return;
+        }
+
+        try {
+          const today = new Date().toISOString();
+          const response = await fetch(`/api/events/date/${today}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            resultDiv.className = "result success";
+            resultDiv.textContent =
+              `오늘 일정 ${data.length}개:\n` + JSON.stringify(data, null, 2);
+          } else {
+            resultDiv.className = "result error";
+            resultDiv.textContent =
+              "조회 실패: " + JSON.stringify(data, null, 2);
+          }
+        } catch (error) {
+          resultDiv.className = "result error";
+          resultDiv.textContent = "오류: " + error.message;
+        }
+      }
+
+      async function testAddEvent() {
+        const resultDiv = document.getElementById("addEventResult");
+
+        if (!token) {
+          resultDiv.className = "result error";
+          resultDiv.textContent = "먼저 로그인하세요.";
+          return;
+        }
+
+        const title = document.getElementById("eventTitle").value;
+        const dateTime = document.getElementById("eventDate").value;
+
+        try {
+          const response = await fetch("/api/events/", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              title,
+              date: new Date(dateTime).toISOString(),
+              duration: 60,
+              color: "#FFE5E5",
+            }),
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            resultDiv.className = "result success";
+            resultDiv.textContent =
+              "일정 추가 성공!\n" + JSON.stringify(data, null, 2);
+          } else {
+            resultDiv.className = "result error";
+            resultDiv.textContent =
+              "추가 실패: " + JSON.stringify(data, null, 2);
+          }
+        } catch (error) {
+          resultDiv.className = "result error";
+          resultDiv.textContent = "오류: " + error.message;
+        }
+      }
+
+      // 페이지 로드 시 토큰 상태 확인
+      if (token) {
+        document.querySelector("h1").textContent += " (로그인됨)";
+      }
+    </script>
+  </body>
+</html>
