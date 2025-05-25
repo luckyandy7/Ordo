@@ -518,8 +518,21 @@ async function renderCalendar() {
 // 이벤트 로드 함수 (완료 상태 포함)
 async function loadEvents(startDate, endDate) {
   try {
-    const events = await fetchAPI(`/date/${startDate.toISOString()}`);
-    console.log("로드된 이벤트:", events);
+    console.log("일정 로드 시작 - 날짜 범위:", { startDate, endDate });
+
+    // 먼저 전체 일정을 조회해서 디버깅
+    const allEvents = await fetchAPI("");
+    console.log("전체 일정 수:", allEvents.length);
+    console.log("전체 일정 목록:", allEvents);
+
+    // 주간 범위에 해당하는 일정만 필터링
+    const events = allEvents.filter((event) => {
+      const eventDate = new Date(event.date);
+      return eventDate >= startDate && eventDate <= endDate;
+    });
+
+    console.log("주간 범위 일정 수:", events.length);
+    console.log("주간 범위 일정들:", events);
 
     events.forEach((event) => {
       const eventDate = new Date(event.date);
