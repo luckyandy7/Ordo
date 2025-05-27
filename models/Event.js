@@ -24,6 +24,11 @@ const eventSchema = new mongoose.Schema({
     type: String,
     default: "#FFE5E5",
   },
+  groupId: {
+    type: String,
+    default: null,
+    index: true,
+  },
   createdAt: {
     type: Date,
     default: Date.now,
