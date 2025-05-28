@@ -205,14 +205,13 @@ async function addEvent(date, startTime, endTime, title, color) {
       body: JSON.stringify(eventData),
     });
 
-    // UI 즉시 업데이트
-    updateUIForNewEvent(eventData);
-    addActivity("event_added", `새 일정이 추가되었습니다`, title);
-
-    return response;
+    if (response.success) {
+      await renderCalendar();
+      showNotification("일정이 성공적으로 추가되었습니다!", "success");
+    }
   } catch (error) {
     console.error("일정 추가 실패:", error);
-    throw error;
+    showNotification("일정 추가에 실패했습니다.", "error");
   }
 }
 ```
@@ -1206,254 +1205,332 @@ socket.on("user_typing", (data) => {
 4. **메시지 전송**: MongoDB 저장 + 실시간 브로드캐스트
 5. **파일 처리**: GridFS 업로드 + 메타데이터 관리
 
-## 🎨 UI/UX 가이드
+## 🎨 **프론트엔드 아키텍처**
 
-### 색상 팔레트
-
-```css
-/* 라이트 테마 */
---primary-color: #2563eb; /* 메인 블루 */
---success-color: #059669; /* 성공 그린 */
---warning-color: #d97706; /* 경고 오렌지 */
---error-color: #dc2626; /* 에러 레드 */
---background: #ffffff; /* 배경 화이트 */
---surface: #f8fafc; /* 서페이스 라이트 그레이 */
-
-/* 다크 테마 */
---primary-color: #3b82f6; /* 라이트 블루 */
---background: #1e293b; /* 다크 배경 */
---surface: #334155; /* 다크 서페이스 */
---text-primary: #e2e8f0; /* 라이트 텍스트 */
-```
-
-### 반응형 브레이크포인트
+### 📱 **반응형 디자인 (CSS Breakpoints)**
 
 ```css
-/* 모바일 */
-@media (max-width: 768px) {
+/* 모바일 우선 설계 */
+.container {
+  padding: 1rem;
+  max-width: 100%;
 }
 
-/* 태블릿 */
-@media (min-width: 769px) and (max-width: 1024px) {
+/* 태블릿 (768px 이상) */
+@media (min-width: 768px) {
+  .container {
+    padding: 2rem;
+    max-width: 750px;
+    margin: 0 auto;
+  }
+
+  .calendar-grid {
+    grid-template-columns: repeat(7, 1fr);
+  }
 }
 
-/* 데스크톱 */
-@media (min-width: 1025px) {
+/* 데스크톱 (1024px 이상) */
+@media (min-width: 1024px) {
+  .container {
+    max-width: 1200px;
+  }
+
+  .dashboard-layout {
+    display: grid;
+    grid-template-columns: 300px 1fr 350px;
+    gap: 2rem;
+  }
+}
+
+/* 대형 화면 (1440px 이상) */
+@media (min-width: 1440px) {
+  .container {
+    max-width: 1400px;
+  }
 }
 ```
 
-## 🔐 보안 가이드
+### 🌙 **다크모드 구현**
 
-### 인증 보안
+```css
+:root {
+  /* 라이트 테마 */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8f9fa;
+  --text-primary: #212529;
+  --text-secondary: #6c757d;
+  --border-color: #dee2e6;
+  --accent-color: #007bff;
+}
 
-- **JWT 토큰**: 24시간 유효기간
-- **비밀번호 암호화**: bcryptjs 해싱
-- **CORS 설정**: 특정 도메인만 허용
+[data-theme="dark"] {
+  /* 다크 테마 */
+  --bg-primary: #1a1a1a;
+  --bg-secondary: #2d2d2d;
+  --text-primary: #ffffff;
+  --text-secondary: #b3b3b3;
+  --border-color: #404040;
+  --accent-color: #4dabf7;
+}
 
-### 파일 업로드 보안
-
-- **파일 크기 제한**: 10MB 최대
-- **파일 타입 검증**: MIME 타입 확인
-- **바이러스 스캔**: 업로드 파일 검사 (추후 구현)
-
-### 데이터베이스 보안
-
-- **MongoDB Atlas**: TLS/SSL 암호화
-- **접근 제어**: IP 화이트리스트
-- **백업**: 자동 백업 설정
-
-## 🐛 문제해결 가이드
-
-### 일반적인 문제
-
-#### 1. Socket.IO 연결 실패
-
-```bash
-# 포트 충돌 확인
-lsof -ti:5001
-
-# 프로세스 종료
-kill -9 <PID>
-
-# 서버 재시작
-node server.js
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
 ```
 
-#### 2. MongoDB 연결 실패
+### ⚡ **성능 최적화 기법**
 
-- `.env` 파일의 `MONGODB_URI` 확인
-- MongoDB Atlas IP 화이트리스트 확인
-- 네트워크 연결 상태 확인
-
-#### 3. 실시간 메시지 수신 안됨
-
-- 브라우저 개발자 도구에서 Socket.IO 연결 상태 확인
-- 방화벽 설정 확인
-- 디버그 페이지 사용: `/Chat/debug-test.html`
-
-#### 4. 파일 업로드 실패
-
-- 파일 크기가 10MB 이하인지 확인
-- GridFS 설정 확인
-- 디스크 공간 확인
-
-### 디버깅 도구
-
-#### Socket.IO 디버깅
+#### 1. **가상 스크롤링 (Virtual Scrolling)**
 
 ```javascript
-// 브라우저 콘솔에서 실행
-localStorage.debug = "socket.io-client:socket";
-location.reload();
+class VirtualScroll {
+  constructor(container, itemHeight, totalItems) {
+    this.container = container;
+    this.itemHeight = itemHeight;
+    this.totalItems = totalItems;
+    this.visibleStart = 0;
+    this.visibleEnd = 0;
+
+    this.init();
+  }
+
+  init() {
+    const containerHeight = this.container.clientHeight;
+    this.visibleCount = Math.ceil(containerHeight / this.itemHeight) + 2;
+
+    this.container.addEventListener("scroll", this.onScroll.bind(this));
+    this.render();
+  }
+
+  onScroll() {
+    const scrollTop = this.container.scrollTop;
+    this.visibleStart = Math.floor(scrollTop / this.itemHeight);
+    this.visibleEnd = Math.min(
+      this.visibleStart + this.visibleCount,
+      this.totalItems
+    );
+
+    this.render();
+  }
+
+  render() {
+    // 현재 보이는 영역만 렌더링
+    const fragment = document.createDocumentFragment();
+
+    for (let i = this.visibleStart; i < this.visibleEnd; i++) {
+      const item = this.createItem(i);
+      fragment.appendChild(item);
+    }
+
+    this.container.innerHTML = "";
+    this.container.appendChild(fragment);
+  }
+}
 ```
 
-#### 서버 로그 레벨
+#### 2. **이미지 지연 로딩 (Lazy Loading)**
 
 ```javascript
-// server.js에서 로그 레벨 조정
-console.log("[DEBUG]", "디버그 메시지");
-console.warn("[WARN]", "경고 메시지");
-console.error("[ERROR]", "에러 메시지");
+const imageObserver = new IntersectionObserver((entries) => {
+  entries.forEach((entry) => {
+    if (entry.isIntersecting) {
+      const img = entry.target;
+      img.src = img.dataset.src;
+      img.classList.remove("lazy");
+      imageObserver.unobserve(img);
+    }
+  });
+});
+
+document.querySelectorAll("img[data-src]").forEach((img) => {
+  imageObserver.observe(img);
+});
 ```
 
-## 📈 성능 최적화
-
-### 클라이언트 최적화
-
-- **이벤트 리스너 정리**: 메모리 누수 방지
-- **DOM 조작 최소화**: DocumentFragment 사용
-- **이미지 지연 로딩**: Intersection Observer
-
-### 서버 최적화
-
-- **Redis Adapter**: 다중 서버 확장
-- **MongoDB 인덱싱**: 쿼리 성능 향상
-- **Gzip 압축**: 네트워크 대역폭 절약
-
-### 데이터베이스 최적화
+#### 3. **디바운싱으로 API 호출 최적화**
 
 ```javascript
-// MongoDB 인덱스 설정 예시
-db.messages.createIndex({ chatRoom: 1, timestamp: -1 });
-db.users.createIndex({ email: 1 }, { unique: true });
-db.chatrooms.createIndex({ participants: 1 });
+function debounce(func, wait) {
+  let timeout;
+  return function executedFunction(...args) {
+    const later = () => {
+      clearTimeout(timeout);
+      func(...args);
+    };
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  };
+}
+
+// 검색 입력 디바운싱
+const searchInput = document.getElementById("searchInput");
+const debouncedSearch = debounce(async (query) => {
+  if (query.length > 2) {
+    const results = await searchAPI(query);
+    displaySearchResults(results);
+  }
+}, 300);
+
+searchInput.addEventListener("input", (e) => {
+  debouncedSearch(e.target.value);
+});
 ```
 
-## 🧪 테스트
+## 🔒 **보안 구현**
 
-### 단위 테스트
+### 🛡️ **XSS 방지**
 
-```bash
-npm test
+```javascript
+function sanitizeHTML(str) {
+  const div = document.createElement("div");
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+function displayMessage(message) {
+  const messageElement = document.createElement("div");
+  messageElement.innerHTML = sanitizeHTML(message.content);
+  chatContainer.appendChild(messageElement);
+}
 ```
 
-### 통합 테스트
+### 🔐 **CSRF 토큰 구현**
 
-```bash
-npm run test:integration
+```javascript
+// CSRF 토큰 생성
+const generateCSRFToken = () => {
+  return crypto.randomBytes(32).toString("hex");
+};
+
+// 요청시 CSRF 토큰 검증
+const csrfProtection = (req, res, next) => {
+  const token = req.headers["x-csrf-token"];
+  const sessionToken = req.session.csrfToken;
+
+  if (!token || token !== sessionToken) {
+    return res.status(403).json({ error: "CSRF 토큰이 유효하지 않습니다" });
+  }
+
+  next();
+};
 ```
 
-### 실시간 채팅 테스트
+### 🔑 **Rate Limiting**
 
-1. 여러 브라우저 탭에서 동일 채팅방 접속
-2. 메시지 전송/수신 확인
-3. 파일 업로드/다운로드 테스트
-4. 네트워크 연결 해제/복구 테스트
+```javascript
+const rateLimit = require("express-rate-limit");
 
-## 🚀 배포 가이드
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15분
+  max: 100, // 최대 100개 요청
+  message: {
+    error: "너무 많은 요청이 발생했습니다. 잠시 후 다시 시도해주세요.",
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
 
-### Heroku 배포
-
-```bash
-# Heroku CLI 설치 후
-heroku create ordo-chat-app
-heroku config:set MONGODB_URI=<your_mongodb_uri>
-heroku config:set JWT_SECRET=<your_jwt_secret>
-git push heroku main
+app.use("/api/", apiLimiter);
 ```
 
-### Vercel 배포
+## 📊 **모니터링 및 로깅**
 
-```bash
-npm install -g vercel
-vercel --prod
+### 📈 **성능 모니터링**
+
+```javascript
+class MetricsDashboard {
+  constructor() {
+    this.metrics = {
+      activeUsers: 0,
+      messagesPerSecond: 0,
+      apiResponseTime: 0,
+      memoryUsage: 0,
+      cpuUsage: 0,
+    };
+
+    this.startMonitoring();
+  }
+
+  startMonitoring() {
+    setInterval(() => {
+      this.collectMetrics();
+      this.updateDashboard();
+    }, 5000); // 5초마다 업데이트
+  }
+
+  collectMetrics() {
+    // 시스템 메트릭 수집
+    const memUsage = process.memoryUsage();
+    this.metrics.memoryUsage = Math.round(memUsage.heapUsed / 1024 / 1024); // MB
+
+    // Socket.IO 연결 수
+    this.metrics.activeUsers = io.engine.clientsCount;
+
+    // CPU 사용률 (간단한 근사치)
+    const startUsage = process.cpuUsage();
+    setTimeout(() => {
+      const endUsage = process.cpuUsage(startUsage);
+      const totalUsage = endUsage.user + endUsage.system;
+      this.metrics.cpuUsage = Math.round(totalUsage / 1000); // 퍼센트
+    }, 100);
+  }
+
+  updateDashboard() {
+    // 관리자 대시보드로 메트릭 전송
+    io.to("admin").emit("metrics_update", this.metrics);
+
+    console.log(
+      `📊 [메트릭] 활성 사용자: ${this.metrics.activeUsers}, 메모리: ${this.metrics.memoryUsage}MB`
+    );
+  }
+}
 ```
 
-### Docker 배포
+## 🔮 **향후 개발 계획**
 
-```dockerfile
-FROM node:18-alpine
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production
-COPY . .
-EXPOSE 5001
-CMD ["node", "server.js"]
-```
+### 🚀 **v3.0.0 로드맵**
 
-## 🔮 향후 계획
+#### 🎥 **화상 회의 시스템**
 
-### v3.0.0 예정 기능
+- WebRTC 기반 P2P 영상/음성 통화
+- 화면 공유 및 화이트보드 기능
+- 회의 녹화 및 자동 요약
 
-- [ ] **음성/영상 통화**: WebRTC 기반 통화 기능
-- [ ] **메시지 암호화**: End-to-End 암호화
-- [ ] **봇 시스템**: 자동화된 채팅 봇
-- [ ] **메시지 검색**: 전문 검색 기능
-- [ ] **알림 시스템**: 푸시 알림 지원
+#### 🔐 **End-to-End 암호화**
 
-### 성능 개선 계획
+- 메시지 및 파일의 클라이언트 측 암호화
+- 개인키/공개키 기반 보안 시스템
+- 제로 트러스트 아키텍처
 
-- [ ] **CDN 연동**: 정적 파일 배포
-- [ ] **캐싱 시스템**: Redis 캐싱 확장
-- [ ] **로드 밸런싱**: Nginx 로드 밸런서
-- [ ] **모니터링**: 실시간 성능 모니터링
+#### 🤖 **AI 통합 기능**
 
-## 👥 기여하기
+- 스마트 일정 추천 시스템
+- 자동 회의 요약 및 액션 아이템 추출
+- 개인 생산성 분석 및 개선 제안
 
-### 개발 참여
+#### 📱 **모바일 앱**
 
-1. **Fork** 프로젝트
-2. **Feature 브랜치** 생성: `git checkout -b feature/amazing-feature`
-3. **커밋**: `git commit -m 'Add amazing feature'`
-4. **푸시**: `git push origin feature/amazing-feature`
-5. **Pull Request** 생성
+- React Native 기반 크로스 플랫폼 앱
+- 푸시 알림 및 오프라인 동기화
+- 생체인증 및 보안 기능
 
-### 코딩 컨벤션
+#### 🌐 **다국어 지원**
 
-- **JavaScript**: ES6+ 문법 사용
-- **들여쓰기**: 2 스페이스
-- **명명법**: camelCase (변수), PascalCase (클래스)
-- **주석**: JSDoc 형식
+- i18n 기반 국제화
+- 실시간 번역 기능
+- 지역별 시간대 자동 조정
 
-## 📄 라이선스
+### 📅 **개발 일정**
 
-이 프로젝트는 **MIT 라이선스** 하에 배포됩니다. 자세한 내용은 [LICENSE](LICENSE) 파일을 참조하세요.
-
-## 📞 지원 및 문의
-
-- **이슈 리포트**: [GitHub Issues](https://github.com/your-username/Ordo/issues)
-- **기능 요청**: [GitHub Discussions](https://github.com/your-username/Ordo/discussions)
-- **이메일**: support@ordo-chat.com
-
-## 🙏 감사의 말
-
-- **Socket.IO 팀**: 실시간 통신 라이브러리
-- **MongoDB**: 확장 가능한 데이터베이스
-- **Node.js 커뮤니티**: 훌륭한 생태계
-- **모든 기여자들**: 프로젝트 발전에 기여
+| 기능            | 시작일     | 완료 예정일 | 담당자   | 상태    |
+| --------------- | ---------- | ----------- | -------- | ------- |
+| WebRTC 화상회의 | 2024-02-01 | 2024-04-30  | 개발팀   | 계획 중 |
+| E2E 암호화      | 2024-03-01 | 2024-06-30  | 보안팀   | 설계 중 |
+| AI 추천 시스템  | 2024-05-01 | 2024-08-31  | AI팀     | 연구 중 |
+| 모바일 앱       | 2024-06-01 | 2024-10-31  | 모바일팀 | 준비 중 |
 
 ---
 
-**Ordo**로 더 나은 소통을 경험하세요! 🚀💬
-
-_Made with ❤️ by Ordo Team_
-
----
-
-## 📊 프로젝트 통계
-
-- **총 코드 라인**: 3,487줄
-- **JavaScript**: 1,852줄 (chat.js)
-- **서버 코드**: 1,679줄 (server.js)
-- **개발 기간**: 6개월
-- **최신 업데이트**: 2025년 1월
+</rewritten_file>
