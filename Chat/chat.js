@@ -341,6 +341,8 @@ function setupEventListeners() {
 // Socket.IO 초기화
 function initializeSocket(token) {
   console.log("Socket.IO 연결 시도...");
+  console.log("현재 URL:", window.location.href);
+  console.log("서버 주소:", window.location.origin);
 
   // Socket.IO 라이브러리가 로드되었는지 확인
   if (typeof io === "undefined") {
@@ -356,23 +358,61 @@ function initializeSocket(token) {
     auth: {
       token: token,
     },
+    // 로컬 환경을 위한 추가 설정
+    transports: ["websocket", "polling"],
+    upgrade: true,
+    rememberUpgrade: true,
+    timeout: 20000,
+    forceNew: true,
   });
 
-  // 연결 성공
+  // 연결 시도
   socket.on("connect", () => {
-    console.log("Socket.IO 연결 성공:", socket.id);
+    console.log("✅ Socket.IO 연결 성공:", socket.id);
+    console.log("연결된 서버:", socket.io.uri);
+    console.log("전송 방식:", socket.io.engine.transport.name);
     socket.emit("authenticate", token);
+  });
+
+  // 연결 실패
+  socket.on("connect_error", (error) => {
+    console.error("❌ Socket.IO 연결 실패:", error);
+    console.log("연결 시도 중인 서버:", socket.io.uri);
+    showNotification(
+      "실시간 채팅 연결에 실패했습니다. 서버 상태를 확인해주세요.",
+      "error"
+    );
+  });
+
+  // 재연결 시도
+  socket.on("reconnect_attempt", (attemptNumber) => {
+    console.log(`🔄 재연결 시도 중... (${attemptNumber}번째)`);
+  });
+
+  // 재연결 성공
+  socket.on("reconnect", (attemptNumber) => {
+    console.log(`✅ 재연결 성공! (${attemptNumber}번째 시도 후)`);
+    showNotification("실시간 채팅 연결이 복구되었습니다.", "success");
+  });
+
+  // 재연결 실패
+  socket.on("reconnect_failed", () => {
+    console.error("❌ 재연결 실패");
+    showNotification(
+      "실시간 채팅 연결을 복구할 수 없습니다. 페이지를 새로고침해주세요.",
+      "error"
+    );
   });
 
   // 인증 성공
   socket.on("authenticated", (data) => {
-    console.log("Socket.IO 인증 성공:", data);
+    console.log("✅ Socket.IO 인증 성공:", data);
     loadChatRooms();
   });
 
   // 인증 실패
   socket.on("authentication_error", (error) => {
-    console.error("Socket.IO 인증 실패:", error);
+    console.error("❌ Socket.IO 인증 실패:", error);
     showNotification("인증에 실패했습니다. 다시 로그인해주세요.", "error");
     setTimeout(() => {
       window.location.href = "/Login/email-login.html";
@@ -381,17 +421,27 @@ function initializeSocket(token) {
 
   // 새 메시지 수신
   socket.on("new_message", (message) => {
-    console.log("새 메시지 수신:", message);
+    console.log("📨 새 메시지 수신:", message);
     addMessageToUI(message);
   });
 
   // 사용자 나가기 이벤트 수신
   socket.on("user_left", (data) => {
-    console.log("사용자 나가기:", data);
+    console.log("👋 사용자 나가기:", data);
     try {
       addSystemMessageToUI(data);
     } catch (error) {
       console.error("시스템 메시지 표시 에러:", error);
+    }
+  });
+
+  // 사용자 입장 이벤트 수신
+  socket.on("user_joined", (data) => {
+    console.log("👋 사용자 입장:", data);
+    try {
+      addSystemMessageToUI(data);
+    } catch (error) {
+      console.error("입장 메시지 표시 에러:", error);
     }
   });
 
@@ -402,15 +452,35 @@ function initializeSocket(token) {
 
   // 에러 처리
   socket.on("error", (error) => {
-    console.error("Socket.IO 에러:", error);
+    console.error("❌ Socket.IO 에러:", error);
     showNotification(error.message || "연결 오류가 발생했습니다.", "error");
   });
 
   // 연결 해제
-  socket.on("disconnect", () => {
-    console.log("Socket.IO 연결 해제");
-    showNotification("서버와의 연결이 끊어졌습니다.", "warning");
+  socket.on("disconnect", (reason) => {
+    console.log("🔌 Socket.IO 연결 해제:", reason);
+    if (reason === "io server disconnect") {
+      // 서버에서 연결을 끊은 경우
+      showNotification("서버에서 연결을 종료했습니다.", "warning");
+    } else if (reason === "io client disconnect") {
+      // 클라이언트에서 연결을 끊은 경우
+      console.log("클라이언트에서 연결을 종료했습니다.");
+    } else {
+      // 기타 이유
+      showNotification("서버와의 연결이 끊어졌습니다.", "warning");
+    }
   });
+
+  // 연결 상태 모니터링
+  setInterval(() => {
+    if (socket) {
+      console.log("🔍 Socket 상태 체크:", {
+        connected: socket.connected,
+        id: socket.id,
+        transport: socket.io.engine?.transport?.name,
+      });
+    }
+  }, 30000); // 30초마다 체크
 }
 
 // 채팅방 목록 로드
@@ -628,8 +698,13 @@ function renderMessages(messages) {
     </div>
   `;
 
-  // 스크롤을 맨 아래로
-  messagesContainer.scrollTop = messagesContainer.scrollHeight;
+  // 부드러운 스크롤로 맨 아래로 이동
+  setTimeout(() => {
+    messagesContainer.scrollTo({
+      top: messagesContainer.scrollHeight,
+      behavior: "smooth",
+    });
+  }, 100);
 }
 
 // 메시지 HTML 생성
@@ -716,6 +791,11 @@ function addMessageToUI(message) {
   const messagesContainer = document.querySelector(".messages-container");
   const messageGroup = messagesContainer.querySelector(".message-group");
 
+  // 스크롤 위치 확인 (사용자가 맨 아래에 있는지 체크)
+  const isScrolledToBottom =
+    messagesContainer.scrollTop + messagesContainer.clientHeight >=
+    messagesContainer.scrollHeight - 10; // 10px 여유분
+
   if (messageGroup) {
     messageGroup.insertAdjacentHTML("beforeend", createMessageHTML(message));
   } else {
@@ -728,14 +808,33 @@ function addMessageToUI(message) {
     `;
   }
 
-  // 스크롤을 맨 아래로
-  messagesContainer.scrollTop = messagesContainer.scrollHeight;
+  // 사용자가 맨 아래에 있었거나 본인이 보낸 메시지인 경우에만 자동 스크롤
+  if (
+    isScrolledToBottom ||
+    (message.sender && message.sender._id === currentUser.id)
+  ) {
+    // 부드러운 스크롤로 맨 아래로 이동
+    setTimeout(() => {
+      messagesContainer.scrollTo({
+        top: messagesContainer.scrollHeight,
+        behavior: "smooth",
+      });
+    }, 100);
+  } else {
+    // 새 메시지 알림 표시 (선택사항)
+    showNewMessageIndicator();
+  }
 }
 
 // 시스템 메시지 UI 추가
 function addSystemMessageToUI(data) {
   const messagesContainer = document.querySelector(".messages-container");
   const messageGroup = messagesContainer.querySelector(".message-group");
+
+  // 스크롤 위치 확인
+  const isScrolledToBottom =
+    messagesContainer.scrollTop + messagesContainer.clientHeight >=
+    messagesContainer.scrollHeight - 10;
 
   // data가 객체인지 문자열인지 확인
   const content =
@@ -762,8 +861,48 @@ function addSystemMessageToUI(data) {
     `;
   }
 
-  // 스크롤을 맨 아래로
-  messagesContainer.scrollTop = messagesContainer.scrollHeight;
+  // 시스템 메시지는 항상 자동 스크롤
+  if (isScrolledToBottom) {
+    setTimeout(() => {
+      messagesContainer.scrollTo({
+        top: messagesContainer.scrollHeight,
+        behavior: "smooth",
+      });
+    }, 100);
+  }
+}
+
+// 새 메시지 알림 표시 (선택사항)
+function showNewMessageIndicator() {
+  // 기존 알림이 있으면 제거
+  const existingIndicator = document.querySelector(".new-message-indicator");
+  if (existingIndicator) {
+    existingIndicator.remove();
+  }
+
+  // 새 메시지 알림 생성
+  const indicator = document.createElement("div");
+  indicator.className = "new-message-indicator";
+  indicator.innerHTML = "📩 새 메시지가 있습니다";
+  indicator.onclick = () => {
+    const messagesContainer = document.querySelector(".messages-container");
+    messagesContainer.scrollTo({
+      top: messagesContainer.scrollHeight,
+      behavior: "smooth",
+    });
+    indicator.remove();
+  };
+
+  // 메시지 컨테이너에 추가
+  const messagesContainer = document.querySelector(".messages-container");
+  messagesContainer.appendChild(indicator);
+
+  // 5초 후 자동 제거
+  setTimeout(() => {
+    if (indicator.parentNode) {
+      indicator.remove();
+    }
+  }, 5000);
 }
 
 // 채팅 헤더 업데이트

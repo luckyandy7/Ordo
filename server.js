@@ -16,7 +16,60 @@ const io = socketIo(server, {
     origin: "*",
     methods: ["GET", "POST"],
   },
+  // 로컬 환경을 위한 추가 설정
+  transports: ["websocket", "polling"],
+  allowEIO3: true,
+  pingTimeout: 60000,
+  pingInterval: 25000,
 });
+
+// Redis Adapter 설정 (선택적)
+async function setupRedisAdapter() {
+  try {
+    const { createAdapter } = require("@socket.io/redis-adapter");
+    const { createClient } = require("redis");
+
+    // Redis 클라이언트 생성
+    const pubClient = createClient({
+      url: process.env.REDIS_URL || "redis://localhost:6379",
+      retry_strategy: (options) => {
+        if (options.error && options.error.code === "ECONNREFUSED") {
+          console.log(
+            "⚠️ [Redis] Redis 서버에 연결할 수 없습니다. 기본 모드로 실행합니다."
+          );
+          return undefined; // 재시도 중지
+        }
+        return Math.min(options.attempt * 100, 3000);
+      },
+    });
+
+    const subClient = pubClient.duplicate();
+
+    // Redis 연결 시도
+    await pubClient.connect();
+    await subClient.connect();
+
+    // Redis Adapter 설정
+    io.adapter(createAdapter(pubClient, subClient));
+
+    console.log("✅ [Redis] Redis Adapter 설정 완료");
+
+    // Redis 연결 상태 모니터링
+    pubClient.on("error", (err) => {
+      console.error("❌ [Redis] Pub 클라이언트 에러:", err.message);
+    });
+
+    subClient.on("error", (err) => {
+      console.error("❌ [Redis] Sub 클라이언트 에러:", err.message);
+    });
+
+    return true;
+  } catch (error) {
+    console.log("⚠️ [Redis] Redis Adapter 설정 실패:", error.message);
+    console.log("📝 [Redis] 기본 메모리 어댑터로 실행합니다.");
+    return false;
+  }
+}
 
 // MongoDB Atlas 연결 설정
 const MONGODB_URI =
@@ -299,43 +352,129 @@ const authenticateToken = (req, res, next) => {
   );
 };
 
-// Socket.IO 연결 관리
-const connectedUsers = new Map(); // userId -> socketId 매핑
+// 연결된 사용자들과 그들이 참여한 채팅방 추적
+const connectedUsers = new Map(); // userId -> { socketId, joinedRooms: Set }
 
 io.on("connection", (socket) => {
-  console.log("[Socket.IO] 사용자 연결:", socket.id);
+  console.log("🔗 [Socket.IO] 새 연결:", socket.id);
+  console.log(
+    "📊 [Socket.IO] 현재 연결된 클라이언트 수:",
+    io.engine.clientsCount
+  );
 
-  // 사용자 인증 및 등록
-  socket.on("authenticate", (token) => {
+  // 인증 처리
+  socket.on("authenticate", async (token) => {
     try {
-      const decoded = jwt.verify(
-        token,
-        process.env.JWT_SECRET || "your-secret-key"
-      );
+      console.log("🔐 [Socket.IO] 인증 시도:", socket.id);
+      const decoded = jwt.verify(token, "your-secret-key");
       socket.userId = decoded.userId;
-      connectedUsers.set(decoded.userId, socket.id);
-      console.log("[Socket.IO] 사용자 인증 성공:", decoded.userId);
 
-      // 사용자의 채팅방들에 조인
+      // 사용자 연결 정보 저장
+      connectedUsers.set(socket.userId, {
+        socketId: socket.id,
+        joinedRooms: new Set(),
+      });
+
+      console.log("✅ [Socket.IO] 인증 성공:", {
+        socketId: socket.id,
+        userId: socket.userId,
+        totalConnectedUsers: connectedUsers.size,
+      });
       socket.emit("authenticated", { success: true });
     } catch (error) {
-      console.error("[Socket.IO] 인증 실패:", error);
+      console.error("❌ [Socket.IO] 인증 실패:", error.message);
       socket.emit("authentication_error", { message: "인증에 실패했습니다." });
     }
   });
 
   // 채팅방 참가
-  socket.on("join_room", (roomId) => {
-    socket.join(roomId);
-    console.log("[Socket.IO] 채팅방 참가:", socket.userId, "->", roomId);
+  socket.on("join_room", async (roomId) => {
+    try {
+      console.log("🚪 [Socket.IO] 채팅방 참가 요청:", {
+        socketId: socket.id,
+        userId: socket.userId,
+        roomId: roomId,
+      });
+
+      const userInfo = connectedUsers.get(socket.userId);
+      if (!userInfo) {
+        console.error(
+          "❌ [Socket.IO] 사용자 정보를 찾을 수 없습니다:",
+          socket.userId
+        );
+        return;
+      }
+
+      // 이미 해당 채팅방에 참여 중인지 확인
+      const isAlreadyInRoom = userInfo.joinedRooms.has(roomId);
+
+      socket.join(roomId);
+      userInfo.joinedRooms.add(roomId);
+
+      console.log("✅ [Socket.IO] 채팅방 참가 완료:", {
+        socketId: socket.id,
+        userId: socket.userId,
+        roomId: roomId,
+        isNewJoin: !isAlreadyInRoom,
+        roomMemberCount: (await io.in(roomId).fetchSockets()).length,
+      });
+
+      // 새로 입장한 경우에만 입장 메시지 전송
+      if (!isAlreadyInRoom) {
+        // 사용자 정보 조회
+        const user = await User.findById(socket.userId).select("name");
+        if (user) {
+          // 시스템 메시지 생성 및 저장
+          const systemMessage = new Message({
+            chatRoom: roomId,
+            content: `${user.name}님이 입장하셨습니다.`,
+            type: "system",
+            timestamp: new Date(),
+          });
+
+          await systemMessage.save();
+
+          // 채팅방의 모든 참가자에게 입장 메시지 전송
+          const messageToSend = {
+            _id: systemMessage._id,
+            content: systemMessage.content,
+            type: "system",
+            timestamp: systemMessage.timestamp,
+            user: {
+              name: user.name,
+            },
+          };
+
+          console.log("📢 [Socket.IO] 입장 메시지 전송:", {
+            roomId: roomId,
+            userName: user.name,
+            messageId: systemMessage._id,
+          });
+
+          io.to(roomId).emit("user_joined", messageToSend);
+          console.log(`✅ [Socket.IO] ${user.name}님 입장 메시지 전송 완료`);
+        }
+      }
+    } catch (error) {
+      console.error("❌ [Socket.IO] 채팅방 참가 처리 실패:", error);
+    }
   });
 
   // 메시지 전송
   socket.on("send_message", async (data) => {
     try {
+      console.log("💬 [Socket.IO] 메시지 전송 요청:", {
+        socketId: socket.id,
+        userId: socket.userId,
+        chatRoomId: data.chatRoomId,
+        type: data.type,
+        contentLength: data.content?.length || 0,
+      });
+
       const { chatRoomId, content, type = "text", file } = data;
 
       if (!socket.userId) {
+        console.error("❌ [Socket.IO] 인증되지 않은 사용자의 메시지 전송 시도");
         socket.emit("error", { message: "인증이 필요합니다." });
         return;
       }
@@ -385,6 +524,13 @@ io.on("connection", (socket) => {
         messageToSend.file = populatedMessage.file;
       }
 
+      console.log("📤 [Socket.IO] 메시지 브로드캐스트:", {
+        roomId: chatRoomId,
+        messageId: message._id,
+        senderName: populatedMessage.sender.name,
+        roomMemberCount: (await io.in(chatRoomId).fetchSockets()).length,
+      });
+
       io.to(chatRoomId).emit("new_message", messageToSend);
 
       // 채팅방의 마지막 메시지 업데이트
@@ -398,18 +544,25 @@ io.on("connection", (socket) => {
         },
       });
 
-      console.log(
-        "[Socket.IO] 메시지 전송 완료:",
-        type === "file" ? `파일: ${file?.originalName}` : content
-      );
+      console.log("✅ [Socket.IO] 메시지 전송 완료:", {
+        type: type,
+        content:
+          type === "file"
+            ? `파일: ${file?.originalName}`
+            : content.substring(0, 50) + (content.length > 50 ? "..." : ""),
+      });
     } catch (error) {
-      console.error("[Socket.IO] 메시지 전송 실패:", error);
+      console.error("❌ [Socket.IO] 메시지 전송 실패:", error);
       socket.emit("error", { message: "메시지 전송에 실패했습니다." });
     }
   });
 
   // 타이핑 상태
   socket.on("typing_start", (data) => {
+    console.log("⌨️ [Socket.IO] 타이핑 시작:", {
+      userId: socket.userId,
+      chatRoomId: data.chatRoomId,
+    });
     socket.to(data.chatRoomId).emit("user_typing", {
       userId: socket.userId,
       isTyping: true,
@@ -417,6 +570,10 @@ io.on("connection", (socket) => {
   });
 
   socket.on("typing_stop", (data) => {
+    console.log("⌨️ [Socket.IO] 타이핑 중지:", {
+      userId: socket.userId,
+      chatRoomId: data.chatRoomId,
+    });
     socket.to(data.chatRoomId).emit("user_typing", {
       userId: socket.userId,
       isTyping: false,
@@ -424,7 +581,14 @@ io.on("connection", (socket) => {
   });
 
   // 연결 해제
-  socket.on("disconnect", () => {
+  socket.on("disconnect", (reason) => {
+    console.log("🔌 [Socket.IO] 사용자 연결 해제:", {
+      socketId: socket.id,
+      userId: socket.userId,
+      reason: reason,
+      remainingClients: io.engine.clientsCount - 1,
+    });
+
     if (socket.userId) {
       connectedUsers.delete(socket.userId);
       console.log("[Socket.IO] 사용자 연결 해제:", socket.userId);
@@ -1479,11 +1643,31 @@ async function startServer() {
     process.exit(1);
   }
 
+  // Redis Adapter 설정 시도 (선택적)
+  console.log("🔧 [서버 로그] Redis Adapter 설정 시도 중...");
+  const redisConnected = await setupRedisAdapter();
+
+  if (redisConnected) {
+    console.log(
+      "✅ [서버 로그] Redis Adapter 활성화됨 - 확장 가능한 Socket.IO 모드"
+    );
+  } else {
+    console.log("📝 [서버 로그] 기본 메모리 어댑터 사용 - 단일 서버 모드");
+  }
+
   // 서버 시작
   server.listen(PORT, () => {
-    console.log(`[서버 로그] 서버 시작: http://localhost:${PORT}`);
-    console.log(`[서버 로그] Socket.IO 서버 활성화됨`);
-    console.log(`[서버 로그] MongoDB 연결 완료 - 모든 기능 사용 가능`);
+    console.log(`🚀 [서버 로그] 서버 시작: http://localhost:${PORT}`);
+    console.log(`🔌 [서버 로그] Socket.IO 서버 활성화됨`);
+    console.log(`💾 [서버 로그] MongoDB 연결 완료 - 모든 기능 사용 가능`);
+
+    // 환경 정보 출력
+    console.log("📋 [서버 로그] 서버 환경 정보:");
+    console.log(`   - Node.js 버전: ${process.version}`);
+    console.log(`   - 환경: ${process.env.NODE_ENV || "development"}`);
+    console.log(`   - 포트: ${PORT}`);
+    console.log(`   - Redis: ${redisConnected ? "연결됨" : "연결 안됨"}`);
+    console.log(`   - Socket.IO 전송 방식: websocket, polling`);
   });
 }
 
