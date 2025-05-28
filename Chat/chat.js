@@ -354,6 +354,15 @@ function initializeSocket(token) {
     return;
   }
 
+  // 기존 socket 연결이 있으면 정리
+  if (socket) {
+    console.log("🧹 기존 Socket.IO 연결 정리 중...");
+    // 모든 이벤트 리스너 제거
+    socket.removeAllListeners();
+    socket.disconnect();
+    socket = null;
+  }
+
   socket = io({
     auth: {
       token: token,
@@ -366,11 +375,20 @@ function initializeSocket(token) {
     forceNew: true,
   });
 
+  // 연결 이벤트들을 한 번만 등록
+  setupSocketEventListeners(token);
+}
+
+// Socket.IO 이벤트 리스너들을 별도 함수로 분리
+function setupSocketEventListeners(token) {
+  console.log("🔧 Socket.IO 이벤트 리스너 설정 중...");
+
   // 연결 시도
   socket.on("connect", () => {
     console.log("✅ Socket.IO 연결 성공:", socket.id);
     console.log("연결된 서버:", socket.io.uri);
     console.log("전송 방식:", socket.io.engine.transport.name);
+    console.log("Socket 연결 상태:", socket.connected);
     socket.emit("authenticate", token);
   });
 
@@ -378,6 +396,7 @@ function initializeSocket(token) {
   socket.on("connect_error", (error) => {
     console.error("❌ Socket.IO 연결 실패:", error);
     console.log("연결 시도 중인 서버:", socket.io.uri);
+    console.log("Socket 연결 상태:", socket.connected);
     showNotification(
       "실시간 채팅 연결에 실패했습니다. 서버 상태를 확인해주세요.",
       "error"
@@ -419,10 +438,25 @@ function initializeSocket(token) {
     }, 2000);
   });
 
-  // 새 메시지 수신
+  // ⭐ 새 메시지 수신 - 가장 중요한 이벤트
   socket.on("new_message", (message) => {
-    console.log("📨 새 메시지 수신:", message);
-    addMessageToUI(message);
+    console.log("📨 ⭐⭐⭐ NEW_MESSAGE 이벤트 수신! ⭐⭐⭐");
+    console.log("📨 메시지 상세 정보:", {
+      messageId: message._id,
+      content: message.content,
+      sender: message.sender,
+      type: message.type,
+      timestamp: message.timestamp,
+    });
+    console.log("📨 현재 채팅방:", currentChatRoom);
+    console.log("📨 현재 사용자:", currentUser);
+
+    try {
+      addMessageToUI(message);
+      console.log("✅ 메시지 UI 추가 완료");
+    } catch (error) {
+      console.error("❌ 메시지 UI 추가 실패:", error);
+    }
   });
 
   // 사용자 나가기 이벤트 수신
@@ -438,8 +472,14 @@ function initializeSocket(token) {
   // 사용자 입장 이벤트 수신
   socket.on("user_joined", (data) => {
     console.log("👋 사용자 입장:", data);
+    console.log("👋 입장 데이터 상세:", {
+      message: data.message || data,
+      user: data.user,
+      type: typeof data,
+    });
     try {
       addSystemMessageToUI(data);
+      console.log("✅ 입장 메시지 UI 추가 완료");
     } catch (error) {
       console.error("입장 메시지 표시 에러:", error);
     }
@@ -471,6 +511,11 @@ function initializeSocket(token) {
     }
   });
 
+  // 모든 이벤트 수신 로깅 (디버깅용)
+  socket.onAny((eventName, ...args) => {
+    console.log(`🎯 [Socket.IO] 이벤트 수신: ${eventName}`, args);
+  });
+
   // 연결 상태 모니터링
   setInterval(() => {
     if (socket) {
@@ -481,6 +526,8 @@ function initializeSocket(token) {
       });
     }
   }, 30000); // 30초마다 체크
+
+  console.log("✅ Socket.IO 이벤트 리스너 설정 완료");
 }
 
 // 채팅방 목록 로드
@@ -788,42 +835,76 @@ function createMessageHTML(message) {
 
 // UI에 새 메시지 추가
 function addMessageToUI(message) {
+  console.log("🔄 addMessageToUI 시작:", message);
+
   const messagesContainer = document.querySelector(".messages-container");
+  if (!messagesContainer) {
+    console.error("❌ messages-container 요소를 찾을 수 없습니다!");
+    return;
+  }
+
   const messageGroup = messagesContainer.querySelector(".message-group");
+  console.log("📦 messageGroup 존재:", !!messageGroup);
 
   // 스크롤 위치 확인 (사용자가 맨 아래에 있는지 체크)
   const isScrolledToBottom =
     messagesContainer.scrollTop + messagesContainer.clientHeight >=
     messagesContainer.scrollHeight - 10; // 10px 여유분
 
+  console.log("📏 스크롤 상태:", {
+    scrollTop: messagesContainer.scrollTop,
+    clientHeight: messagesContainer.clientHeight,
+    scrollHeight: messagesContainer.scrollHeight,
+    isScrolledToBottom: isScrolledToBottom,
+  });
+
+  const messageHTML = createMessageHTML(message);
+  console.log("📝 생성된 메시지 HTML:", messageHTML.substring(0, 100) + "...");
+
   if (messageGroup) {
-    messageGroup.insertAdjacentHTML("beforeend", createMessageHTML(message));
+    messageGroup.insertAdjacentHTML("beforeend", messageHTML);
+    console.log("✅ 기존 messageGroup에 메시지 추가됨");
   } else {
     // 첫 번째 메시지인 경우
-    messagesContainer.innerHTML = `
+    const newHTML = `
       <div class="message-group">
         <div class="message-date">오늘</div>
-        ${createMessageHTML(message)}
+        ${messageHTML}
       </div>
     `;
+    messagesContainer.innerHTML = newHTML;
+    console.log("✅ 새로운 messageGroup 생성하여 메시지 추가됨");
   }
 
   // 사용자가 맨 아래에 있었거나 본인이 보낸 메시지인 경우에만 자동 스크롤
-  if (
+  const shouldAutoScroll =
     isScrolledToBottom ||
-    (message.sender && message.sender._id === currentUser.id)
-  ) {
+    (message.sender && message.sender._id === currentUser.id);
+
+  console.log("🔄 자동 스크롤 여부:", {
+    shouldAutoScroll: shouldAutoScroll,
+    isScrolledToBottom: isScrolledToBottom,
+    isOwnMessage: message.sender && message.sender._id === currentUser.id,
+    currentUserId: currentUser?.id,
+    messageSenderId: message.sender?._id,
+  });
+
+  if (shouldAutoScroll) {
     // 부드러운 스크롤로 맨 아래로 이동
     setTimeout(() => {
       messagesContainer.scrollTo({
         top: messagesContainer.scrollHeight,
         behavior: "smooth",
       });
+      console.log("✅ 자동 스크롤 완료");
     }, 100);
   } else {
     // 새 메시지 알림 표시 (선택사항)
     showNewMessageIndicator();
+    console.log("📢 새 메시지 알림 표시됨");
   }
+
+  console.log("🎉 addMessageToUI 완료");
 }
 
 // 시스템 메시지 UI 추가
@@ -958,6 +1039,13 @@ function sendMessage() {
   const messageInput = document.getElementById("messageInput");
   const messageText = messageInput.value.trim();
 
+  console.log("📤 메시지 전송 시도:", {
+    messageText: messageText,
+    currentChatRoom: currentChatRoom,
+    socketConnected: socket?.connected,
+    socketId: socket?.id,
+  });
+
   if (!messageText || !currentChatRoom) {
     console.warn("메시지 전송 조건이 충족되지 않음:", {
       messageText: !!messageText,
@@ -966,16 +1054,23 @@ function sendMessage() {
     return;
   }
 
-  if (socket) {
+  if (socket && socket.connected) {
     // Socket.IO로 메시지 전송
-    socket.emit("send_message", {
+    const messageData = {
       chatRoomId: currentChatRoom,
       content: messageText,
       type: "text",
-    });
-    console.log("메시지 전송:", messageText);
+    };
+
+    console.log("📤 Socket.IO 메시지 전송:", messageData);
+    socket.emit("send_message", messageData);
+    console.log("✅ 메시지 전송 완료:", messageText);
   } else {
-    console.error("Socket.IO 연결이 없습니다.");
+    console.error("Socket.IO 연결이 없습니다:", {
+      socket: !!socket,
+      connected: socket?.connected,
+      socketId: socket?.id,
+    });
     showNotification("서버와의 연결이 끊어졌습니다.", "error");
   }
 

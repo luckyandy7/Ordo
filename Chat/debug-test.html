@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Socket.IO 디버깅 테스트</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+      }
+      .status {
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 5px;
+      }
+      .connected {
+        background: #d4edda;
+        color: #155724;
+      }
+      .disconnected {
+        background: #f8d7da;
+        color: #721c24;
+      }
+      .log {
+        background: #f8f9fa;
+        border: 1px solid #dee2e6;
+        padding: 10px;
+        height: 300px;
+        overflow-y: auto;
+        margin: 10px 0;
+        font-family: monospace;
+        font-size: 12px;
+      }
+      .messages {
+        background: #e7f3ff;
+        border: 1px solid #b3d7ff;
+        padding: 10px;
+        height: 200px;
+        overflow-y: auto;
+        margin: 10px 0;
+      }
+      input,
+      button {
+        padding: 8px;
+        margin: 5px;
+      }
+      .test-button {
+        background: #007bff;
+        color: white;
+        border: none;
+        border-radius: 3px;
+        cursor: pointer;
+      }
+      .test-button:hover {
+        background: #0056b3;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>🔧 Ordo Socket.IO 디버깅 테스트</h1>
+
+    <div id="status" class="status disconnected">연결 안됨</div>
+
+    <div>
+      <input
+        type="text"
+        id="userName"
+        placeholder="사용자 이름"
+        value="테스터"
+      />
+      <input
+        type="text"
+        id="token"
+        placeholder="JWT 토큰 (로그인 후 localStorage에서 복사)"
+        style="width: 300px"
+      />
+      <button class="test-button" onclick="connect()">연결</button>
+      <button class="test-button" onclick="disconnect()">해제</button>
+      <button class="test-button" onclick="clearLogs()">로그 지우기</button>
+    </div>
+
+    <div>
+      <input
+        type="text"
+        id="chatRoomId"
+        placeholder="채팅방 ID"
+        style="width: 300px"
+      />
+      <button class="test-button" onclick="joinRoom()">채팅방 참가</button>
+    </div>
+
+    <div>
+      <input
+        type="text"
+        id="messageInput"
+        placeholder="테스트 메시지"
+        style="width: 300px"
+      />
+      <button class="test-button" onclick="sendMessage()">메시지 전송</button>
+    </div>
+
+    <div>
+      <h3>📝 디버깅 로그</h3>
+      <div id="logs" class="log"></div>
+    </div>
+
+    <div>
+      <h3>💬 수신된 메시지</h3>
+      <div id="messages" class="messages"></div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      let socket = null;
+      let currentChatRoom = null;
+
+      function log(message) {
+        const timestamp = new Date().toLocaleTimeString();
+        const logEl = document.getElementById("logs");
+        logEl.innerHTML += `[${timestamp}] ${message}<br>`;
+        logEl.scrollTop = logEl.scrollHeight;
+        console.log(`[${timestamp}] ${message}`);
+      }
+
+      function addMessage(content, type = "received") {
+        const timestamp = new Date().toLocaleTimeString();
+        const messagesEl = document.getElementById("messages");
+        messagesEl.innerHTML += `<div><strong>[${timestamp}] ${type}:</strong> ${content}</div>`;
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+      }
+
+      function clearLogs() {
+        document.getElementById("logs").innerHTML = "";
+        document.getElementById("messages").innerHTML = "";
+      }
+
+      function updateStatus(connected) {
+        const statusEl = document.getElementById("status");
+        if (connected) {
+          statusEl.textContent = "✅ 연결됨";
+          statusEl.className = "status connected";
+        } else {
+          statusEl.textContent = "❌ 연결 안됨";
+          statusEl.className = "status disconnected";
+        }
+      }
+
+      function connect() {
+        const token = document.getElementById("token").value.trim();
+        if (!token) {
+          alert(
+            'JWT 토큰을 입력하세요. 브라우저 개발자 도구에서 localStorage.getItem("token")으로 확인할 수 있습니다.'
+          );
+          return;
+        }
+
+        if (socket) {
+          socket.disconnect();
+        }
+
+        log("🔌 Socket.IO 연결 시도...");
+
+        socket = io({
+          auth: { token: token },
+          transports: ["websocket", "polling"],
+          upgrade: true,
+          rememberUpgrade: true,
+          timeout: 20000,
+          forceNew: true,
+        });
+
+        // 연결 이벤트
+        socket.on("connect", () => {
+          log(`✅ 연결 성공: ${socket.id}`);
+          log(`🌐 서버: ${socket.io.uri}`);
+          log(`🚀 전송방식: ${socket.io.engine.transport.name}`);
+          updateStatus(true);
+          socket.emit("authenticate", token);
+        });
+
+        socket.on("connect_error", (error) => {
+          log(`❌ 연결 실패: ${error.message}`);
+          updateStatus(false);
+        });
+
+        socket.on("disconnect", (reason) => {
+          log(`🔌 연결 해제: ${reason}`);
+          updateStatus(false);
+        });
+
+        // 인증 이벤트
+        socket.on("authenticated", (data) => {
+          log(`🔐 인증 성공: ${JSON.stringify(data)}`);
+        });
+
+        socket.on("authentication_error", (error) => {
+          log(`❌ 인증 실패: ${error.message}`);
+        });
+
+        // 메시지 관련 이벤트 - 가장 중요한 부분!
+        socket.on("new_message", (message) => {
+          log(`📨 NEW_MESSAGE 이벤트 수신!`);
+          log(`📨 메시지 내용: ${JSON.stringify(message, null, 2)}`);
+          addMessage(JSON.stringify(message, null, 2), "new_message");
+        });
+
+        socket.on("user_joined", (data) => {
+          log(`👋 USER_JOINED 이벤트 수신: ${JSON.stringify(data)}`);
+          addMessage(JSON.stringify(data), "user_joined");
+        });
+
+        socket.on("user_left", (data) => {
+          log(`👋 USER_LEFT 이벤트 수신: ${JSON.stringify(data)}`);
+          addMessage(JSON.stringify(data), "user_left");
+        });
+
+        socket.on("user_typing", (data) => {
+          log(`⌨️ 타이핑: ${JSON.stringify(data)}`);
+        });
+
+        socket.on("error", (error) => {
+          log(`❌ Socket 에러: ${error.message}`);
+        });
+
+        // 모든 이벤트 캐치
+        socket.onAny((eventName, ...args) => {
+          log(`🎯 이벤트 수신: ${eventName} - ${JSON.stringify(args)}`);
+        });
+      }
+
+      function disconnect() {
+        if (socket) {
+          socket.disconnect();
+          socket = null;
+        }
+        updateStatus(false);
+        log("🔌 수동 연결 해제");
+      }
+
+      function joinRoom() {
+        const roomId = document.getElementById("chatRoomId").value.trim();
+        if (!roomId || !socket || !socket.connected) {
+          alert("채팅방 ID를 입력하고 먼저 연결하세요.");
+          return;
+        }
+
+        currentChatRoom = roomId;
+        log(`🚪 채팅방 참가: ${roomId}`);
+        socket.emit("join_room", roomId);
+      }
+
+      function sendMessage() {
+        const content = document.getElementById("messageInput").value.trim();
+        if (!content || !currentChatRoom || !socket || !socket.connected) {
+          alert("메시지를 입력하고 채팅방에 먼저 참가하세요.");
+          return;
+        }
+
+        const messageData = {
+          chatRoomId: currentChatRoom,
+          content: content,
+          type: "text",
+        };
+
+        log(`📤 메시지 전송: ${JSON.stringify(messageData)}`);
+        socket.emit("send_message", messageData);
+        document.getElementById("messageInput").value = "";
+      }
+
+      // 페이지 로드 시 안내
+      window.onload = function () {
+        log("🚀 Socket.IO 디버깅 테스트 페이지 로드됨");
+        log("📝 사용법:");
+        log("1. 메인 채팅 페이지에서 로그인 후 localStorage에서 토큰 복사");
+        log("2. 토큰 입력 후 연결 버튼 클릭");
+        log("3. 채팅방 ID 입력 후 참가");
+        log("4. 메시지 전송 테스트");
+        log("5. 다른 브라우저나 탭에서 동일하게 테스트하여 실시간 수신 확인");
+      };
+    </script>
+  </body>
+</html>

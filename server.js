@@ -31,7 +31,7 @@ async function setupRedisAdapter() {
 
     // Redis 클라이언트 생성
     const pubClient = createClient({
-      url: process.env.REDIS_URL || "redis://localhost:6379",
+      url: process.env.REDIS_URL || "redis://172.16.109.105:6379",
       retry_strategy: (options) => {
         if (options.error && options.error.code === "ECONNREFUSED") {
           console.log(
