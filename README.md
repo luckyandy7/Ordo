@@ -633,10 +633,9 @@ CMD ["node", "server.js"]
 
 ### v3.0.0 예정 기능
 
-- [ ] **음성/영상 통화**: WebRTC 기반 통화 기능
-- [ ] **메시지 암호화**: End-to-End 암호화
-- [ ] **봇 시스템**: 자동화된 채팅 봇
-- [ ] **메시지 검색**: 전문 검색 기능
+- [ ] **커뮤니티탭**: 게시판 기능 추가
+- [ ] **AI 연결**: Horae 연결 후, 일정 추천 및 한마디 시스템
+- [ ] **공동작업**: 공동작업
 - [ ] **알림 시스템**: 푸시 알림 지원
 
 ### 성능 개선 계획
@@ -669,9 +668,7 @@ CMD ["node", "server.js"]
 
 ## 📞 지원 및 문의
 
-- **이슈 리포트**: [GitHub Issues](https://github.com/your-username/Ordo/issues)
-- **기능 요청**: [GitHub Discussions](https://github.com/your-username/Ordo/discussions)
-- **이메일**: support@ordo-chat.com
+- **이메일**: suhwan522@gmail.com
 
 ## 🙏 감사의 말
 
