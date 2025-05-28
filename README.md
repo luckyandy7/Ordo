@@ -1,119 +1,881 @@
-# Ordo - 실시간 채팅 시스템 🚀
+# Ordo - 통합 협업 및 생산성 플랫폼 🚀
 
 ## 📋 프로젝트 개요
 
-Ordo는 **Node.js**와 **Socket.IO**를 기반으로 한 **전문적인 실시간 채팅 시스템**입니다. 현대적인 웹 기술을 활용하여 안정적이고 확장 가능한 채팅 솔루션을 제공합니다.
+Ordo는 **Node.js**와 **Socket.IO**를 기반으로 한 **전문적인 통합 협업 플랫폼**입니다. 개인 생산성 관리부터 팀 협업까지, 현대적인 웹 기술을 활용하여 원스톱 솔루션을 제공합니다.
 
 ### 🎯 주요 특징
 
-- 🔄 **실시간 양방향 통신**: Socket.IO 기반 WebSocket/Polling 지원
-- 🏗️ **확장 가능한 아키텍처**: Redis Adapter로 다중 서버 확장 지원
-- 🔐 **안전한 인증 시스템**: JWT 토큰 기반 보안
-- 📱 **반응형 디자인**: 모바일/태블릿/데스크톱 완벽 지원
+- 📅 **스마트 캘린더**: 개인/팀 일정 관리 및 시각적 대시보드
+- ✅ **할일 관리**: 작업 추적 및 완료율 통계
+- 💬 **실시간 채팅**: Socket.IO 기반 즉시 메시징 시스템
+- 🤝 **협업 워크스페이스**: 팀 프로젝트 관리 및 파일 공유
+- 📊 **생산성 분석**: 주간/일간 통계 및 진행률 추적
+- 🔐 **안전한 인증**: JWT 토큰 기반 보안 시스템
+- 📱 **반응형 디자인**: 모든 디바이스에서 완벽한 경험
 - 🌙 **다크모드**: 라이트/다크 테마 자동 전환
-- 📁 **파일 공유**: GridFS 기반 대용량 파일 처리
-- ⚡ **고성능**: MongoDB Atlas + Redis로 최적화된 성능
 
-## ✨ 주요 기능
+## ✨ 핵심 기능
 
-### 🔐 사용자 인증 및 관리
+### 📅 스마트 캘린더 시스템
 
-- **회원가입/로그인**: 이메일 기반 계정 시스템
-- **JWT 토큰 인증**: 안전한 세션 관리
-- **자동 로그인 유지**: LocalStorage 기반 토큰 저장
-- **사용자 프로필**: 아바타 및 개인정보 관리
+- **개인 일정 관리**: 드래그앤드롭으로 쉬운 일정 생성
+- **주간 뷰**: 시각적 타임라인으로 한눈에 보는 스케줄
+- **일정 그룹화**: 연관된 일정들의 자동 그룹 관리
+- **완료 추적**: 일정별 완료 상태 및 진행률 표시
+- **실시간 업데이트**: 변경사항 즉시 반영
+- **색상 코딩**: 일정 종류별 시각적 구분
 
-### 💬 실시간 채팅
+### ✅ 할일 관리 (Todo)
 
-- **즉시 메시지 전송**: 지연 없는 실시간 통신
-- **입장/퇴장 알림**: 사용자 활동 자동 추적
-- **타이핑 상태 표시**: 상대방 입력 중 실시간 표시
-- **메시지 히스토리**: 무제한 대화 기록 저장
-- **시스템 메시지**: 채팅방 이벤트 자동 알림
+- **작업 생성/삭제**: 간편한 할일 목록 관리
+- **완료율 통계**: 일간/주간 생산성 분석
+- **우선순위 설정**: 중요도별 작업 분류
+- **진행 상태 추적**: 실시간 완료 현황 모니터링
 
-### 🏠 채팅방 관리
+### 💬 실시간 채팅 시스템
 
-- **채팅방 생성**: 사용자 정의 채팅방 생성
-- **멤버 초대**: 이메일/사용자명으로 초대
-- **채팅방 나가기**: 안전한 채팅방 퇴장
-- **참여자 목록**: 실시간 온라인 상태 표시
+- **즉시 메시지 전송**: Socket.IO 기반 지연 없는 통신
+- **채팅방 관리**: 다중 채팅방 생성 및 참여
+- **파일 공유**: GridFS 기반 대용량 파일 전송 (최대 10MB)
+- **사용자 초대**: 이메일/이름으로 멤버 초대
+- **타이핑 상태**: 상대방 입력 중 실시간 표시
+- **입장/퇴장 알림**: 자동 시스템 메시지
 
-### 📎 파일 공유 시스템
+### 🤝 협업 워크스페이스
 
-- **파일 업로드**: 드래그앤드롭 지원 (최대 10MB)
-- **다양한 파일 타입**: 이미지, 문서, 압축파일 등
-- **파일 다운로드**: 원본 파일명 유지
-- **파일 미리보기**: 이미지 파일 즉시 미리보기
-- **GridFS 저장**: MongoDB GridFS로 안전한 파일 관리
+- **팀 워크스페이스**: 프로젝트별 협업 공간 구성
+- **공유 캘린더**: 팀 일정 통합 관리
+- **작업 보드**: 칸반 스타일 팀 작업 관리
+- **멤버 관리**: 역할별 권한 설정
+- **파일 공유**: 팀 문서 중앙화 관리
 
-### 🎨 사용자 인터페이스
+### 📊 생산성 대시보드
 
-- **모던 UI/UX**: 직관적이고 아름다운 인터페이스
-- **다크모드**: 눈의 피로를 줄이는 다크 테마
-- **반응형 디자인**: 모든 디바이스에서 완벽한 경험
-- **스마트 스크롤**: 새 메시지 자동 스크롤 및 알림
-- **고정 채팅 영역**: 스크롤 가능한 고정 크기 채팅창
+- **실시간 통계**: 일간/주간 완료율 시각화
+- **활동 피드**: 최근 작업 활동 타임라인
+- **성과 분석**: 생산성 트렌드 분석
+- **목표 추적**: 개인/팀 목표 달성률
+
+### 👤 사용자 관리
+
+- **개인 프로필**: 아바타 및 개인정보 관리
+- **설정 동기화**: 테마/환경설정 저장
+- **인증 시스템**: JWT 기반 안전한 로그인
 
 ## 🛠 기술 스택
 
 ### Frontend
 
-- **HTML5** - 시맨틱 마크업
-- **CSS3** - 모던 스타일링 (Flexbox, Grid, Animations)
-- **Vanilla JavaScript** - 순수 자바스크립트 (프레임워크 없음)
+- **HTML5** - 시맨틱 마크업 및 웹 표준
+- **CSS3** - 모던 스타일링 (Flexbox, Grid, 애니메이션)
+- **Vanilla JavaScript** - 순수 자바스크립트 (2,089줄)
 - **Socket.IO Client** - 실시간 통신 클라이언트
 
 ### Backend
 
-- **Node.js v23.11.0** - 서버 런타임
-- **Express.js** - 웹 프레임워크
+- **Node.js v23.11.0** - 서버 런타임 환경
+- **Express.js** - RESTful API 웹 프레임워크
 - **Socket.IO** - 실시간 양방향 통신
-- **Redis Adapter** - 다중 서버 확장성
+- **Redis Adapter** - 다중 서버 확장성 지원
 
 ### Database & Storage
 
-- **MongoDB Atlas** - 클라우드 데이터베이스
-- **Mongoose** - MongoDB ODM
-- **GridFS** - 대용량 파일 저장
+- **MongoDB Atlas** - 클라우드 NoSQL 데이터베이스
+- **Mongoose** - MongoDB ODM 및 스키마 관리
+- **GridFS** - 대용량 파일 저장 시스템
 
 ### Authentication & Security
 
-- **JWT (JSON Web Tokens)** - 토큰 기반 인증
-- **bcryptjs** - 비밀번호 암호화
-- **CORS** - 교차 출처 리소스 공유 설정
+- **JWT (JSON Web Tokens)** - 무상태 토큰 인증
+- **bcryptjs** - 안전한 비밀번호 해싱
+- **CORS** - 교차 출처 리소스 공유 보안
 
 ## 📁 프로젝트 구조
 
 ```
 Ordo/
-├── 📂 Chat/                    # 채팅 시스템
-│   ├── chat.html              # 메인 채팅 페이지
-│   ├── chat.js                # 채팅 클라이언트 로직 (1,828줄)
+├── 📂 Main/                     # 메인 대시보드
+│   ├── index.html              # 메인 대시보드 페이지
+│   ├── Mainpage.html           # 상세 메인 페이지 (1,285줄)
+│   ├── main.js                 # 메인 로직 (2,089줄)
+│   ├── styles.css              # 메인 스타일 (3,040줄)
+│   ├── profile.html            # 프로필 관리 페이지
+│   ├── profile.js              # 프로필 로직 (542줄)
+│   └── profile.css             # 프로필 스타일 (883줄)
+├── 📂 Chat/                     # 실시간 채팅 시스템
+│   ├── chat.html              # 채팅 메인 페이지
+│   ├── chat.js                # 채팅 클라이언트 로직 (1,852줄)
 │   ├── styles.css             # 채팅 UI 스타일
 │   └── debug-test.html        # Socket.IO 디버깅 도구
-├── 📂 Login/                   # 인증 시스템
+├── 📂 Collaboration/            # 팀 협업 워크스페이스
+│   ├── collaboration.html     # 협업 메인 페이지 (417줄)
+│   └── styles.css             # 협업 UI 스타일 (1,297줄)
+├── 📂 Login/                    # 인증 시스템
 │   ├── email-login.html       # 로그인 페이지
 │   ├── signup.html            # 회원가입 페이지
 │   ├── signup.js              # 회원가입 로직
-│   └── styles.css             # 로그인 UI 스타일
-├── 📂 Main/                    # 메인 대시보드
-│   ├── index.html             # 메인 페이지
-│   ├── main.js                # 메인 페이지 로직
-│   └── styles.css             # 메인 UI 스타일
-├── 📂 models/                  # 데이터 모델
+│   └── styles.css             # 인증 UI 스타일
+├── 📂 models/                   # 데이터 모델
 │   ├── User.js                # 사용자 스키마
-│   ├── Message.js             # 메시지 스키마
-│   ├── ChatRoom.js            # 채팅방 스키마
-│   ├── Invitation.js          # 초대 스키마
-│   ├── Event.js               # 이벤트 스키마
+│   ├── Message.js             # 채팅 메시지 스키마
+│   ├── Event.js               # 캘린더 이벤트 스키마
 │   └── Todo.js                # 할일 스키마
-├── 📂 routes/                  # API 라우트
-│   ├── auth.js                # 인증 API
-│   ├── eventRoutes.js         # 이벤트 API
-│   └── todoRoutes.js          # 할일 API
-├── 📄 server.js               # 메인 서버 파일 (1,659줄)
-├── 📄 package.json            # 의존성 관리
-└── 📄 README.md               # 프로젝트 문서
+├── 📂 routes/                   # API 라우트
+│   ├── auth.js                # 사용자 인증 API
+│   ├── eventRoutes.js         # 캘린더 이벤트 API (147줄)
+│   └── todoRoutes.js          # 할일 관리 API (25줄)
+├── 📄 server.js                # 메인 서버 파일 (1,679줄)
+├── 📄 package.json             # 의존성 관리
+└── 📄 README.md                # 프로젝트 문서
+```
+
+## 💻 상세 코드 구조 및 핵심 기능
+
+### 🎯 메인 대시보드 시스템 (Main/main.js - 2,089줄)
+
+#### 📅 **스마트 캘린더 핵심 함수들**
+
+**1. initializeCalendar() - 캘린더 초기화**
+
+```javascript
+function initializeCalendar() {
+  console.log("📅 캘린더 초기화 시작");
+  currentDate = new Date();
+  renderCalendar();
+  setInterval(updateCurrentTimeLine, 60000); // 1분마다 현재 시간 라인 업데이트
+}
+```
+
+**2. renderCalendar() - 주간 캘린더 렌더링**
+
+```javascript
+async function renderCalendar() {
+  const calendarBody = document.getElementById("calendarBody");
+  const calendarHeader = document.getElementById("calendarHeader");
+
+  // 주간 날짜 헤더 생성
+  const weekStart = new Date(currentDate);
+  weekStart.setDate(currentDate.getDate() - currentDate.getDay());
+
+  // 시간대별 이벤트 블록 생성 (0-23시)
+  for (let hour = 0; hour < 24; hour++) {
+    // 각 시간대에 이벤트 배치
+    await loadAndRenderEvents(hour);
+  }
+}
+```
+
+**3. loadEvents() - 서버에서 이벤트 데이터 로드**
+
+```javascript
+async function loadEvents(startDate, endDate) {
+  try {
+    const response = await fetchAPI(
+      `/api/events?start=${startDate}&end=${endDate}`
+    );
+    const events = response.events || [];
+
+    // 이벤트를 시간순으로 정렬
+    return events.sort((a, b) => new Date(a.date) - new Date(b.date));
+  } catch (error) {
+    console.error("이벤트 로드 실패:", error);
+    return [];
+  }
+}
+```
+
+**4. addEvent() - 새 일정 추가**
+
+```javascript
+async function addEvent(date, startTime, endTime, title, color) {
+  const eventData = {
+    title,
+    date: new Date(date),
+    startTime,
+    endTime,
+    color,
+    completed: false,
+    groupId: generateGroupId(), // 연관 일정 그룹화
+  };
+
+  try {
+    const response = await fetchAPI("/api/events", {
+      method: "POST",
+      body: JSON.stringify(eventData),
+    });
+
+    // UI 즉시 업데이트
+    updateUIForNewEvent(eventData);
+    addActivity("event_added", `새 일정이 추가되었습니다`, title);
+
+    return response;
+  } catch (error) {
+    console.error("일정 추가 실패:", error);
+    throw error;
+  }
+}
+```
+
+#### 📊 **생산성 통계 시스템**
+
+**1. updateWeekStats() - 주간 통계 업데이트**
+
+```javascript
+async function updateWeekStats() {
+  try {
+    const weekStart = new Date(currentDate);
+    weekStart.setDate(currentDate.getDate() - currentDate.getDay());
+
+    const weekEnd = new Date(weekStart);
+    weekEnd.setDate(weekStart.getDate() + 6);
+
+    const events = await loadEvents(
+      weekStart.toISOString(),
+      weekEnd.toISOString()
+    );
+
+    const totalEvents = events.length;
+    const completedEvents = events.filter((e) => e.completed).length;
+    const completionRate =
+      totalEvents > 0 ? (completedEvents / totalEvents) * 100 : 0;
+
+    // UI 업데이트
+    document.getElementById("weekTotal").textContent = totalEvents;
+    document.getElementById("weekCompleted").textContent = completedEvents;
+    updateCompletionRate(totalEvents, completedEvents);
+  } catch (error) {
+    console.error("주간 통계 업데이트 실패:", error);
+  }
+}
+```
+
+**2. updateTodayStats() - 오늘 통계 업데이트**
+
+```javascript
+async function updateTodayStats() {
+  const today = new Date();
+  const todayStart = new Date(today.setHours(0, 0, 0, 0));
+  const todayEnd = new Date(today.setHours(23, 59, 59, 999));
+
+  const todayEvents = await loadEvents(
+    todayStart.toISOString(),
+    todayEnd.toISOString()
+  );
+
+  const stats = {
+    total: todayEvents.length,
+    completed: todayEvents.filter((e) => e.completed).length,
+    pending: todayEvents.filter((e) => !e.completed).length,
+    progress:
+      todayEvents.length > 0
+        ? (todayEvents.filter((e) => e.completed).length / todayEvents.length) *
+          100
+        : 0,
+  };
+
+  updateTodayCompletionStatus(stats.total, stats.completed);
+}
+```
+
+#### 🎨 **테마 및 UI 관리**
+
+**1. initializeTheme() - 테마 시스템 초기화**
+
+```javascript
+function initializeTheme() {
+  const savedTheme = localStorage.getItem("theme");
+  const systemPrefersDark = window.matchMedia(
+    "(prefers-color-scheme: dark)"
+  ).matches;
+
+  const theme = savedTheme || (systemPrefersDark ? "dark" : "light");
+
+  document.documentElement.setAttribute("data-theme", theme);
+  updateThemeIcon(theme, document.querySelector(".theme-toggle"));
+
+  // 자동 테마 전환 (시간대별)
+  autoThemeByTime();
+}
+```
+
+**2. setupQuickActions() - 퀵 액션 설정**
+
+```javascript
+function setupQuickActions() {
+  const quickActions = {
+    ".quick-event": () => showAddEventModal(),
+    ".quick-chat": () => (window.location.href = "/Chat/chat.html"),
+    ".quick-collaboration": () =>
+      (window.location.href = "/Collaboration/collaboration.html"),
+    ".quick-profile": () => (window.location.href = "/Main/profile.html"),
+  };
+
+  Object.entries(quickActions).forEach(([selector, handler]) => {
+    const element = document.querySelector(selector);
+    if (element) {
+      element.addEventListener("click", handler);
+    }
+  });
+}
+```
+
+### 🏗️ **서버 사이드 아키텍처 (server.js - 1,679줄)**
+
+#### 🔧 **Express 서버 설정**
+
+**1. 서버 초기화 및 미들웨어**
+
+```javascript
+const express = require("express");
+const http = require("http");
+const socketIo = require("socket.io");
+const mongoose = require("mongoose");
+
+const app = express();
+const server = http.createServer(app);
+const io = socketIo(server, {
+  cors: { origin: "*", methods: ["GET", "POST"] },
+  transports: ["websocket", "polling"],
+  allowEIO3: true,
+  pingTimeout: 60000,
+  pingInterval: 25000,
+});
+
+// 미들웨어 설정
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ extended: true, limit: "50mb" }));
+app.use(cors());
+app.use(express.static(path.join(__dirname)));
+```
+
+**2. MongoDB 연결 및 GridFS 설정**
+
+```javascript
+async function connectToMongoDB() {
+  try {
+    await mongoose.connect(process.env.MONGODB_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      serverSelectionTimeoutMS: 5000,
+      retryWrites: true,
+      w: "majority",
+    });
+
+    // GridFS 초기화 (파일 저장용)
+    const conn = mongoose.connection;
+    gfs = new mongoose.mongo.GridFSBucket(conn.db, {
+      bucketName: "uploads",
+    });
+
+    console.log("✅ MongoDB Atlas 연결 성공");
+    return true;
+  } catch (error) {
+    console.error("❌ MongoDB 연결 실패:", error);
+    return false;
+  }
+}
+```
+
+#### 📅 **이벤트 API 엔드포인트**
+
+**1. 이벤트 생성 API**
+
+```javascript
+app.post("/api/events", authenticateToken, async (req, res) => {
+  try {
+    const { title, date, startTime, endTime, color } = req.body;
+
+    const event = new Event({
+      title,
+      date: new Date(date),
+      startTime,
+      endTime,
+      color: color || "#3b82f6",
+      userId: req.user.userId,
+      completed: false,
+      createdAt: new Date(),
+    });
+
+    await event.save();
+
+    res.status(201).json({
+      success: true,
+      event: {
+        id: event._id,
+        title: event.title,
+        date: event.date,
+        startTime: event.startTime,
+        endTime: event.endTime,
+        color: event.color,
+        completed: event.completed,
+      },
+    });
+  } catch (error) {
+    console.error("이벤트 생성 오류:", error);
+    res.status(500).json({ error: "이벤트 생성에 실패했습니다." });
+  }
+});
+```
+
+**2. 이벤트 조회 API**
+
+```javascript
+app.get("/api/events", authenticateToken, async (req, res) => {
+  try {
+    const { start, end, date } = req.query;
+    let query = { userId: req.user.userId };
+
+    if (date) {
+      // 특정 날짜 조회
+      const targetDate = new Date(date);
+      const startOfDay = new Date(targetDate.setHours(0, 0, 0, 0));
+      const endOfDay = new Date(targetDate.setHours(23, 59, 59, 999));
+
+      query.date = { $gte: startOfDay, $lte: endOfDay };
+    } else if (start && end) {
+      // 기간 조회
+      query.date = {
+        $gte: new Date(start),
+        $lte: new Date(end),
+      };
+    }
+
+    const events = await Event.find(query).sort({ date: 1, startTime: 1 });
+
+    res.json({
+      success: true,
+      events: events.map((event) => ({
+        id: event._id,
+        title: event.title,
+        date: event.date,
+        startTime: event.startTime,
+        endTime: event.endTime,
+        color: event.color,
+        completed: event.completed,
+      })),
+    });
+  } catch (error) {
+    console.error("이벤트 조회 오류:", error);
+    res.status(500).json({ error: "이벤트 조회에 실패했습니다." });
+  }
+});
+```
+
+### 📊 **데이터 모델 상세 구조**
+
+#### 📅 **Event 모델 (models/Event.js)**
+
+```javascript
+const eventSchema = new mongoose.Schema({
+  title: {
+    type: String,
+    required: true,
+    trim: true,
+    maxlength: 100,
+  },
+  date: {
+    type: Date,
+    required: true,
+    index: true, // 성능 최적화
+  },
+  startTime: {
+    type: String,
+    required: true,
+    validate: {
+      validator: function (v) {
+        return /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/.test(v);
+      },
+      message: "시간 형식이 올바르지 않습니다 (HH:MM)",
+    },
+  },
+  endTime: {
+    type: String,
+    required: true,
+    validate: {
+      validator: function (v) {
+        return /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/.test(v);
+      },
+      message: "시간 형식이 올바르지 않습니다 (HH:MM)",
+    },
+  },
+  color: {
+    type: String,
+    default: "#3b82f6",
+    validate: {
+      validator: function (v) {
+        return /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(v);
+      },
+      message: "올바른 색상 코드가 아닙니다",
+    },
+  },
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+    index: true,
+  },
+  completed: {
+    type: Boolean,
+    default: false,
+    index: true,
+  },
+  groupId: {
+    type: String,
+    default: null, // 연관 일정 그룹화용
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+  updatedAt: {
+    type: Date,
+    default: Date.now,
+  },
+});
+
+// 복합 인덱스 설정 (성능 최적화)
+eventSchema.index({ userId: 1, date: 1 });
+eventSchema.index({ userId: 1, completed: 1 });
+eventSchema.index({ userId: 1, groupId: 1 });
+```
+
+#### ✅ **Todo 모델 (models/Todo.js)**
+
+```javascript
+const todoSchema = new mongoose.Schema({
+  title: {
+    type: String,
+    required: true,
+    trim: true,
+    maxlength: 200,
+  },
+  completed: {
+    type: Boolean,
+    default: false,
+    index: true,
+  },
+  priority: {
+    type: String,
+    enum: ["low", "medium", "high", "urgent"],
+    default: "medium",
+  },
+  dueDate: {
+    type: Date,
+    default: null,
+  },
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+    index: true,
+  },
+  category: {
+    type: String,
+    default: "일반",
+    trim: true,
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+  completedAt: {
+    type: Date,
+    default: null,
+  },
+});
+
+// 성능 최적화 인덱스
+todoSchema.index({ userId: 1, completed: 1 });
+todoSchema.index({ userId: 1, dueDate: 1 });
+```
+
+### 🔄 **핵심 워크플로우 상세**
+
+#### 📅 **일정 관리 워크플로우**
+
+1. **일정 생성 플로우**
+
+   ```
+   사용자 클릭 → showAddEventModal() → 폼 제출 → addEvent() →
+   서버 저장 → UI 업데이트 → 활동 로그 → 통계 업데이트
+   ```
+
+2. **일정 완료 처리**
+
+   ```javascript
+   function toggleEventCompletion(eventId, eventTitle, isCompleted) {
+     // 1. UI 즉시 업데이트 (사용자 경험 향상)
+     updateEventVisualState(eventId, isCompleted);
+
+     // 2. 서버에 상태 전송
+     fetch(`/api/events/${eventId}/complete`, {
+       method: "PATCH",
+       body: JSON.stringify({ completed: isCompleted }),
+     });
+
+     // 3. 통계 업데이트
+     updateTodayStats();
+     updateWeekStats();
+
+     // 4. 활동 로그 추가
+     addActivity(
+       isCompleted ? "event_completed" : "event_uncompleted",
+       `일정이 ${isCompleted ? "완료" : "미완료"}되었습니다`,
+       eventTitle
+     );
+   }
+   ```
+
+#### 💬 **실시간 채팅 워크플로우**
+
+1. **메시지 전송 플로우**
+
+   ```
+   입력 → 검증 → Socket.IO 전송 → 서버 저장 →
+   브로드캐스트 → 모든 클라이언트 수신 → UI 업데이트
+   ```
+
+2. **파일 업로드 플로우**
+
+   ```javascript
+   // 클라이언트: 파일 선택
+   fileInput.addEventListener("change", async (e) => {
+     const file = e.target.files[0];
+     if (!file) return;
+
+     // 파일 크기 검증
+     if (file.size > 10 * 1024 * 1024) {
+       showNotification("파일 크기는 10MB 이하여야 합니다.", "error");
+       return;
+     }
+
+     // FormData 생성 및 업로드
+     const formData = new FormData();
+     formData.append("file", file);
+
+     try {
+       const response = await fetch("/api/chat/upload", {
+         method: "POST",
+         headers: { Authorization: `Bearer ${token}` },
+         body: formData,
+       });
+
+       const fileData = await response.json();
+
+       // 파일 메시지 전송
+       socket.emit("send_message", {
+         chatRoomId: currentChatRoom,
+         content: `[파일] ${file.name}`,
+         type: "file",
+         fileId: fileData.fileId,
+         fileName: file.name,
+         fileSize: file.size,
+       });
+     } catch (error) {
+       showNotification("파일 업로드에 실패했습니다.", "error");
+     }
+   });
+   ```
+
+### 🎨 **UI/UX 상세 구현**
+
+#### 🌙 **다크모드 시스템**
+
+**CSS 변수 기반 테마 시스템**
+
+```css
+:root {
+  /* 라이트 테마 색상 팔레트 */
+  --primary-50: #eff6ff;
+  --primary-100: #dbeafe;
+  --primary-500: #3b82f6;
+  --primary-600: #2563eb;
+  --primary-700: #1d4ed8;
+
+  --gray-50: #f9fafb;
+  --gray-100: #f3f4f6;
+  --gray-500: #6b7280;
+  --gray-700: #374151;
+  --gray-900: #111827;
+
+  /* 시맨틱 색상 */
+  --background: var(--gray-50);
+  --surface: #ffffff;
+  --text-primary: var(--gray-900);
+  --text-secondary: var(--gray-700);
+  --border: var(--gray-200);
+}
+
+[data-theme="dark"] {
+  /* 다크 테마 색상 재정의 */
+  --background: #0f172a;
+  --surface: #1e293b;
+  --text-primary: #f1f5f9;
+  --text-secondary: #cbd5e1;
+  --border: #334155;
+}
+
+/* 테마 전환 애니메이션 */
+* {
+  transition: background-color 0.3s ease, color 0.3s ease,
+    border-color 0.3s ease;
+}
+```
+
+#### 📱 **반응형 그리드 시스템**
+
+**모바일 우선 반응형 디자인**
+
+```css
+/* 기본 (모바일) */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+/* 태블릿 */
+@media (min-width: 768px) {
+  .dashboard-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    padding: 1.5rem;
+  }
+}
+
+/* 데스크톱 */
+@media (min-width: 1024px) {
+  .dashboard-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    padding: 2rem;
+  }
+}
+
+/* 대형 화면 */
+@media (min-width: 1280px) {
+  .dashboard-grid {
+    grid-template-columns: repeat(4, 1fr);
+    max-width: 1440px;
+    margin: 0 auto;
+  }
+}
+```
+
+### ⚡ **성능 최적화 상세**
+
+#### 🔄 **이벤트 리스너 최적화**
+
+**디바운스를 이용한 검색 최적화**
+
+```javascript
+let searchTimeout = null;
+
+function optimizedSearch(query) {
+  // 이전 검색 취소
+  if (searchTimeout) {
+    clearTimeout(searchTimeout);
+  }
+
+  // 300ms 디바운스
+  searchTimeout = setTimeout(async () => {
+    try {
+      const results = await searchAPI(query);
+      updateSearchResults(results);
+    } catch (error) {
+      console.error("검색 실패:", error);
+    }
+  }, 300);
+}
+
+// 이벤트 위임을 이용한 효율적인 리스너 관리
+document.addEventListener("click", (e) => {
+  // 이벤트 타겟에 따른 분기 처리
+  if (e.target.matches(".event-item")) {
+    handleEventClick(e);
+  } else if (e.target.matches(".todo-item")) {
+    handleTodoClick(e);
+  } else if (e.target.matches(".chat-message")) {
+    handleMessageClick(e);
+  }
+});
+```
+
+#### 💾 **메모리 관리**
+
+**Socket.IO 연결 정리**
+
+```javascript
+function cleanupSocketConnection() {
+  if (socket) {
+    console.log("🧹 Socket.IO 연결 정리 중...");
+
+    // 모든 이벤트 리스너 제거
+    socket.removeAllListeners();
+
+    // 연결 해제
+    socket.disconnect();
+
+    // 참조 제거
+    socket = null;
+
+    console.log("✅ Socket.IO 연결 정리 완료");
+  }
+}
+
+// 페이지 언로드 시 정리
+window.addEventListener("beforeunload", () => {
+  cleanupSocketConnection();
+
+  // 타이머 정리
+  if (currentTimeInterval) {
+    clearInterval(currentTimeInterval);
+  }
+
+  // 기타 리소스 정리
+  cleanupResources();
+});
+```
+
+#### 🗄️ **데이터베이스 최적화**
+
+**MongoDB 인덱스 전략**
+
+```javascript
+// 자주 사용되는 쿼리 패턴에 맞춘 인덱스 설정
+
+// 1. 사용자별 이벤트 조회 (가장 빈번)
+db.events.createIndex({ userId: 1, date: 1 });
+
+// 2. 완료 상태별 필터링
+db.events.createIndex({ userId: 1, completed: 1 });
+
+// 3. 날짜 범위 검색
+db.events.createIndex({ date: 1 });
+
+// 4. 채팅 메시지 조회 (채팅방별, 시간순)
+db.messages.createIndex({ chatRoom: 1, timestamp: -1 });
+
+// 5. 사용자 검색 (이메일, 이름)
+db.users.createIndex({ email: 1 });
+db.users.createIndex({ name: "text" }); // 텍스트 검색
+```
+
+**연결 풀 최적화**
+
+```javascript
+mongoose.connect(process.env.MONGODB_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  maxPoolSize: 10, // 최대 연결 수
+  serverSelectionTimeoutMS: 5000, // 서버 선택 타임아웃
+  socketTimeoutMS: 45000, // 소켓 타임아웃
+  bufferMaxEntries: 0, // 버퍼링 비활성화
+  retryWrites: true,
+  w: "majority",
+});
 ```
 
 ## 🚀 설치 및 실행
@@ -691,7 +1453,7 @@ _Made with ❤️ by Ordo Team_
 ## 📊 프로젝트 통계
 
 - **총 코드 라인**: 3,487줄
-- **JavaScript**: 1,828줄 (chat.js)
-- **서버 코드**: 1,659줄 (server.js)
+- **JavaScript**: 1,852줄 (chat.js)
+- **서버 코드**: 1,679줄 (server.js)
 - **개발 기간**: 6개월
 - **최신 업데이트**: 2025년 1월
