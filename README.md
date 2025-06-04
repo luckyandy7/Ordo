@@ -580,10 +580,10 @@ copies or substantial portions of the Software.
 
 | 역할                  | 담당자 | 연락처            |
 | --------------------- | ------ | ----------------- |
-| 🎨 **Frontend Lead**  | 팀원 A | email@example.com |
-| 🔧 **Backend Lead**   | 팀원 B | email@example.com |
-| 📱 **UI/UX Designer** | 팀원 C | email@example.com |
-| 🗄️ **Database Admin** | 팀원 D | email@example.com |
+| 🎨 **Frontend Lead**  | 전수환 | email@example.com |
+| 🔧 **Backend Lead**   | 전수환,김도현 | email@example.com |
+| 📱 **UI/UX Designer** | 전수환 | email@example.com |
+| 🗄️ **Database Admin** | 차강일,김건우 | email@example.com |
 
 </div>
 
@@ -594,14 +594,13 @@ copies or substantial portions of the Software.
 ### **🆘 문제 해결**
 
 - **GitHub Issues**: [이슈 등록](https://github.com/luckyandy7/Ordo/issues)
-- **이메일 지원**: ordo.support@example.com
+- **이메일 지원**: suhwan522@example.com
 - **문서**: [위키 페이지](https://github.com/luckyandy7/Ordo/wiki)
 
 ### **🌐 커뮤니티**
 
 - **Discord**: [Ordo 커뮤니티](https://discord.gg/ordo)
-- **블로그**: [기술 블로그](https://blog.ordo.dev)
-- **Twitter**: [@OrdoOfficial](https://twitter.com/ordoofficial)
+
 
 ---
 
