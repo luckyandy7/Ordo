@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ordo - 게시글 보기</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cutive:wght@400&family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      @font-face {
+        font-family: "Freesentation";
+        src: url("/font/Freesentation.ttf") format("truetype");
+      }
+
+      :root {
+        /* Ordo Signature Colors */
+        --copper-primary: #c96342;
+        --copper-light: #e08b6f;
+        --copper-dark: #a54a2e;
+        --copper-bright: #f2a085;
+        --copper-shadow: rgba(201, 99, 66, 0.15);
+
+        /* Modern Neutral Palette */
+        --gray-50: #fafafa;
+        --gray-100: #f5f5f5;
+        --gray-200: #e5e5e5;
+        --gray-300: #d4d4d4;
+        --gray-400: #a3a3a3;
+        --gray-500: #737373;
+        --gray-600: #525252;
+        --gray-700: #404040;
+        --gray-800: #262626;
+        --gray-900: #171717;
+
+        /* Theme Colors */
+        --background: #f6f0eb;
+        --surface: #ffffff;
+        --surface-hover: #f5f5f5;
+        --border: #e5e5e5;
+        --text-primary: #171717;
+        --text-secondary: #525252;
+        --text-muted: #a3a3a3;
+
+        /* Shadows */
+        --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+        --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+        --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1),
+          0 2px 4px -2px rgb(0 0 0 / 0.1);
+        --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1),
+          0 4px 6px -4px rgb(0 0 0 / 0.1);
+        --shadow-copper: 0 4px 14px 0 rgba(201, 99, 66, 0.15);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Inter", "Freesentation", -apple-system, BlinkMacSystemFont,
+          sans-serif;
+        background: linear-gradient(
+          135deg,
+          var(--background) 0%,
+          #faf4f2 50%,
+          #f0e6e1 100%
+        );
+        background-attachment: fixed;
+        color: var(--text-primary);
+        line-height: 1.6;
+        min-height: 100vh;
+      }
+
+      .header {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-bottom: 1px solid var(--border);
+        padding: 1rem 0;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+
+      .header-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .brand-container {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .logo-image {
+        width: 40px;
+        height: 40px;
+        transition: transform 0.3s ease;
+      }
+
+      .logo-image:hover {
+        transform: rotate(15deg);
+      }
+
+      .brand {
+        font-family: "Cutive", serif;
+        font-size: 1.8rem;
+        color: var(--copper-primary);
+        font-weight: 400;
+        text-decoration: none;
+      }
+
+      .nav-breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--text-secondary);
+        font-size: 0.875rem;
+      }
+
+      .breadcrumb-link {
+        color: var(--text-secondary);
+        text-decoration: none;
+        transition: color 0.2s ease;
+      }
+
+      .breadcrumb-link:hover {
+        color: var(--copper-primary);
+      }
+
+      .container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 3rem 2rem;
+      }
+
+      .post-container {
+        background: var(--surface);
+        border-radius: 16px;
+        box-shadow: var(--shadow-lg);
+        overflow: hidden;
+        margin-bottom: 2rem;
+      }
+
+      .post-header {
+        padding: 2rem;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .post-category {
+        display: inline-block;
+        background: var(--copper-primary);
+        color: white;
+        padding: 0.25rem 0.75rem;
+        border-radius: 16px;
+        font-size: 0.8rem;
+        margin-bottom: 1rem;
+      }
+
+      .post-title {
+        font-family: "Cutive", serif;
+        font-size: 2.5rem;
+        color: var(--text-primary);
+        margin-bottom: 1.5rem;
+        line-height: 1.2;
+      }
+
+      .post-meta {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+        color: var(--text-secondary);
+        font-size: 0.875rem;
+        margin-bottom: 1rem;
+      }
+
+      .meta-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .author-info {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+
+      .author-avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: var(--copper-primary);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 0.875rem;
+      }
+
+      .post-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-top: 1rem;
+      }
+
+      .tag {
+        background: var(--gray-100);
+        color: var(--text-secondary);
+        padding: 0.25rem 0.75rem;
+        border-radius: 16px;
+        font-size: 0.8rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .tag:hover {
+        background: var(--copper-light);
+        color: white;
+      }
+
+      .post-content {
+        padding: 2rem;
+        font-size: 1.125rem;
+        line-height: 1.8;
+        color: var(--text-primary);
+      }
+
+      .post-content p {
+        margin-bottom: 1.5rem;
+      }
+
+      .post-content ul,
+      .post-content ol {
+        margin-bottom: 1.5rem;
+        padding-left: 2rem;
+      }
+
+      .post-content li {
+        margin-bottom: 0.5rem;
+      }
+
+      .post-actions {
+        padding: 1.5rem 2rem;
+        border-top: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: var(--gray-50);
+      }
+
+      .action-buttons {
+        display: flex;
+        gap: 1rem;
+      }
+
+      .btn {
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        text-decoration: none;
+        font-size: 0.875rem;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        cursor: pointer;
+        border: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .btn-secondary {
+        background: var(--surface);
+        color: var(--text-secondary);
+        border: 1px solid var(--border);
+      }
+
+      .btn-secondary:hover {
+        background: var(--surface-hover);
+        border-color: var(--copper-primary);
+      }
+
+      .btn-primary {
+        background: var(--copper-primary);
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background: var(--copper-dark);
+      }
+
+      .btn-like {
+        background: var(--surface);
+        color: var(--text-secondary);
+        border: 2px solid var(--border);
+        font-weight: 600;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .btn-like:hover {
+        border-color: #ff6b6b;
+        color: #ff6b6b;
+        transform: translateY(-2px);
+      }
+
+      .btn-like.liked {
+        background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+        color: white;
+        border-color: #ff6b6b;
+        box-shadow: 0 4px 14px rgba(255, 107, 107, 0.3);
+      }
+
+      .btn-like.liked:hover {
+        background: linear-gradient(135deg, #ff5252, #e53935);
+        transform: translateY(-2px);
+      }
+
+      .btn-like .like-icon {
+        transition: transform 0.2s ease;
+      }
+
+      .btn-like:hover .like-icon,
+      .btn-like.liked .like-icon {
+        transform: scale(1.2);
+      }
+
+      .post-stats {
+        display: flex;
+        gap: 1rem;
+        color: var(--text-muted);
+        font-size: 0.875rem;
+      }
+
+      .stat-item {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+      }
+
+      /* 좋아요 애니메이션 */
+      @keyframes heartBeat {
+        0% {
+          transform: scale(1);
+        }
+        14% {
+          transform: scale(1.3);
+        }
+        28% {
+          transform: scale(1);
+        }
+        42% {
+          transform: scale(1.3);
+        }
+        70% {
+          transform: scale(1);
+        }
+      }
+
+      .btn-like.animate .like-icon {
+        animation: heartBeat 0.6s ease-in-out;
+      }
+
+      /* 좋아요 목록 */
+      .likes-section {
+        background: var(--surface);
+        border-radius: 16px;
+        box-shadow: var(--shadow-lg);
+        overflow: hidden;
+        margin-bottom: 2rem;
+      }
+
+      .likes-header {
+        padding: 1.5rem 2rem;
+        border-bottom: 1px solid var(--border);
+        background: var(--gray-50);
+      }
+
+      .likes-title {
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .likes-list {
+        padding: 1rem 2rem;
+        max-height: 300px;
+        overflow-y: auto;
+      }
+
+      .like-item {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .like-item:last-child {
+        border-bottom: none;
+      }
+
+      .like-avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.875rem;
+        font-weight: 600;
+      }
+
+      .like-info {
+        flex: 1;
+      }
+
+      .like-user {
+        font-weight: 500;
+        color: var(--text-primary);
+      }
+
+      .like-date {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+      }
+
+      .empty-likes {
+        text-align: center;
+        padding: 2rem;
+        color: var(--text-secondary);
+      }
+
+      .comments-section {
+        background: var(--surface);
+        border-radius: 16px;
+        box-shadow: var(--shadow-lg);
+        overflow: hidden;
+      }
+
+      .comments-header {
+        padding: 1.5rem 2rem;
+        border-bottom: 1px solid var(--border);
+        background: var(--gray-50);
+      }
+
+      .comments-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--text-primary);
+      }
+
+      .comments-list {
+        max-height: 600px;
+        overflow-y: auto;
+      }
+
+      .comment-item {
+        padding: 1.5rem 2rem;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .comment-item:last-child {
+        border-bottom: none;
+      }
+
+      .comment-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.75rem;
+      }
+
+      .comment-author {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+
+      .comment-avatar {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: var(--copper-light);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.8rem;
+        font-weight: 600;
+      }
+
+      .comment-date {
+        color: var(--text-muted);
+        font-size: 0.8rem;
+      }
+
+      .comment-content {
+        color: var(--text-primary);
+        line-height: 1.6;
+        white-space: pre-wrap;
+      }
+
+      .comment-form {
+        padding: 2rem;
+        border-top: 1px solid var(--border);
+        background: var(--gray-50);
+      }
+
+      .form-group {
+        margin-bottom: 1rem;
+      }
+
+      .form-label {
+        display: block;
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 0.5rem;
+      }
+
+      .form-input {
+        width: 100%;
+        padding: 0.75rem;
+        border: 2px solid var(--border);
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: all 0.2s ease;
+        background: var(--surface);
+      }
+
+      .form-input:focus {
+        outline: none;
+        border-color: var(--copper-primary);
+        box-shadow: 0 0 0 3px var(--copper-shadow);
+      }
+
+      .form-textarea {
+        min-height: 100px;
+        resize: vertical;
+        font-family: inherit;
+      }
+
+      .empty-comments {
+        padding: 3rem 2rem;
+        text-align: center;
+        color: var(--text-secondary);
+      }
+
+      .empty-icon {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+        opacity: 0.5;
+      }
+
+      .loading {
+        text-align: center;
+        padding: 3rem;
+        color: var(--text-secondary);
+      }
+
+      .loading-spinner {
+        width: 40px;
+        height: 40px;
+        border: 3px solid var(--border);
+        border-top: 3px solid var(--copper-primary);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 1rem;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          padding: 2rem 1rem;
+        }
+
+        .post-title {
+          font-size: 2rem;
+        }
+
+        .post-meta {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 0.75rem;
+        }
+
+        .post-actions {
+          flex-direction: column;
+          gap: 1rem;
+          align-items: flex-start;
+        }
+
+        .action-buttons {
+          width: 100%;
+          justify-content: space-between;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="header">
+      <div class="header-content">
+        <div class="brand-container">
+          <img src="/Login/image-8.png" alt="Ordo Logo" class="logo-image" />
+          <a href="/Main/index.html" class="brand">Ordo</a>
+        </div>
+        <nav class="nav-breadcrumb">
+          <a href="/Main/index.html" class="breadcrumb-link">대시보드</a>
+          <span>›</span>
+          <a href="/board/list.html" class="breadcrumb-link">커뮤니티</a>
+          <span>›</span>
+          <span>게시글</span>
+        </nav>
+      </div>
+    </header>
+
+    <div class="container">
+      <div class="post-container" id="postContainer">
+        <div class="loading">
+          <div class="loading-spinner"></div>
+          <p>게시글을 불러오는 중...</p>
+        </div>
+      </div>
+
+      <div class="likes-section" id="likesSection" style="display: none">
+        <div class="likes-header">
+          <h3 class="likes-title">
+            <span>❤️</span>
+            <span>좋아요 <span id="likesTotalCount">0</span>개</span>
+          </h3>
+        </div>
+        <div class="likes-list" id="likesList">
+          <!-- 좋아요 목록 -->
+        </div>
+      </div>
+
+      <div class="comments-section" id="commentsSection" style="display: none">
+        <div class="comments-header">
+          <h3 class="comments-title">
+            💬 댓글 <span id="commentsCount">0</span>개
+          </h3>
+        </div>
+        <div class="comments-list" id="commentsList">
+          <!-- 댓글 목록 -->
+        </div>
+        <form class="comment-form" id="commentForm">
+          <div class="form-group">
+            <label for="commentAuthor" class="form-label">작성자</label>
+            <input
+              type="text"
+              id="commentAuthor"
+              class="form-input"
+              placeholder="닉네임을 입력해주세요"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="commentContent" class="form-label">댓글</label>
+            <textarea
+              id="commentContent"
+              class="form-input form-textarea"
+              placeholder="댓글을 입력해주세요"
+              required
+            ></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary">💬 댓글 작성</button>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      const postId = new URLSearchParams(window.location.search).get("id");
+      let currentPost = null;
+      let currentUser = null;
+
+      document.addEventListener("DOMContentLoaded", async () => {
+        if (!postId) {
+          showError("게시글 ID가 없습니다.");
+          return;
+        }
+
+        // 사용자 정보 로드
+        currentUser = JSON.parse(localStorage.getItem("user") || "{}");
+
+        await loadPost();
+        await loadComments();
+        await loadLikeStatus();
+        setupCommentForm();
+        setupLikeButton();
+      });
+
+      async function loadPost() {
+        try {
+          const response = await fetch(`/api/posts/${postId}`);
+          if (!response.ok) throw new Error("Failed to fetch post");
+
+          currentPost = await response.json();
+          renderPost(currentPost);
+
+          // 조회수 증가
+          await updateViews();
+        } catch (error) {
+          console.error("게시글 로딩 오류:", error);
+          showError("게시글을 불러올 수 없습니다.");
+        }
+      }
+
+      function renderPost(post) {
+        const container = document.getElementById("postContainer");
+
+        container.innerHTML = `
+                <div class="post-header">
+                    <div class="post-category">${getCategoryName(
+                      post.category || "tips"
+                    )}</div>
+                    <h1 class="post-title">${post.title}</h1>
+                    <div class="post-meta">
+                        <div class="author-info">
+                            <div class="author-avatar">${post.author
+                              .charAt(0)
+                              .toUpperCase()}</div>
+                            <span>${post.author}</span>
+                        </div>
+                        <div class="meta-item">
+                            <span>📅</span>
+                            <span>${formatDate(post.createdAt)}</span>
+                        </div>
+                        <div class="meta-item">
+                            <span>👀</span>
+                            <span>${post.views || 0}회</span>
+                        </div>
+                    </div>
+                    ${
+                      post.tags && post.tags.length > 0
+                        ? `
+                        <div class="post-tags">
+                            ${post.tags
+                              .map((tag) => `<span class="tag">#${tag}</span>`)
+                              .join("")}
+                        </div>
+                    `
+                        : ""
+                    }
+                </div>
+                <div class="post-content">
+                    ${formatContent(post.content)}
+                </div>
+                <div class="post-actions">
+                    <div class="action-buttons">
+                        <button class="btn btn-like" id="likeBtn">
+                            <span class="like-icon">❤️</span>
+                            <span id="likeText">좋아요</span>
+                        </button>
+                        <a href="/board/list.html" class="btn btn-secondary">📋 목록으로</a>
+                        <a href="/board/write.html" class="btn btn-primary">✍️ 글쓰기</a>
+                    </div>
+                    <div class="post-stats">
+                        <div class="stat-item">
+                            <span>👀</span>
+                            <span>조회 <span id="viewCount">${
+                              post.views || 0
+                            }</span></span>
+                        </div>
+                        <div class="stat-item">
+                            <span>❤️</span>
+                            <span>좋아요 <span id="likesCount">${
+                              post.likesCount || 0
+                            }</span></span>
+                        </div>
+                        <div class="stat-item">
+                            <span>💬</span>
+                            <span>댓글 <span id="postCommentsCount">0</span></span>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+        // 좋아요 섹션과 댓글 섹션 표시
+        document.getElementById("likesSection").style.display = "block";
+        document.getElementById("commentsSection").style.display = "block";
+
+        // 좋아요 버튼 설정
+        setupLikeButton();
+      }
+
+      async function loadLikeStatus() {
+        try {
+          const userId = currentUser.id || "";
+          const response = await fetch(
+            `/api/posts/${postId}/like-status?userId=${userId}`
+          );
+          if (!response.ok) throw new Error("Failed to fetch like status");
+
+          const data = await response.json();
+          updateLikeUI(data.isLiked, data.likesCount);
+          renderLikes(data.likes || []);
+        } catch (error) {
+          console.error("좋아요 상태 로딩 오류:", error);
+        }
+      }
+
+      function setupLikeButton() {
+        const likeBtn = document.getElementById("likeBtn");
+        if (!likeBtn) return;
+
+        likeBtn.addEventListener("click", async () => {
+          if (!currentUser.id) {
+            alert("로그인이 필요합니다.");
+            return;
+          }
+
+          try {
+            likeBtn.disabled = true;
+
+            const response = await fetch(`/api/posts/${postId}/like`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                userId: currentUser.id,
+                userName: currentUser.name,
+              }),
+            });
+
+            if (!response.ok) throw new Error("좋아요 처리 실패");
+
+            const data = await response.json();
+            updateLikeUI(data.isLiked, data.likesCount);
+            renderLikes(data.likes || []);
+
+            // 애니메이션 효과
+            likeBtn.classList.add("animate");
+            setTimeout(() => likeBtn.classList.remove("animate"), 600);
+          } catch (error) {
+            console.error("좋아요 처리 오류:", error);
+            alert("좋아요 처리 중 오류가 발생했습니다.");
+          } finally {
+            likeBtn.disabled = false;
+          }
+        });
+      }
+
+      function updateLikeUI(isLiked, likesCount) {
+        const likeBtn = document.getElementById("likeBtn");
+        const likeText = document.getElementById("likeText");
+        const likesCountEl = document.getElementById("likesCount");
+        const likesTotalCountEl = document.getElementById("likesTotalCount");
+
+        if (likeBtn) {
+          if (isLiked) {
+            likeBtn.classList.add("liked");
+            likeText.textContent = "좋아요 취소";
+          } else {
+            likeBtn.classList.remove("liked");
+            likeText.textContent = "좋아요";
+          }
+        }
+
+        if (likesCountEl) {
+          likesCountEl.textContent = likesCount || 0;
+        }
+
+        if (likesTotalCountEl) {
+          likesTotalCountEl.textContent = likesCount || 0;
+        }
+      }
+
+      function renderLikes(likes) {
+        const container = document.getElementById("likesList");
+
+        if (!likes || likes.length === 0) {
+          container.innerHTML = `
+            <div class="empty-likes">
+              <div style="font-size: 2rem; margin-bottom: 1rem; opacity: 0.5;">❤️</div>
+              <p>아직 좋아요가 없습니다.<br>첫 번째 좋아요를 눌러보세요!</p>
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = likes
+          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+          .map(
+            (like) => `
+              <div class="like-item">
+                <div class="like-avatar">${like.userName
+                  .charAt(0)
+                  .toUpperCase()}</div>
+                <div class="like-info">
+                  <div class="like-user">${like.userName}</div>
+                  <div class="like-date">${formatDate(like.createdAt)}</div>
+                </div>
+              </div>
+            `
+          )
+          .join("");
+      }
+
+      async function loadComments() {
+        try {
+          const response = await fetch(`/api/posts/${postId}/comments`);
+          if (!response.ok) throw new Error("Failed to fetch comments");
+
+          const comments = await response.json();
+          renderComments(comments);
+          updateCommentsCount(comments.length);
+        } catch (error) {
+          console.error("댓글 로딩 오류:", error);
+          renderComments([]);
+        }
+      }
+
+      function renderComments(comments) {
+        const container = document.getElementById("commentsList");
+
+        if (comments.length === 0) {
+          container.innerHTML = `
+                    <div class="empty-comments">
+                        <div class="empty-icon">💬</div>
+                        <p>아직 댓글이 없습니다.<br>첫 번째 댓글을 작성해보세요!</p>
+                    </div>
+                `;
+          return;
+        }
+
+        container.innerHTML = comments
+          .map(
+            (comment) => `
+                <div class="comment-item">
+                    <div class="comment-header">
+                        <div class="comment-author">
+                            <div class="comment-avatar">${comment.author
+                              .charAt(0)
+                              .toUpperCase()}</div>
+                            <span>${comment.author}</span>
+                        </div>
+                        <span class="comment-date">${formatDate(
+                          comment.createdAt
+                        )}</span>
+                    </div>
+                    <div class="comment-content">${
+                      comment.text || comment.content
+                    }</div>
+                </div>
+            `
+          )
+          .join("");
+      }
+
+      function setupCommentForm() {
+        const form = document.getElementById("commentForm");
+
+        // 로그인된 사용자 정보로 자동 입력
+        if (currentUser.name) {
+          document.getElementById("commentAuthor").value = currentUser.name;
+        }
+
+        form.addEventListener("submit", async (e) => {
+          e.preventDefault();
+          await submitComment();
+        });
+      }
+
+      async function submitComment() {
+        const author = document.getElementById("commentAuthor").value;
+        const content = document.getElementById("commentContent").value;
+
+        if (!author.trim() || !content.trim()) {
+          alert("작성자와 댓글 내용을 모두 입력해주세요.");
+          return;
+        }
+
+        try {
+          const response = await fetch(`/api/posts/${postId}/comments`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              author: author.trim(),
+              text: content.trim(),
+            }),
+          });
+
+          if (response.ok) {
+            // 폼 초기화
+            document.getElementById("commentContent").value = "";
+
+            // 댓글 목록 새로고침
+            await loadComments();
+          } else {
+            throw new Error("댓글 작성에 실패했습니다.");
+          }
+        } catch (error) {
+          console.error("댓글 작성 오류:", error);
+          alert("댓글 작성 중 오류가 발생했습니다.");
+        }
+      }
+
+      async function updateViews() {
+        try {
+          await fetch(`/api/posts/${postId}/view`, {
+            method: "POST",
+          });
+        } catch (error) {
+          console.error("조회수 업데이트 오류:", error);
+        }
+      }
+
+      function updateCommentsCount(count) {
+        document.getElementById("commentsCount").textContent = count;
+        const postCommentsCount = document.getElementById("postCommentsCount");
+        if (postCommentsCount) {
+          postCommentsCount.textContent = count;
+        }
+      }
+
+      function getCategoryName(category) {
+        const categories = {
+          productivity: "📈 생산성",
+          routine: "🔄 루틴",
+          tips: "💡 팁",
+          qna: "❓ 질문답변",
+        };
+        return categories[category] || "💡 팁";
+      }
+
+      function formatContent(content) {
+        // 줄바꿈을 <br>로 변환하고 기본적인 포맷팅 적용
+        return content
+          .replace(/\n/g, "<br>")
+          .replace(/•\s/g, "<br>• ")
+          .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+      }
+
+      function formatDate(dateString) {
+        const date = new Date(dateString);
+        const now = new Date();
+        const diff = now - date;
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+
+        if (days === 0) {
+          const hours = Math.floor(diff / (1000 * 60 * 60));
+          if (hours === 0) {
+            const minutes = Math.floor(diff / (1000 * 60));
+            return minutes <= 0 ? "방금 전" : `${minutes}분 전`;
+          }
+          return `${hours}시간 전`;
+        } else if (days === 1) {
+          return "어제";
+        } else if (days < 7) {
+          return `${days}일 전`;
+        } else {
+          return date.toLocaleDateString("ko-KR", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          });
+        }
+      }
+
+      function showError(message) {
+        const container = document.getElementById("postContainer");
+        container.innerHTML = `
+                <div style="text-align: center; padding: 3rem; color: var(--text-secondary);">
+                    <div style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;">⚠️</div>
+                    <h2 style="margin-bottom: 1rem;">오류가 발생했습니다</h2>
+                    <p style="margin-bottom: 2rem;">${message}</p>
+                    <a href="/board/list.html" class="btn btn-primary">목록으로 돌아가기</a>
+                </div>
+            `;
+      }
+    </script>
+  </body>
+</html>

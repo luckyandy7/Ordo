@@ -169,24 +169,61 @@ document.addEventListener("DOMContentLoaded", () => {
       const dailyBtn = document.getElementById("dailyBtn");
 
       if (floatingBtn && floatingMenu) {
-        // 플로팅 버튼 클릭 이벤트
-        floatingBtn.addEventListener("click", () => {
-          floatingBtn.classList.add("active");
-          floatingMenu.classList.toggle("show");
+        let isMenuOpen = false;
 
-          // 애니메이션이 끝나면 active 클래스 제거
+        // 플로팅 버튼 클릭 이벤트
+        floatingBtn.addEventListener("click", (e) => {
+          e.stopPropagation();
+
+          if (isMenuOpen) {
+            closeFloatingMenu();
+          } else {
+            openFloatingMenu();
+          }
+        });
+
+        // 메뉴 열기 함수
+        function openFloatingMenu() {
+          isMenuOpen = true;
+          floatingBtn.classList.add("active");
+          floatingMenu.classList.remove("hide");
+          floatingMenu.classList.add("show");
+
+          // 버튼 회전 애니메이션 후 원래대로
           setTimeout(() => {
             floatingBtn.classList.remove("active");
-          }, 600); // 0.6초 후 제거 (애니메이션 시간과 동일)
-        });
+          }, 400);
+        }
+
+        // 메뉴 닫기 함수
+        function closeFloatingMenu() {
+          if (!isMenuOpen) return;
+
+          isMenuOpen = false;
+          floatingMenu.classList.add("hide");
+          floatingMenu.classList.remove("show");
+
+          // 애니메이션 완료 후 hide 클래스 제거
+          setTimeout(() => {
+            floatingMenu.classList.remove("hide");
+          }, 300);
+        }
 
         // 메뉴 외부 클릭 시 닫기
         document.addEventListener("click", (e) => {
           if (
+            isMenuOpen &&
             !floatingBtn.contains(e.target) &&
             !floatingMenu.contains(e.target)
           ) {
-            floatingMenu.classList.remove("show");
+            closeFloatingMenu();
+          }
+        });
+
+        // ESC 키로 메뉴 닫기
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "Escape" && isMenuOpen) {
+            closeFloatingMenu();
           }
         });
       }
@@ -195,16 +232,20 @@ document.addEventListener("DOMContentLoaded", () => {
       if (horaeBtn) {
         horaeBtn.addEventListener("click", (e) => {
           e.preventDefault();
-          if (floatingMenu) floatingMenu.classList.remove("show");
-          alert("Horae의 추천 일정 기능은 준비 중입니다.");
+          closeFloatingMenu();
+          setTimeout(() => {
+            alert("Horae의 추천 일정 기능은 준비 중입니다.");
+          }, 200);
         });
       }
 
       if (dailyBtn) {
         dailyBtn.addEventListener("click", (e) => {
           e.preventDefault();
-          if (floatingMenu) floatingMenu.classList.remove("show");
-          alert("Daily 한마디 기능은 준비 중입니다.");
+          closeFloatingMenu();
+          setTimeout(() => {
+            alert("Daily 한마디 기능은 준비 중입니다.");
+          }, 200);
         });
       }
 
@@ -215,16 +256,20 @@ document.addEventListener("DOMContentLoaded", () => {
       if (collaborationBtn) {
         collaborationBtn.addEventListener("click", (e) => {
           e.preventDefault();
-          if (floatingMenu) floatingMenu.classList.remove("show");
-          showCollaborationModal();
+          closeFloatingMenu();
+          setTimeout(() => {
+            showCollaborationModal();
+          }, 200);
         });
       }
 
       if (chatBtn) {
         chatBtn.addEventListener("click", (e) => {
           e.preventDefault();
-          if (floatingMenu) floatingMenu.classList.remove("show");
-          showChatModal();
+          closeFloatingMenu();
+          setTimeout(() => {
+            showChatModal();
+          }, 200);
         });
       }
     } catch (error) {
@@ -496,10 +541,19 @@ async function renderCalendar() {
             const minutes = Math.round((y % 60) / (60 / 60));
 
             selectedDate = new Date(currentDate); // 새로운 Date 객체 생성
+            console.log("=== 클릭 이벤트 디버깅 ===");
+            console.log("클릭된 컬럼 인덱스:", i);
+            console.log("주 시작일:", weekStart.toISOString().split("T")[0]);
             console.log(
-              "클릭된 날짜:",
+              "계산된 컬럼 날짜:",
+              currentDate.toISOString().split("T")[0]
+            );
+            console.log(
+              "설정된 selectedDate:",
               selectedDate.toISOString().split("T")[0]
             );
+            console.log("컬럼 data-date:", column.dataset.date);
+            console.log("========================");
             showAddEventModal(hour, minutes);
           }
         };
@@ -524,7 +578,7 @@ async function renderCalendar() {
   updateCurrentTimeLine();
 }
 
-// 이벤트 로드 함수 (완료 상태 포함)
+// 이벤트 로드 함수 (완료 상태 포함, 자정 넘어가는 일정 분할 처리)
 async function loadEvents(startDate, endDate) {
   try {
     console.log("일정 로드 시작 - 날짜 범위:", { startDate, endDate });
@@ -589,116 +643,206 @@ async function loadEvents(startDate, endDate) {
 
     events.forEach((event) => {
       const eventDate = new Date(event.date);
-      const dateStr = eventDate.toISOString().split("T")[0];
-      console.log("이벤트 날짜:", dateStr);
+      const startHour = eventDate.getHours();
+      const startMinutes = eventDate.getMinutes();
+      const duration = event.duration || 60;
+      const isCompleted = completedEvents.includes(event._id);
 
-      const column = document.querySelector(
-        `.event-column[data-date^='${dateStr}']`
+      // 자정을 넘어가는 일정인지 확인
+      const endTime = new Date(eventDate.getTime() + duration * 60000);
+      const eventEndDate = new Date(
+        endTime.getFullYear(),
+        endTime.getMonth(),
+        endTime.getDate()
+      );
+      const eventStartDate = new Date(
+        eventDate.getFullYear(),
+        eventDate.getMonth(),
+        eventDate.getDate()
       );
 
-      if (column) {
-        const startHour = eventDate.getHours();
-        const startMinutes = eventDate.getMinutes();
-        const duration = event.duration || 60;
-        const isCompleted = completedEvents.includes(event._id);
+      if (eventEndDate.getTime() > eventStartDate.getTime()) {
+        // 자정을 넘어가는 일정 - 분할 처리
+        console.log("자정 넘어가는 일정 감지:", event.title);
 
-        const timeBlock = document.createElement("div");
-        timeBlock.className = `time-block fade-in ${
-          isCompleted ? "completed" : ""
-        }`;
-        timeBlock.style.top = `${
-          (startHour * 60 + startMinutes) * (60 / 60)
-        }px`;
-        timeBlock.style.height = `${duration * (60 / 60)}px`;
-        timeBlock.style.backgroundColor = event.color || "#FFE5E5";
-
-        // 일정 내용 컨테이너
-        const eventContent = document.createElement("div");
-        eventContent.className = "event-content";
-        eventContent.textContent = event.title;
-
-        // 완료 체크박스
-        const completeCheckbox = document.createElement("input");
-        completeCheckbox.type = "checkbox";
-        completeCheckbox.className = "complete-checkbox";
-        completeCheckbox.checked = isCompleted;
-        completeCheckbox.title = isCompleted ? "완료됨" : "미완료";
-
-        completeCheckbox.addEventListener("change", (e) => {
-          e.stopPropagation();
-          const isNowCompleted = e.target.checked;
-          toggleEventCompletion(event._id, event.title, isNowCompleted);
-
-          // UI 즉시 업데이트
-          if (isNowCompleted) {
-            timeBlock.classList.add("completed");
-            e.target.title = "완료됨";
-          } else {
-            timeBlock.classList.remove("completed");
-            e.target.title = "미완료";
-          }
-        });
-
-        // 삭제 버튼
-        const deleteBtn = document.createElement("button");
-        deleteBtn.className = "delete-event-btn";
-        deleteBtn.textContent = "×";
-        deleteBtn.onclick = async (e) => {
-          e.stopPropagation();
-          showConfirmModal(
-            "일정 삭제",
-            `"${event.title}" 일정을 삭제하시겠습니까?`,
-            async function () {
-              try {
-                timeBlock.classList.add("removing");
-                await fetchAPI(`/${event._id}`, { method: "DELETE" });
-
-                // 완료 목록에서도 제거
-                completedEvents = completedEvents.filter(
-                  (id) => id !== event._id
-                );
-                localStorage.setItem(
-                  "completedEvents",
-                  JSON.stringify(completedEvents)
-                );
-
-                addActivity(
-                  "delete",
-                  `"${event.title}" 일정이 삭제되었습니다`,
-                  event.title
-                );
-
-                timeBlock.addEventListener(
-                  "animationend",
-                  () => {
-                    timeBlock.remove();
-                    setTimeout(() => {
-                      updateTodayStats();
-                      updateWeekStatsSimple();
-                    }, 100);
-                  },
-                  { once: true }
-                );
-              } catch (error) {
-                console.error("일정 삭제 실패:", error);
-                showActivityNotification({
-                  icon: "❌",
-                  message: "일정 삭제에 실패했습니다.",
-                });
-                timeBlock.classList.remove("removing");
-              }
-            }
+        // 첫 번째 부분: 시작일의 시작 시간부터 자정까지 (분 단위로 정확히 계산)
+        const minutesToMidnight = 24 * 60 - (startHour * 60 + startMinutes);
+        if (minutesToMidnight > 0) {
+          createEventBlock(
+            eventDate,
+            startHour,
+            startMinutes,
+            minutesToMidnight,
+            event,
+            isCompleted,
+            true
           );
-        };
+        }
 
-        timeBlock.appendChild(completeCheckbox);
-        timeBlock.appendChild(eventContent);
-        timeBlock.appendChild(deleteBtn);
-        column.appendChild(timeBlock);
+        // 두 번째 부분: 다음날 자정부터 종료 시간까지
+        const nextDay = new Date(eventDate);
+        nextDay.setDate(nextDay.getDate() + 1);
+        nextDay.setHours(0, 0, 0, 0);
+
+        const remainingMinutes = duration - minutesToMidnight;
+        if (remainingMinutes > 0) {
+          createEventBlock(
+            nextDay,
+            0,
+            0,
+            remainingMinutes,
+            event,
+            isCompleted,
+            true
+          );
+        }
+      } else {
+        // 일반적인 일정 (자정을 넘지 않음)
+        createEventBlock(
+          eventDate,
+          startHour,
+          startMinutes,
+          duration,
+          event,
+          isCompleted,
+          false
+        );
       }
     });
   } catch (error) {
     console.error("이벤트 로드 실패:", error);
+  }
+}
+
+// 이벤트 블록 생성 헬퍼 함수
+function createEventBlock(
+  eventDate,
+  startHour,
+  startMinutes,
+  duration,
+  event,
+  isCompleted,
+  isSplit = false
+) {
+  const dateStr = eventDate.toISOString().split("T")[0];
+  console.log("이벤트 블록 생성:", dateStr, event.title);
+
+  const column = document.querySelector(
+    `.event-column[data-date^='${dateStr}']`
+  );
+
+  if (column) {
+    const timeBlock = document.createElement("div");
+    timeBlock.className = `time-block fade-in ${
+      isCompleted ? "completed" : ""
+    }`;
+    timeBlock.style.top = `${(startHour * 60 + startMinutes) * (60 / 60)}px`;
+    timeBlock.style.height = `${duration * (60 / 60)}px`;
+    timeBlock.style.backgroundColor = event.color || "#FFE5E5";
+
+    // 그룹 ID가 있으면 데이터 속성으로 저장
+    if (event.groupId) {
+      timeBlock.dataset.groupId = event.groupId;
+    }
+
+    // 일정 내용 컨테이너
+    const eventContent = document.createElement("div");
+    eventContent.className = "event-content";
+    // 분할된 일정인 경우 표시 구분 (선택사항)
+    eventContent.textContent = isSplit ? event.title + " ⏰" : event.title;
+
+    // 완료 체크박스
+    const completeCheckbox = document.createElement("input");
+    completeCheckbox.type = "checkbox";
+    completeCheckbox.className = "complete-checkbox";
+    completeCheckbox.checked = isCompleted;
+    completeCheckbox.title = isCompleted ? "완료됨" : "미완료";
+
+    completeCheckbox.addEventListener("change", (e) => {
+      e.stopPropagation();
+      const isNowCompleted = e.target.checked;
+
+      // 그룹 ID가 있으면 연결된 모든 일정의 완료 상태 변경
+      if (event.groupId) {
+        toggleGroupEventCompletion(event.groupId, event.title, isNowCompleted);
+      } else {
+        toggleEventCompletion(event._id, event.title, isNowCompleted);
+      }
+
+      // UI 즉시 업데이트
+      if (isNowCompleted) {
+        timeBlock.classList.add("completed");
+        e.target.title = "완료됨";
+      } else {
+        timeBlock.classList.remove("completed");
+        e.target.title = "미완료";
+      }
+    });
+
+    // 삭제 버튼
+    const deleteBtn = document.createElement("button");
+    deleteBtn.className = "delete-event-btn";
+    deleteBtn.textContent = "×";
+    deleteBtn.onclick = async (e) => {
+      e.stopPropagation();
+
+      const confirmMessage = event.groupId
+        ? `"${event.title.replace(
+            / \([12]일차\)/,
+            ""
+          )}" 일정 전체를 삭제하시겠습니까?\n(연결된 모든 블록이 삭제됩니다)`
+        : `"${event.title}" 일정을 삭제하시겠습니까?`;
+
+      showConfirmModal("일정 삭제", confirmMessage, async function () {
+        try {
+          if (event.groupId) {
+            // 그룹으로 연결된 모든 일정 삭제
+            await deleteGroupEvents(event.groupId, event.title);
+          } else {
+            // 단일 일정 삭제
+            timeBlock.classList.add("removing");
+            await fetchAPI(`/${event._id}`, { method: "DELETE" });
+
+            // 완료 목록에서도 제거
+            completedEvents = completedEvents.filter((id) => id !== event._id);
+            localStorage.setItem(
+              "completedEvents",
+              JSON.stringify(completedEvents)
+            );
+
+            addActivity(
+              "delete",
+              `"${event.title}" 일정이 삭제되었습니다`,
+              event.title
+            );
+
+            timeBlock.addEventListener(
+              "animationend",
+              () => {
+                timeBlock.remove();
+                setTimeout(() => {
+                  updateTodayStats();
+                  updateWeekStatsSimple();
+                }, 100);
+              },
+              { once: true }
+            );
+          }
+        } catch (error) {
+          console.error("일정 삭제 실패:", error);
+          showActivityNotification({
+            icon: "❌",
+            message: "일정 삭제에 실패했습니다.",
+          });
+          timeBlock.classList.remove("removing");
+        }
+      });
+    };
+
+    timeBlock.appendChild(completeCheckbox);
+    timeBlock.appendChild(eventContent);
+    timeBlock.appendChild(deleteBtn);
+    column.appendChild(timeBlock);
   }
 }
 
@@ -896,148 +1040,435 @@ function showActivityNotification(activity) {
   }, 3000);
 }
 
-// 일정 추가 함수 수정 (완료 체크박스 포함)
+// 일정 추가 함수 수정 (자정 넘어가는 일정 분할 처리)
 async function addEvent(date, startTime, endTime, title, color) {
   try {
+    console.log("=== addEvent 함수 디버깅 ===");
+    console.log("전달받은 date 객체:", date);
+    console.log("date 타입:", typeof date);
+    console.log("date.toISOString():", date ? date.toISOString() : "null");
+    console.log("startTime:", startTime, "endTime:", endTime);
+    console.log("============================");
+
     const [startHour, startMinute] = startTime.split(":").map(Number);
     const [endHour, endMinute] = endTime.split(":").map(Number);
 
     const eventDate = new Date(date);
     eventDate.setHours(startHour, startMinute, 0);
 
-    // duration 계산 수정
-    let duration;
-    if (endHour < startHour) {
-      duration =
-        (24 + endHour) * 60 + endMinute - (startHour * 60 + startMinute);
-    } else {
-      duration = endHour * 60 + endMinute - (startHour * 60 + startMinute);
-    }
+    console.log("최종 eventDate:", eventDate.toISOString());
+    console.log("저장될 날짜:", eventDate.toISOString().split("T")[0]);
 
-    // duration이 0 이하인 경우 기본값 60분으로 설정
-    if (duration <= 0) duration = 60;
+    // 자정을 넘어가는 일정인지 확인
+    console.log("=== 자정 넘어가는 일정 판단 ===");
+    console.log("startHour:", startHour, "startMinute:", startMinute);
+    console.log("endHour:", endHour, "endMinute:", endMinute);
+    console.log("endHour < startHour:", endHour < startHour);
+    console.log(
+      "endHour === startHour && endMinute <= startMinute:",
+      endHour === startHour && endMinute <= startMinute
+    );
 
-    const response = await fetchAPI("/", {
-      method: "POST",
-      body: JSON.stringify({
-        title,
-        date: eventDate.toISOString(),
-        duration,
+    if (
+      endHour < startHour ||
+      (endHour === startHour && endMinute <= startMinute)
+    ) {
+      console.log("🌙 자정 넘어가는 일정으로 판단됨!");
+      // 자정을 넘어가는 경우 두 개의 일정으로 분할
+      // 그룹 ID 생성 (연결된 일정들을 식별하기 위함)
+      const groupId = Date.now().toString();
+      console.log("생성된 groupId:", groupId);
+
+      // 첫 번째 일정: 시작 시간부터 자정까지 (정확한 분 계산)
+      const minutesToMidnight = 24 * 60 - (startHour * 60 + startMinute);
+
+      const firstEventResponse = await fetchAPI("/", {
+        method: "POST",
+        body: JSON.stringify({
+          title: title + " (1일차)",
+          date: eventDate.toISOString(),
+          duration: minutesToMidnight,
+          color,
+          groupId: groupId, // 그룹 ID 추가
+        }),
+      });
+
+      console.log("첫 번째 일정 생성 응답:", firstEventResponse);
+
+      // 두 번째 일정: 자정부터 종료 시간까지 (다음 날)
+      const nextDay = new Date(eventDate);
+      nextDay.setDate(nextDay.getDate() + 1);
+      nextDay.setHours(0, 0, 0);
+
+      // 다음날 종료 시간까지의 분 계산
+      const remainingMinutes = endHour * 60 + endMinute;
+
+      const secondEventResponse = await fetchAPI("/", {
+        method: "POST",
+        body: JSON.stringify({
+          title: title + " (2일차)",
+          date: nextDay.toISOString(),
+          duration: remainingMinutes,
+          color,
+          groupId: groupId, // 같은 그룹 ID
+        }),
+      });
+
+      console.log("두 번째 일정 생성 응답:", secondEventResponse);
+
+      // 활동 로그 추가
+      addActivity("add", `"${title}" 일정이 2일에 걸쳐 추가되었습니다`, title);
+
+      // UI 업데이트 - 첫 번째 일정
+      updateUIForNewEvent(
+        eventDate,
+        startHour,
+        startMinute,
+        minutesToMidnight,
+        title + " (1일차)",
         color,
-      }),
-    });
-
-    // 활동 로그 추가
-    addActivity("add", `"${title}" 일정이 추가되었습니다`, title);
-
-    // 성공적으로 추가된 경우 UI 업데이트
-    if (response) {
-      const dateStr = eventDate.toISOString().split("T")[0];
-      const column = document.querySelector(
-        `.event-column[data-date^='${dateStr}']`
+        firstEventResponse._id,
+        groupId
       );
 
-      if (column) {
-        const timeBlock = document.createElement("div");
-        timeBlock.className = "time-block fade-in";
-        timeBlock.style.top = `${(startHour * 60 + startMinute) * (60 / 60)}px`;
-        timeBlock.style.height = `${duration * (60 / 60)}px`;
-        timeBlock.style.backgroundColor = color || "#FFE5E5";
+      // UI 업데이트 - 두 번째 일정
+      updateUIForNewEvent(
+        nextDay,
+        0,
+        0,
+        remainingMinutes,
+        title + " (2일차)",
+        color,
+        secondEventResponse._id,
+        groupId
+      );
+    } else {
+      console.log("☀️ 일반 일정으로 판단됨 (자정을 넘지 않음)");
+      // 일반적인 일정 (자정을 넘지 않음)
+      let duration = endHour * 60 + endMinute - (startHour * 60 + startMinute);
+      console.log("계산된 duration:", duration, "분");
 
-        // 일정 내용 컨테이너
-        const eventContent = document.createElement("div");
-        eventContent.className = "event-content";
-        eventContent.textContent = title;
+      // duration이 0 이하인 경우 기본값 60분으로 설정
+      if (duration <= 0) duration = 60;
 
-        // 완료 체크박스
-        const completeCheckbox = document.createElement("input");
-        completeCheckbox.type = "checkbox";
-        completeCheckbox.className = "complete-checkbox";
-        completeCheckbox.checked = false;
-        completeCheckbox.title = "미완료";
+      const response = await fetchAPI("/", {
+        method: "POST",
+        body: JSON.stringify({
+          title,
+          date: eventDate.toISOString(),
+          duration,
+          color,
+        }),
+      });
 
-        completeCheckbox.addEventListener("change", (e) => {
-          e.stopPropagation();
-          const isCompleted = e.target.checked;
-          toggleEventCompletion(response._id, title, isCompleted);
+      // 활동 로그 추가
+      addActivity("add", `"${title}" 일정이 추가되었습니다`, title);
 
-          // UI 즉시 업데이트
-          if (isCompleted) {
-            timeBlock.classList.add("completed");
-            e.target.title = "완료됨";
-          } else {
-            timeBlock.classList.remove("completed");
-            e.target.title = "미완료";
-          }
-        });
-
-        // 삭제 버튼 추가
-        const deleteBtn = document.createElement("button");
-        deleteBtn.className = "delete-event-btn";
-        deleteBtn.textContent = "×";
-        deleteBtn.onclick = async (e) => {
-          e.stopPropagation();
-          showConfirmModal(
-            "일정 삭제",
-            `"${title}" 일정을 삭제하시겠습니까?`,
-            async function () {
-              try {
-                timeBlock.classList.add("removing");
-                await fetchAPI(`/${response._id}`, { method: "DELETE" });
-
-                // 완료 목록에서도 제거
-                completedEvents = completedEvents.filter(
-                  (id) => id !== response._id
-                );
-                localStorage.setItem(
-                  "completedEvents",
-                  JSON.stringify(completedEvents)
-                );
-
-                addActivity(
-                  "delete",
-                  `"${title}" 일정이 삭제되었습니다`,
-                  title
-                );
-
-                timeBlock.addEventListener(
-                  "animationend",
-                  () => {
-                    timeBlock.remove();
-                    setTimeout(() => {
-                      updateTodayStats();
-                      updateWeekStatsSimple();
-                    }, 100);
-                  },
-                  { once: true }
-                );
-              } catch (error) {
-                console.error("일정 삭제 실패:", error);
-                showActivityNotification({
-                  icon: "❌",
-                  message: "일정 삭제에 실패했습니다.",
-                });
-                timeBlock.classList.remove("removing");
-              }
-            }
-          );
-        };
-
-        timeBlock.appendChild(completeCheckbox);
-        timeBlock.appendChild(eventContent);
-        timeBlock.appendChild(deleteBtn);
-        column.appendChild(timeBlock);
-
-        // 대시보드 통계 업데이트
-        setTimeout(() => {
-          updateTodayStats();
-          updateWeekStatsSimple();
-        }, 100);
-      }
+      // UI 업데이트
+      updateUIForNewEvent(
+        eventDate,
+        startHour,
+        startMinute,
+        duration,
+        title,
+        color,
+        response._id
+      );
     }
+
+    // 대시보드 통계 업데이트
+    setTimeout(() => {
+      updateTodayStats();
+      updateWeekStatsSimple();
+    }, 100);
   } catch (error) {
     console.error("일정 추가 실패:", error);
-    addActivity("add", `일정 추가에 실패했습니다: ${error.message}`);
+    throw error;
+  }
+}
+
+// UI 업데이트를 위한 헬퍼 함수
+function updateUIForNewEvent(
+  eventDate,
+  startHour,
+  startMinutes,
+  duration,
+  title,
+  color,
+  eventId,
+  groupId = null
+) {
+  const dateStr = eventDate.toISOString().split("T")[0];
+  const column = document.querySelector(
+    `.event-column[data-date^='${dateStr}']`
+  );
+
+  if (column) {
+    const timeBlock = document.createElement("div");
+    timeBlock.className = "time-block fade-in";
+    timeBlock.style.top = `${(startHour * 60 + startMinutes) * (60 / 60)}px`;
+    timeBlock.style.height = `${duration * (60 / 60)}px`;
+    timeBlock.style.backgroundColor = color || "#FFE5E5";
+
+    // 그룹 ID가 있으면 데이터 속성으로 저장
+    if (groupId) {
+      timeBlock.dataset.groupId = groupId;
+    }
+
+    // 일정 내용 컨테이너
+    const eventContent = document.createElement("div");
+    eventContent.className = "event-content";
+    eventContent.textContent = title;
+
+    // 완료 체크박스
+    const completeCheckbox = document.createElement("input");
+    completeCheckbox.type = "checkbox";
+    completeCheckbox.className = "complete-checkbox";
+    completeCheckbox.checked = false;
+    completeCheckbox.title = "미완료";
+
+    completeCheckbox.addEventListener("change", (e) => {
+      e.stopPropagation();
+      const isCompleted = e.target.checked;
+
+      // 그룹 ID가 있으면 연결된 모든 일정의 완료 상태 변경
+      if (groupId) {
+        toggleGroupEventCompletion(groupId, title, isCompleted);
+      } else {
+        toggleEventCompletion(eventId, title, isCompleted);
+      }
+
+      // UI 즉시 업데이트
+      if (isCompleted) {
+        timeBlock.classList.add("completed");
+        e.target.title = "완료됨";
+      } else {
+        timeBlock.classList.remove("completed");
+        e.target.title = "미완료";
+      }
+    });
+
+    // 삭제 버튼 추가
+    const deleteBtn = document.createElement("button");
+    deleteBtn.className = "delete-event-btn";
+    deleteBtn.textContent = "×";
+    deleteBtn.onclick = async (e) => {
+      e.stopPropagation();
+
+      const confirmMessage = groupId
+        ? `"${title.replace(
+            / \([12]일차\)/,
+            ""
+          )}" 일정 전체를 삭제하시겠습니까?\n(연결된 모든 블록이 삭제됩니다)`
+        : `"${title}" 일정을 삭제하시겠습니까?`;
+
+      showConfirmModal("일정 삭제", confirmMessage, async function () {
+        try {
+          if (groupId) {
+            // 그룹으로 연결된 모든 일정 삭제
+            await deleteGroupEvents(groupId, title);
+          } else {
+            // 단일 일정 삭제
+            timeBlock.classList.add("removing");
+            await fetchAPI(`/${eventId}`, { method: "DELETE" });
+
+            // 완료 목록에서도 제거
+            completedEvents = completedEvents.filter((id) => id !== eventId);
+            localStorage.setItem(
+              "completedEvents",
+              JSON.stringify(completedEvents)
+            );
+
+            addActivity("delete", `"${title}" 일정이 삭제되었습니다`, title);
+
+            timeBlock.addEventListener(
+              "animationend",
+              () => {
+                timeBlock.remove();
+                setTimeout(() => {
+                  updateTodayStats();
+                  updateWeekStatsSimple();
+                }, 100);
+              },
+              { once: true }
+            );
+          }
+        } catch (error) {
+          console.error("일정 삭제 실패:", error);
+          showActivityNotification({
+            icon: "❌",
+            message: "일정 삭제에 실패했습니다.",
+          });
+          timeBlock.classList.remove("removing");
+        }
+      });
+    };
+
+    timeBlock.appendChild(completeCheckbox);
+    timeBlock.appendChild(eventContent);
+    timeBlock.appendChild(deleteBtn);
+    column.appendChild(timeBlock);
+  }
+}
+
+// 그룹으로 연결된 일정들의 완료 상태 토글
+async function toggleGroupEventCompletion(groupId, eventTitle, isCompleted) {
+  try {
+    // 같은 그룹의 모든 블록 찾기
+    const groupBlocks = document.querySelectorAll(
+      `[data-group-id="${groupId}"]`
+    );
+
+    // UI 즉시 업데이트
+    groupBlocks.forEach((block) => {
+      const checkbox = block.querySelector(".complete-checkbox");
+      if (checkbox) {
+        checkbox.checked = isCompleted;
+        if (isCompleted) {
+          block.classList.add("completed");
+          checkbox.title = "완료됨";
+        } else {
+          block.classList.remove("completed");
+          checkbox.title = "미완료";
+        }
+      }
+    });
+
+    // 서버에서 그룹 일정들의 ID 조회
+    try {
+      const allEvents = await fetchAPI("");
+      const groupEvents = allEvents.filter(
+        (event) => event.groupId === groupId
+      );
+
+      console.log("그룹 완료 상태 변경:", groupId, "완료:", isCompleted);
+      console.log("해당 그룹 일정들:", groupEvents);
+
+      // 완료 목록 업데이트
+      groupEvents.forEach((event) => {
+        if (isCompleted) {
+          if (!completedEvents.includes(event._id)) {
+            completedEvents.push(event._id);
+          }
+        } else {
+          completedEvents = completedEvents.filter((id) => id !== event._id);
+        }
+      });
+
+      localStorage.setItem("completedEvents", JSON.stringify(completedEvents));
+    } catch (error) {
+      console.error("그룹 일정 조회 실패:", error);
+      // 서버 조회 실패 시에도 UI는 유지
+    }
+
+    // 활동 로그 추가
+    const cleanTitle = eventTitle.replace(/ \([12]일차\)/, "");
+    if (isCompleted) {
+      addActivity(
+        "complete",
+        `"${cleanTitle}" 일정을 완료했습니다`,
+        cleanTitle
+      );
+    } else {
+      addActivity(
+        "edit",
+        `"${cleanTitle}" 일정을 미완료로 변경했습니다`,
+        cleanTitle
+      );
+    }
+
+    // 통계 업데이트
+    setTimeout(() => {
+      updateWeekStatsSimple();
+      updateTodayStats();
+    }, 100);
+  } catch (error) {
+    console.error("그룹 완료 상태 변경 실패:", error);
+  }
+}
+
+// 그룹으로 연결된 모든 일정 삭제
+async function deleteGroupEvents(groupId, title) {
+  try {
+    // 같은 그룹의 모든 블록 찾기
+    const groupBlocks = document.querySelectorAll(
+      `[data-group-id="${groupId}"]`
+    );
+    const cleanTitle = title.replace(/ \([12]일차\)/, "");
+
+    // 모든 블록에 삭제 애니메이션 적용
+    groupBlocks.forEach((block) => {
+      block.classList.add("removing");
+    });
+
+    // 서버에서 groupId로 연결된 모든 일정 조회 및 삭제
+    try {
+      console.log("그룹 일정 삭제 시작, groupId:", groupId);
+
+      // 전체 일정을 조회해서 같은 groupId를 가진 일정들 찾기
+      const allEvents = await fetchAPI("");
+      const eventsToDelete = allEvents.filter(
+        (event) => event.groupId === groupId
+      );
+
+      console.log("삭제할 그룹 일정들:", eventsToDelete);
+
+      // 각 일정을 개별적으로 삭제
+      for (const event of eventsToDelete) {
+        await fetchAPI(`/${event._id}`, { method: "DELETE" });
+        console.log("일정 삭제 완료:", event.title);
+
+        // 완료 목록에서도 제거
+        completedEvents = completedEvents.filter((id) => id !== event._id);
+      }
+    } catch (error) {
+      console.error("서버에서 그룹 일정 삭제 실패:", error);
+
+      // 서버 삭제 실패 시 클라이언트에서 개별 삭제 시도
+      const deletePromises = Array.from(groupBlocks).map(async (block) => {
+        const eventContent = block.querySelector(".event-content").textContent;
+
+        try {
+          const allEvents = await fetchAPI("");
+          const eventsToDelete = allEvents.filter(
+            (event) => event.title === eventContent
+          );
+
+          for (const event of eventsToDelete) {
+            await fetchAPI(`/${event._id}`, { method: "DELETE" });
+            completedEvents = completedEvents.filter((id) => id !== event._id);
+          }
+        } catch (individualError) {
+          console.error("개별 일정 삭제 실패:", individualError);
+        }
+      });
+
+      await Promise.all(deletePromises);
+    }
+
+    // 완료 목록 저장
+    localStorage.setItem("completedEvents", JSON.stringify(completedEvents));
+
+    addActivity("delete", `"${cleanTitle}" 일정이 삭제되었습니다`, cleanTitle);
+
+    // 모든 블록 제거
+    groupBlocks.forEach((block) => {
+      block.addEventListener(
+        "animationend",
+        () => {
+          block.remove();
+        },
+        { once: true }
+      );
+    });
+
+    // 통계 업데이트
+    setTimeout(() => {
+      updateTodayStats();
+      updateWeekStatsSimple();
+    }, 100);
+  } catch (error) {
+    console.error("그룹 일정 삭제 실패:", error);
     throw error;
   }
 }

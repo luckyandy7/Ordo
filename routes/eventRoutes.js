@@ -28,13 +28,14 @@ const authenticateToken = (req, res, next) => {
 // 일정 생성
 router.post("/", authenticateToken, async (req, res) => {
   try {
-    const { title, date, duration, color } = req.body;
+    const { title, date, duration, color, groupId } = req.body;
     console.log("[이벤트 API] 일정 생성 요청:", {
       userId: req.user.userId,
       title,
       date,
       duration,
       color,
+      groupId,
     });
 
     const event = new Event({
@@ -43,6 +44,7 @@ router.post("/", authenticateToken, async (req, res) => {
       date,
       duration,
       color,
+      groupId,
     });
     await event.save();
 

@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ordo - 새 글 작성</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cutive:wght@400&family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      @font-face {
+        font-family: "Freesentation";
+        src: url("/font/Freesentation.ttf") format("truetype");
+      }
+
+      :root {
+        /* Ordo Signature Colors */
+        --copper-primary: #c96342;
+        --copper-light: #e08b6f;
+        --copper-dark: #a54a2e;
+        --copper-bright: #f2a085;
+        --copper-shadow: rgba(201, 99, 66, 0.15);
+
+        /* Modern Neutral Palette */
+        --gray-50: #fafafa;
+        --gray-100: #f5f5f5;
+        --gray-200: #e5e5e5;
+        --gray-300: #d4d4d4;
+        --gray-400: #a3a3a3;
+        --gray-500: #737373;
+        --gray-600: #525252;
+        --gray-700: #404040;
+        --gray-800: #262626;
+        --gray-900: #171717;
+
+        /* Theme Colors */
+        --background: #f6f0eb;
+        --surface: #ffffff;
+        --surface-hover: #f5f5f5;
+        --border: #e5e5e5;
+        --text-primary: #171717;
+        --text-secondary: #525252;
+        --text-muted: #a3a3a3;
+
+        /* Shadows */
+        --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+        --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+        --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1),
+          0 2px 4px -2px rgb(0 0 0 / 0.1);
+        --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1),
+          0 4px 6px -4px rgb(0 0 0 / 0.1);
+        --shadow-copper: 0 4px 14px 0 rgba(201, 99, 66, 0.15);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Inter", "Freesentation", -apple-system, BlinkMacSystemFont,
+          sans-serif;
+        background: linear-gradient(
+          135deg,
+          var(--background) 0%,
+          #faf4f2 50%,
+          #f0e6e1 100%
+        );
+        background-attachment: fixed;
+        color: var(--text-primary);
+        line-height: 1.6;
+        min-height: 100vh;
+      }
+
+      .header {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-bottom: 1px solid var(--border);
+        padding: 1rem 0;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+
+      .header-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .brand-container {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .logo-image {
+        width: 40px;
+        height: 40px;
+        transition: transform 0.3s ease;
+      }
+
+      .logo-image:hover {
+        transform: rotate(15deg);
+      }
+
+      .brand {
+        font-family: "Cutive", serif;
+        font-size: 1.8rem;
+        color: var(--copper-primary);
+        font-weight: 400;
+        text-decoration: none;
+      }
+
+      .nav-breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--text-secondary);
+        font-size: 0.875rem;
+      }
+
+      .breadcrumb-link {
+        color: var(--text-secondary);
+        text-decoration: none;
+        transition: color 0.2s ease;
+      }
+
+      .breadcrumb-link:hover {
+        color: var(--copper-primary);
+      }
+
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 3rem 2rem;
+      }
+
+      .write-header {
+        text-align: center;
+        margin-bottom: 3rem;
+      }
+
+      .page-title {
+        font-family: "Cutive", serif;
+        font-size: 2.5rem;
+        color: var(--copper-primary);
+        margin-bottom: 1rem;
+        font-weight: 400;
+      }
+
+      .page-subtitle {
+        font-size: 1rem;
+        color: var(--text-secondary);
+        margin-bottom: 2rem;
+        font-family: "Freesentation", sans-serif;
+      }
+
+      .form-container {
+        background: var(--surface);
+        border-radius: 16px;
+        box-shadow: var(--shadow-lg);
+        overflow: hidden;
+      }
+
+      .form-header {
+        padding: 2rem;
+        border-bottom: 1px solid var(--border);
+        background: linear-gradient(
+          135deg,
+          var(--copper-primary),
+          var(--copper-light)
+        );
+        color: white;
+      }
+
+      .form-header h2 {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .form-header p {
+        opacity: 0.9;
+        font-size: 0.875rem;
+      }
+
+      .form-body {
+        padding: 2rem;
+      }
+
+      .form-group {
+        margin-bottom: 2rem;
+      }
+
+      .form-label {
+        display: block;
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 0.5rem;
+      }
+
+      .form-label.required::after {
+        content: " *";
+        color: var(--copper-primary);
+      }
+
+      .form-input {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 2px solid var(--border);
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: all 0.2s ease;
+        background: var(--surface);
+        color: var(--text-primary);
+      }
+
+      .form-input:focus {
+        outline: none;
+        border-color: var(--copper-primary);
+        box-shadow: 0 0 0 3px var(--copper-shadow);
+      }
+
+      .form-textarea {
+        min-height: 300px;
+        resize: vertical;
+        font-family: inherit;
+        line-height: 1.6;
+      }
+
+      .category-selector {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 0.75rem;
+        margin-top: 0.5rem;
+      }
+
+      .category-option {
+        position: relative;
+      }
+
+      .category-option input[type="radio"] {
+        position: absolute;
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .category-label {
+        display: block;
+        padding: 0.75rem;
+        border: 2px solid var(--border);
+        border-radius: 8px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        background: var(--surface);
+        font-size: 0.875rem;
+      }
+
+      .category-option input[type="radio"]:checked + .category-label {
+        border-color: var(--copper-primary);
+        background: var(--copper-primary);
+        color: white;
+      }
+
+      .category-label:hover {
+        border-color: var(--copper-light);
+        background: var(--surface-hover);
+      }
+
+      .tags-input-container {
+        position: relative;
+      }
+
+      .tags-display {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-bottom: 0.75rem;
+        min-height: 32px;
+        padding: 0.5rem;
+        border: 2px solid var(--border);
+        border-radius: 8px;
+        background: var(--surface);
+      }
+
+      .tag-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: var(--copper-primary);
+        color: white;
+        padding: 0.25rem 0.75rem;
+        border-radius: 16px;
+        font-size: 0.8rem;
+      }
+
+      .tag-remove {
+        cursor: pointer;
+        opacity: 0.7;
+        transition: opacity 0.2s ease;
+      }
+
+      .tag-remove:hover {
+        opacity: 1;
+      }
+
+      .tags-input {
+        border: none;
+        outline: none;
+        padding: 0.25rem;
+        background: transparent;
+        flex: 1;
+        min-width: 100px;
+      }
+
+      .form-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: flex-end;
+        margin-top: 3rem;
+        padding-top: 2rem;
+        border-top: 1px solid var(--border);
+      }
+
+      .btn {
+        padding: 0.75rem 2rem;
+        border-radius: 8px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        text-decoration: none;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        border: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .btn-secondary {
+        background: var(--surface);
+        color: var(--text-secondary);
+        border: 2px solid var(--border);
+      }
+
+      .btn-secondary:hover {
+        background: var(--surface-hover);
+        border-color: var(--copper-primary);
+      }
+
+      .btn-primary {
+        background: var(--copper-primary);
+        color: white;
+        box-shadow: var(--shadow-copper);
+      }
+
+      .btn-primary:hover {
+        background: var(--copper-dark);
+        transform: translateY(-2px);
+      }
+
+      .btn-primary:disabled {
+        background: var(--gray-300);
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      .character-count {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        text-align: right;
+        margin-top: 0.5rem;
+      }
+
+      .tips-card {
+        background: linear-gradient(
+          135deg,
+          var(--copper-light),
+          var(--copper-bright)
+        );
+        color: white;
+        padding: 1.5rem;
+        border-radius: 12px;
+        margin-bottom: 2rem;
+      }
+
+      .tips-title {
+        font-size: 1rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+      }
+
+      .tips-list {
+        list-style: none;
+        font-size: 0.875rem;
+        line-height: 1.6;
+      }
+
+      .tips-list li {
+        margin-bottom: 0.5rem;
+        padding-left: 1rem;
+        position: relative;
+      }
+
+      .tips-list li::before {
+        content: "💡";
+        position: absolute;
+        left: 0;
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          padding: 2rem 1rem;
+        }
+
+        .page-title {
+          font-size: 2rem;
+        }
+
+        .form-body {
+          padding: 1.5rem;
+        }
+
+        .form-actions {
+          flex-direction: column;
+        }
+
+        .category-selector {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="header">
+      <div class="header-content">
+        <div class="brand-container">
+          <img src="/Login/image-8.png" alt="Ordo Logo" class="logo-image" />
+          <a href="/Main/index.html" class="brand">Ordo</a>
+        </div>
+        <nav class="nav-breadcrumb">
+          <a href="/Main/index.html" class="breadcrumb-link">대시보드</a>
+          <span>›</span>
+          <a href="/board/list.html" class="breadcrumb-link">커뮤니티</a>
+          <span>›</span>
+          <span>글쓰기</span>
+        </nav>
+      </div>
+    </header>
+
+    <div class="container">
+      <div class="write-header">
+        <h1 class="page-title">새 글 작성</h1>
+        <p class="page-subtitle">
+          당신의 생산성 노하우를 커뮤니티와 공유해보세요
+        </p>
+      </div>
+
+      <div class="tips-card">
+        <h3 class="tips-title">📝 좋은 글을 위한 팁</h3>
+        <ul class="tips-list">
+          <li>구체적이고 실용적인 경험을 공유해주세요</li>
+          <li>다른 사용자가 쉽게 따라할 수 있도록 단계별로 설명해주세요</li>
+          <li>관련 태그를 추가하여 더 많은 사람들이 찾을 수 있게 해주세요</li>
+          <li>예의 바른 언어를 사용하여 건전한 커뮤니티를 만들어주세요</li>
+        </ul>
+      </div>
+
+      <form class="form-container" id="postForm">
+        <div class="form-header">
+          <h2>글 작성하기</h2>
+          <p>체계적인 일상 관리에 대한 이야기를 들려주세요</p>
+        </div>
+
+        <div class="form-body">
+          <div class="form-group">
+            <label for="title" class="form-label required">제목</label>
+            <input
+              type="text"
+              id="title"
+              class="form-input"
+              placeholder="흥미로운 제목을 입력해주세요"
+              maxlength="100"
+              required
+            />
+            <div class="character-count">
+              <span id="titleCount">0</span>/100
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">카테고리</label>
+            <div class="category-selector">
+              <div class="category-option">
+                <input
+                  type="radio"
+                  id="productivity"
+                  name="category"
+                  value="productivity"
+                  checked
+                />
+                <label for="productivity" class="category-label"
+                  >📈 생산성</label
+                >
+              </div>
+              <div class="category-option">
+                <input
+                  type="radio"
+                  id="routine"
+                  name="category"
+                  value="routine"
+                />
+                <label for="routine" class="category-label">🔄 루틴</label>
+              </div>
+              <div class="category-option">
+                <input type="radio" id="tips" name="category" value="tips" />
+                <label for="tips" class="category-label">💡 팁</label>
+              </div>
+              <div class="category-option">
+                <input type="radio" id="qna" name="category" value="qna" />
+                <label for="qna" class="category-label">❓ 질문답변</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="content" class="form-label required">내용</label>
+            <textarea
+              id="content"
+              class="form-input form-textarea"
+              placeholder="여기에 내용을 작성해주세요...
+
+예시:
+• 어떤 문제를 해결했나요?
+• 어떤 방법을 사용했나요?
+• 결과는 어땠나요?
+• 다른 사람들에게 어떤 도움이 될까요?"
+              maxlength="5000"
+              required
+            ></textarea>
+            <div class="character-count">
+              <span id="contentCount">0</span>/5000
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">태그</label>
+            <div class="tags-input-container">
+              <div class="tags-display" id="tagsDisplay">
+                <input
+                  type="text"
+                  class="tags-input"
+                  id="tagsInput"
+                  placeholder="태그를 입력하고 Enter를 누르세요"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <a href="/board/list.html" class="btn btn-secondary"> 취소 </a>
+            <button type="submit" class="btn btn-primary" id="submitBtn">
+              📝 게시하기
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <script>
+      let tags = [];
+
+      document.addEventListener("DOMContentLoaded", () => {
+        setupCharacterCount();
+        setupTagsInput();
+        setupFormSubmission();
+        loadUserInfo();
+      });
+
+      function setupCharacterCount() {
+        const titleInput = document.getElementById("title");
+        const contentInput = document.getElementById("content");
+        const titleCount = document.getElementById("titleCount");
+        const contentCount = document.getElementById("contentCount");
+
+        titleInput.addEventListener("input", () => {
+          titleCount.textContent = titleInput.value.length;
+        });
+
+        contentInput.addEventListener("input", () => {
+          contentCount.textContent = contentInput.value.length;
+        });
+      }
+
+      function setupTagsInput() {
+        const tagsInput = document.getElementById("tagsInput");
+        const tagsDisplay = document.getElementById("tagsDisplay");
+
+        tagsInput.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" || e.key === ",") {
+            e.preventDefault();
+            addTag(tagsInput.value.trim());
+            tagsInput.value = "";
+          }
+        });
+
+        tagsInput.addEventListener("blur", () => {
+          if (tagsInput.value.trim()) {
+            addTag(tagsInput.value.trim());
+            tagsInput.value = "";
+          }
+        });
+      }
+
+      function addTag(tagText) {
+        if (!tagText || tags.includes(tagText) || tags.length >= 5) return;
+
+        tags.push(tagText);
+        renderTags();
+      }
+
+      function removeTag(tagText) {
+        tags = tags.filter((tag) => tag !== tagText);
+        renderTags();
+      }
+
+      function renderTags() {
+        const tagsDisplay = document.getElementById("tagsDisplay");
+        const tagsInput = document.getElementById("tagsInput");
+
+        // 기존 태그 제거
+        const existingTags = tagsDisplay.querySelectorAll(".tag-item");
+        existingTags.forEach((tag) => tag.remove());
+
+        // 새 태그 추가
+        tags.forEach((tag) => {
+          const tagElement = document.createElement("div");
+          tagElement.className = "tag-item";
+          tagElement.innerHTML = `
+                    <span>${tag}</span>
+                    <span class="tag-remove" onclick="removeTag('${tag}')">×</span>
+                `;
+          tagsDisplay.insertBefore(tagElement, tagsInput);
+        });
+      }
+
+      function setupFormSubmission() {
+        const form = document.getElementById("postForm");
+        const submitBtn = document.getElementById("submitBtn");
+
+        form.addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          submitBtn.disabled = true;
+          submitBtn.innerHTML = "📤 게시 중...";
+
+          try {
+            const user = JSON.parse(localStorage.getItem("user") || "{}");
+            const formData = {
+              title: document.getElementById("title").value,
+              content: document.getElementById("content").value,
+              category: document.querySelector('input[name="category"]:checked')
+                .value,
+              tags: tags,
+              author: user.name || "익명",
+            };
+
+            const response = await fetch("/api/posts", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(formData),
+            });
+
+            if (response.ok) {
+              // 성공 시 목록 페이지로 이동
+              window.location.href = "/board/list.html";
+            } else {
+              throw new Error("게시글 작성에 실패했습니다.");
+            }
+          } catch (error) {
+            console.error("게시글 작성 오류:", error);
+            alert("게시글 작성 중 오류가 발생했습니다. 다시 시도해주세요.");
+
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = "📝 게시하기";
+          }
+        });
+      }
+
+      function loadUserInfo() {
+        const user = JSON.parse(localStorage.getItem("user") || "{}");
+        if (!user.name) {
+          // 로그인하지 않은 경우 로그인 페이지로 리다이렉트
+          if (
+            confirm("로그인이 필요합니다. 로그인 페이지로 이동하시겠습니까?")
+          ) {
+            window.location.href = "/Login/email-login.html";
+          }
+        }
+      }
+    </script>
+  </body>
+</html>

@@ -46,7 +46,7 @@
         <div class="login-card">
           <div class="login-header">
             <h2 class="login-title">
-              <span class="font-cutive">Sign in</span>
+              <span class="font-cutive" style="color: #c96342">Sign in</span>
             </h2>
             <p class="login-subtitle">계정에 로그인하여 일정을 관리하세요</p>
           </div>
@@ -327,9 +327,38 @@
         };
       }
 
-      // 카카오 로그인
       function loginWithKakao() {
-        showAlert("준비 중", "카카오 로그인 기능은 준비 중입니다.");
+        try {
+          console.log("카카오 로그인 시작");
+
+          // 로딩 표시
+          showLoading(true);
+          showAlert("카카오 로그인", "카카오 로그인 페이지로 이동합니다...");
+
+          const clientId = "e0856775ac58c0fd2d1a8cfe8806a1a9";
+          const redirectUri = "http://localhost:5001/auth/kakao/callback";
+          const state = Math.random().toString(36).substring(2, 15); // CSRF 보호를 위한 state 값
+
+          // 카카오 OAuth URL 생성 (scope 없이 기본 정보만 사용)
+          const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(
+            redirectUri
+          )}&response_type=code&state=${state}`;
+
+          console.log("카카오 인증 URL:", kakaoAuthUrl);
+
+          // state 값을 localStorage에 저장 (보안을 위해)
+          localStorage.setItem("kakao_oauth_state", state);
+
+          // 카카오 로그인 페이지로 이동
+          window.location.href = kakaoAuthUrl;
+        } catch (error) {
+          console.error("카카오 로그인 오류:", error);
+          showLoading(false);
+          showAlert(
+            "오류",
+            "카카오 로그인 중 오류가 발생했습니다. 다시 시도해주세요."
+          );
+        }
       }
 
       // 스크롤 애니메이션 초기화
