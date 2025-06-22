@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ordo - 개인정보 수정</title>
+    <link rel="stylesheet" href="/Main/profile.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cutive&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      @font-face {
+        font-family: "Freesentation";
+        src: url("/font/Freesentation.ttf") format("truetype");
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header class="header">
+        <div class="brand-container">
+          <img src="/Login/image-8.png" alt="Logo" class="logo-image" />
+          <div class="brand">Ordo</div>
+        </div>
+        <div class="header-controls">
+          <button id="themeToggle" class="theme-toggle" title="다크모드 토글">
+            <span class="theme-icon">🌙</span>
+            <div class="theme-tooltip">다크모드 토글</div>
+          </button>
+          <button id="backBtn" class="back-button">
+            <span class="back-icon">←</span>
+            <div class="back-tooltip">메인으로 돌아가기</div>
+          </button>
+        </div>
+      </header>
+
+      <div class="profile-section">
+        <div class="profile-header">
+          <div class="profile-avatar">
+            <img
+              src="/Main/public/images/private user.png"
+              alt="Profile"
+              class="avatar-image"
+            />
+            <button class="avatar-change-btn">📷</button>
+          </div>
+          <h1 class="profile-title">개인정보 수정</h1>
+          <p class="profile-subtitle">계정 정보를 업데이트하세요</p>
+        </div>
+
+        <div class="profile-form-container">
+          <form id="profileForm" class="profile-form">
+            <div class="form-section">
+              <h3 class="section-title">기본 정보</h3>
+
+              <div class="form-group">
+                <label for="userName">이름</label>
+                <input
+                  type="text"
+                  id="userName"
+                  name="userName"
+                  placeholder="이름을 입력하세요"
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="userEmail">이메일</label>
+                <input
+                  type="email"
+                  id="userEmail"
+                  name="userEmail"
+                  placeholder="이메일을 입력하세요"
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="userPhone">전화번호</label>
+                <input
+                  type="tel"
+                  id="userPhone"
+                  name="userPhone"
+                  placeholder="전화번호를 입력하세요"
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="userBirth">생년월일</label>
+                <input type="date" id="userBirth" name="userBirth" />
+              </div>
+            </div>
+
+            <div class="form-section">
+              <h3 class="section-title">보안 설정</h3>
+
+              <div class="form-group">
+                <label for="currentPassword">현재 비밀번호</label>
+                <input
+                  type="password"
+                  id="currentPassword"
+                  name="currentPassword"
+                  placeholder="현재 비밀번호를 입력하세요"
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="newPassword">새 비밀번호</label>
+                <input
+                  type="password"
+                  id="newPassword"
+                  name="newPassword"
+                  placeholder="새 비밀번호를 입력하세요"
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="confirmPassword">비밀번호 확인</label>
+                <input
+                  type="password"
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  placeholder="새 비밀번호를 다시 입력하세요"
+                />
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button type="button" class="cancel-btn">취소</button>
+              <button type="submit" class="save-btn">저장하기</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- 계정 관리 섹션 -->
+        <div class="account-management">
+          <h3 class="section-title danger">위험 구역</h3>
+          <div class="danger-actions">
+            <button class="danger-btn" id="deleteAccountBtn">
+              <span class="danger-icon">⚠️</span>
+              계정 삭제
+            </button>
+            <p class="danger-text">
+              계정을 삭제하면 모든 데이터가 영구적으로 삭제됩니다.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 성공 알림 모달 -->
+    <div id="successModal" class="modal">
+      <div class="modal-content success-modal">
+        <div class="success-icon">✅</div>
+        <h3>저장 완료!</h3>
+        <p>개인정보가 성공적으로 업데이트되었습니다.</p>
+        <button type="button" class="ok-btn" id="successOk">확인</button>
+      </div>
+    </div>
+
+    <!-- 계정 삭제 확인 모달 -->
+    <div id="deleteModal" class="modal">
+      <div class="modal-content delete-modal">
+        <div class="delete-icon">⚠️</div>
+        <h3>계정 삭제</h3>
+        <p>
+          정말로 계정을 삭제하시겠습니까?<br />이 작업은 되돌릴 수 없습니다.
+        </p>
+        <div class="delete-confirmation">
+          <input
+            type="text"
+            id="deleteConfirmInput"
+            placeholder="'삭제'를 입력하세요"
+          />
+        </div>
+        <div class="modal-buttons">
+          <button type="button" class="cancel-btn" id="deleteCancel">
+            취소
+          </button>
+          <button type="button" class="danger-btn" id="deleteConfirm" disabled>
+            삭제
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 확인 모달 -->
+    <div id="confirmModal" class="modal">
+      <div class="modal-content confirm-modal">
+        <div class="confirm-icon">🗑️</div>
+        <h3 id="confirmTitle">확인</h3>
+        <p id="confirmMessage">정말로 실행하시겠습니까?</p>
+        <div class="confirm-buttons">
+          <button type="button" class="cancel-btn" id="confirmCancel">
+            취소
+          </button>
+          <button type="button" class="danger-btn" id="confirmOk">확인</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="/Main/js/messages.js"></script>
+    <script src="/Main/profile.js"></script>
+  </body>
+</html>

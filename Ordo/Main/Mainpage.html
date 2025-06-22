@@ -1,0 +1,1284 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ordo - Your Life, More Organized</title>
+    <link rel="stylesheet" href="/Main/styles.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cutive:wght@400&family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      @font-face {
+        font-family: "Freesentation";
+        src: url("/font/Freesentation.ttf") format("truetype");
+      }
+
+      :root {
+        /* Ordo Signature Colors */
+        --copper-primary: #c96342;
+        --copper-light: #e08b6f;
+        --copper-dark: #a54a2e;
+        --copper-bright: #f2a085;
+        --copper-shadow: rgba(201, 99, 66, 0.15);
+
+        /* Modern Neutral Palette */
+        --gray-50: #fafafa;
+        --gray-100: #f5f5f5;
+        --gray-200: #e5e5e5;
+        --gray-300: #d4d4d4;
+        --gray-400: #a3a3a3;
+        --gray-500: #737373;
+        --gray-600: #525252;
+        --gray-700: #404040;
+        --gray-800: #262626;
+        --gray-900: #171717;
+
+        /* Theme Colors */
+        --background: #ffffff;
+        --surface: #fafafa;
+        --surface-hover: #f5f5f5;
+        --border: #e5e5e5;
+        --text-primary: #171717;
+        --text-secondary: #525252;
+        --text-muted: #a3a3a3;
+
+        /* Shadows */
+        --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+        --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+        --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1),
+          0 2px 4px -2px rgb(0 0 0 / 0.1);
+        --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1),
+          0 4px 6px -4px rgb(0 0 0 / 0.1);
+        --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1),
+          0 8px 10px -6px rgb(0 0 0 / 0.1);
+
+        /* Copper Shadows */
+        --shadow-copper: 0 4px 14px 0 rgba(201, 99, 66, 0.15);
+        --shadow-copper-lg: 0 10px 25px -3px rgba(201, 99, 66, 0.2);
+
+        /* Spacing */
+        --space-1: 0.25rem;
+        --space-2: 0.5rem;
+        --space-3: 0.75rem;
+        --space-4: 1rem;
+        --space-6: 1.5rem;
+        --space-8: 2rem;
+        --space-12: 3rem;
+        --space-16: 4rem;
+        --space-20: 5rem;
+        --space-24: 6rem;
+
+        /* Border Radius */
+        --radius-sm: 0.375rem;
+        --radius: 0.5rem;
+        --radius-md: 0.75rem;
+        --radius-lg: 1rem;
+        --radius-xl: 1.5rem;
+        --radius-2xl: 2rem;
+      }
+
+      [data-theme="dark"] {
+        --background: #0a0a0a;
+        --surface: #171717;
+        --surface-hover: #262626;
+        --border: #404040;
+        --text-primary: #fafafa;
+        --text-secondary: #d4d4d4;
+        --text-muted: #737373;
+        --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+        --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.4), 0 1px 2px -1px rgb(0 0 0 / 0.4);
+        --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4),
+          0 2px 4px -2px rgb(0 0 0 / 0.4);
+        --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.4),
+          0 4px 6px -4px rgb(0 0 0 / 0.4);
+        --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.4),
+          0 8px 10px -6px rgb(0 0 0 / 0.4);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Inter", "Freesentation", -apple-system, BlinkMacSystemFont,
+          sans-serif;
+        background: var(--background);
+        color: var(--text-primary);
+        line-height: 1.6;
+        font-weight: 400;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        transition: all 0.2s ease;
+      }
+
+      .font-cutive {
+        font-family: "Cutive", serif;
+      }
+
+      /* Simple Logo Header */
+      .simple-header {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: var(--space-3);
+        padding: var(--space-8) 0 var(--space-4);
+        margin-bottom: var(--space-8);
+      }
+
+      .simple-logo {
+        width: 48px;
+        height: 48px;
+        transition: all 0.2s ease;
+      }
+
+      .simple-logo:hover {
+        transform: scale(1.05);
+      }
+
+      .simple-logo-text {
+        font-family: "Cutive", serif;
+        font-size: 2rem;
+        font-weight: 400;
+        color: var(--copper-primary);
+        letter-spacing: -0.025em;
+        transition: all 0.2s ease;
+      }
+
+      .simple-logo-text:hover {
+        color: var(--copper-dark);
+      }
+
+      /* Hero Section - Notion Style */
+      .main-content {
+        min-height: 100vh;
+      }
+
+      .hero-section {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: var(--space-16) var(--space-6) var(--space-20);
+      }
+
+      .hero-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: var(--space-16);
+        align-items: flex-start;
+        min-height: 60vh;
+        margin-top: -var(--space-8);
+      }
+
+      .hero-content {
+        text-align: left;
+      }
+
+      .hero-image-container {
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        margin-top: var(--space-16);
+      }
+
+      .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-2);
+        padding: var(--space-2) var(--space-4);
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-xl);
+        font-size: 0.875rem;
+        color: var(--text-secondary);
+        margin-bottom: var(--space-8);
+        transition: all 0.2s ease;
+      }
+
+      .hero-badge:hover {
+        background: var(--surface-hover);
+        border-color: var(--copper-primary);
+      }
+
+      .hero-badge .badge-icon {
+        width: 16px;
+        height: 16px;
+        background: var(--copper-primary);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.75rem;
+      }
+
+      .hero-title {
+        font-size: clamp(2.5rem, 8vw, 4.5rem);
+        font-weight: 800;
+        line-height: 1.1;
+        letter-spacing: -0.025em;
+        margin-bottom: var(--space-6);
+        background: linear-gradient(
+          135deg,
+          var(--text-primary),
+          var(--text-secondary)
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .hero-title .highlight {
+        background: linear-gradient(
+          135deg,
+          var(--copper-primary),
+          var(--copper-light)
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .hero-subtitle {
+        font-size: 1.25rem;
+        color: var(--text-secondary);
+        max-width: 600px;
+        margin: 0 auto var(--space-12);
+        line-height: 1.6;
+        font-weight: 400;
+      }
+
+      .hero-buttons {
+        display: flex;
+        gap: var(--space-4);
+        justify-content: flex-start;
+        flex-wrap: wrap;
+        margin-bottom: var(--space-12);
+      }
+
+      .cta-button {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-2);
+        padding: var(--space-3) var(--space-6);
+        border-radius: var(--radius-md);
+        text-decoration: none;
+        font-size: 0.875rem;
+        font-weight: 600;
+        transition: all 0.2s ease;
+        border: 1px solid transparent;
+        min-width: 140px;
+        justify-content: center;
+      }
+
+      .cta-button.primary {
+        background: var(--copper-primary);
+        color: white;
+        box-shadow: var(--shadow-copper);
+      }
+
+      .cta-button.primary:hover {
+        background: var(--copper-dark);
+        transform: translateY(-3px) scale(1.05);
+        box-shadow: var(--shadow-copper-lg);
+      }
+
+      .cta-button.secondary {
+        background: var(--surface);
+        color: var(--text-primary);
+        border-color: var(--border);
+        box-shadow: var(--shadow-sm);
+      }
+
+      .cta-button.secondary:hover {
+        background: var(--surface-hover);
+        transform: translateY(-3px) scale(1.05);
+        box-shadow: var(--shadow-lg);
+        border-color: var(--copper-primary);
+      }
+
+      .hero-stats {
+        display: flex;
+        justify-content: center;
+        gap: var(--space-20);
+        margin: var(--space-16) 0;
+        flex-wrap: wrap;
+        max-width: 1200px;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 0 var(--space-6);
+      }
+
+      .stat-item {
+        text-align: center;
+        max-width: 200px;
+        transition: all 0.2s ease;
+      }
+
+      .stat-item:hover {
+        transform: translateY(-5px) scale(1.05);
+      }
+
+      .stat-item:hover .stat-number {
+        color: var(--copper-dark);
+        text-shadow: 0 2px 8px var(--copper-shadow);
+      }
+
+      .stat-number {
+        display: block;
+        font-size: 3rem;
+        font-weight: 900;
+        color: var(--copper-primary);
+        margin-bottom: var(--space-2);
+        line-height: 1;
+      }
+
+      .stat-label {
+        font-size: 0.875rem;
+        color: var(--text-secondary);
+        font-weight: 500;
+        line-height: 1.5;
+      }
+
+      .hero-image {
+        max-width: 800px;
+        margin: 0 auto;
+        position: relative;
+      }
+
+      .hero-image img {
+        width: 100%;
+        height: auto;
+        border-radius: var(--radius-xl);
+        transition: all 0.3s ease;
+      }
+
+      .hero-image:hover img {
+        transform: translateY(-4px);
+      }
+
+      /* Features Section - Notion Style */
+      .features-section {
+        background: var(--surface);
+        border-top: 1px solid var(--border);
+        padding: var(--space-24) 0;
+      }
+
+      .features-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 var(--space-6);
+      }
+
+      .features-header {
+        text-align: center;
+        margin-bottom: var(--space-16);
+      }
+
+      .features-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: var(--space-4);
+        letter-spacing: -0.025em;
+        color: var(--copper-primary);
+      }
+
+      .features-subtitle {
+        font-size: 1.125rem;
+        color: var(--text-secondary);
+        max-width: 600px;
+        margin: 0 auto;
+      }
+
+      .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: var(--space-8);
+      }
+
+      .feature-card {
+        background: var(--background);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        padding: var(--space-8);
+        transition: all 0.2s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .feature-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: var(--copper-primary);
+        transform: scaleX(0);
+        transition: transform 0.2s ease;
+      }
+
+      .feature-card:hover {
+        border-color: var(--copper-primary);
+        box-shadow: var(--shadow-copper-lg);
+        transform: translateY(-8px) scale(1.02);
+      }
+
+      .feature-card:hover::before {
+        transform: scaleX(1);
+      }
+
+      .feature-icon {
+        width: 48px;
+        height: 48px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        margin-bottom: var(--space-6);
+        transition: all 0.2s ease;
+      }
+
+      .feature-card:hover .feature-icon {
+        background: var(--copper-primary);
+        border-color: var(--copper-primary);
+        color: white;
+      }
+
+      .feature-card:hover .feature-icon img {
+        filter: brightness(0) invert(1);
+      }
+
+      .feature-card:hover .feature-icon {
+        color: white;
+      }
+
+      .feature-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: var(--space-3);
+        color: var(--text-primary);
+      }
+
+      .feature-title .font-cutive {
+        color: var(--copper-primary);
+      }
+
+      .feature-description {
+        color: var(--text-secondary);
+        line-height: 1.6;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
+        .hero-section {
+          padding: var(--space-16) var(--space-4) var(--space-12);
+        }
+
+        .hero-container {
+          grid-template-columns: 1fr;
+          gap: var(--space-8);
+          text-align: center;
+        }
+
+        .hero-content {
+          text-align: center;
+        }
+
+        .hero-buttons {
+          justify-content: center;
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .cta-button {
+          width: 100%;
+          max-width: 280px;
+        }
+
+        .hero-stats {
+          justify-content: center;
+          gap: var(--space-6);
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .stat-item {
+          max-width: 100%;
+          text-align: center;
+        }
+
+        .features-container {
+          padding: 0 var(--space-4);
+        }
+
+        .features-grid {
+          grid-template-columns: 1fr;
+          gap: var(--space-6);
+        }
+
+        .feature-card {
+          padding: var(--space-6);
+        }
+      }
+
+      /* Animations */
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .animate-fade-in-up {
+        animation: fadeInUp 0.6s ease-out forwards;
+      }
+
+      @keyframes blink {
+        0%,
+        50% {
+          opacity: 1;
+        }
+        51%,
+        100% {
+          opacity: 0;
+        }
+      }
+
+      .typewriter-cursor {
+        color: var(--copper-primary);
+        animation: blink 1s infinite;
+        font-weight: 400;
+      }
+
+      #typewriter-text {
+        height: 2.5em;
+        display: block;
+        width: 100%;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .typewriter-highlight {
+        background: linear-gradient(
+          135deg,
+          var(--copper-primary),
+          var(--copper-light)
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .animate-delay-100 {
+        animation-delay: 0.1s;
+      }
+      .animate-delay-200 {
+        animation-delay: 0.2s;
+      }
+      .animate-delay-300 {
+        animation-delay: 0.3s;
+      }
+      .animate-delay-400 {
+        animation-delay: 0.4s;
+      }
+
+      /* 스크롤 기반 애니메이션 */
+      .animate-in {
+        animation: slideInUp 0.6s ease-out forwards;
+      }
+
+      @keyframes slideInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* 펄스 효과 */
+      @keyframes pulse {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.05);
+        }
+      }
+
+      .pulse-on-hover:hover {
+        animation: pulse 0.6s ease-in-out;
+      }
+
+      /* Scrollbar */
+      ::-webkit-scrollbar {
+        width: 6px;
+      }
+
+      ::-webkit-scrollbar-track {
+        background: var(--surface);
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: var(--border);
+        border-radius: 3px;
+      }
+
+      ::-webkit-scrollbar-thumb:hover {
+        background: var(--copper-primary);
+      }
+
+      /* Calendar Animation */
+      .calendar-wrapper {
+        position: relative;
+        width: 32px;
+        height: 32px;
+        perspective: 1000px;
+      }
+
+      .calendar-front {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        transform-origin: top center;
+      }
+
+      @keyframes flip-and-change {
+        0% {
+          transform: rotateX(0);
+          content: url("/Main/public/images/calendericon.png");
+        }
+        49% {
+          transform: rotateX(-180deg);
+          content: url("/Main/public/images/calendericon.png");
+        }
+        50% {
+          transform: rotateX(-180deg);
+          content: url("/Main/public/images/calender18.png");
+        }
+        100% {
+          transform: rotateX(0);
+          content: url("/Main/public/images/calender18.png");
+        }
+      }
+
+      .feature-card:hover .calendar-front {
+        animation: flip-and-change 1.2s cubic-bezier(0.645, 0.045, 0.355, 1)
+          forwards;
+      }
+
+      /* Handshake Animation */
+      @keyframes handshake {
+        0% {
+          transform: rotate(0deg);
+        }
+        25% {
+          transform: rotate(-10deg);
+        }
+        75% {
+          transform: rotate(10deg);
+        }
+        100% {
+          transform: rotate(0deg);
+        }
+      }
+
+      .feature-card:hover .feature-icon img[alt="Handshake"] {
+        animation: handshake 1s ease-in-out infinite;
+        transform-origin: center;
+      }
+
+      /* Loading State */
+      .loading {
+        opacity: 0;
+      }
+
+      .loaded {
+        opacity: 1;
+        transition: opacity 0.3s ease;
+      }
+
+      /* 아이콘 애니메이션 */
+      .icon-animation {
+        transition: transform 0.3s ease;
+      }
+
+      /* Feature Card Animation */
+      .feature-card {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all 0.5s ease;
+      }
+
+      .feature-card.animate-on-scroll {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      /* Feature Icon Hover Effect */
+      .feature-icon img {
+        transition: filter 0.3s ease;
+      }
+
+      .feature-card:hover .feature-icon img {
+        filter: brightness(0) invert(1);
+      }
+
+      /* AI (HORAE) Animation - 회전하며 빛나는 효과 */
+      @keyframes ai-glow {
+        0% {
+          transform: rotate(0deg);
+          filter: brightness(1) drop-shadow(0 0 0 rgba(201, 99, 66, 0));
+        }
+        50% {
+          transform: rotate(180deg);
+          filter: brightness(1.3) drop-shadow(0 0 10px rgba(201, 99, 66, 0.5));
+        }
+        100% {
+          transform: rotate(360deg);
+          filter: brightness(1) drop-shadow(0 0 0 rgba(201, 99, 66, 0));
+        }
+      }
+
+      .feature-card:hover img[alt="HORAE"] {
+        animation: ai-glow 2s ease-in-out infinite;
+      }
+
+      /* TO-DO Animation - 체크 표시 효과 */
+      @keyframes check-mark {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(0.8);
+        }
+        70% {
+          transform: scale(1.2);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      .feature-card:hover img[alt="Check"] {
+        animation: check-mark 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      }
+
+      /* Community Animation - 확장되는 파동 효과 */
+      @keyframes community-pulse {
+        0% {
+          transform: scale(1);
+          box-shadow: 0 0 0 0 rgba(201, 99, 66, 0.4);
+        }
+        70% {
+          transform: scale(1.1);
+          box-shadow: 0 0 0 10px rgba(201, 99, 66, 0);
+        }
+        100% {
+          transform: scale(1);
+          box-shadow: 0 0 0 0 rgba(201, 99, 66, 0);
+        }
+      }
+
+      .feature-card:hover img[alt="Community"] {
+        animation: community-pulse 1.5s ease-in-out infinite;
+      }
+
+      /* Personal Animation - 부드러운 물결 효과 */
+      @keyframes personal-wave {
+        0% {
+          transform: translateY(0);
+        }
+        25% {
+          transform: translateY(-3px) rotate(5deg);
+        }
+        75% {
+          transform: translateY(3px) rotate(-5deg);
+        }
+        100% {
+          transform: translateY(0);
+        }
+      }
+
+      .feature-card:hover img[alt="Personal"] {
+        animation: personal-wave 1s ease-in-out;
+      }
+
+      /* 아이콘 기본 트랜지션 */
+      .feature-icon img {
+        transition: all 0.3s ease;
+      }
+
+      /* 호버 시 공통 효과 */
+      .feature-card:hover .feature-icon img {
+        filter: brightness(0) invert(1);
+      }
+
+      /* AI Loading Animation */
+      @keyframes ai-loading {
+        0% {
+          transform: rotate(0deg);
+        }
+        15% {
+          transform: rotate(360deg);
+        }
+        15%,
+        30% {
+          transform: rotate(360deg);
+        }
+        45% {
+          transform: rotate(720deg);
+        }
+        45%,
+        60% {
+          transform: rotate(720deg);
+        }
+        75% {
+          transform: rotate(1080deg);
+        }
+        75%,
+        90% {
+          transform: rotate(1080deg);
+        }
+        100% {
+          transform: rotate(1080deg);
+        }
+      }
+
+      .feature-card:hover img[alt="HORAE"] {
+        animation: ai-loading 3s cubic-bezier(0.2, 0.6, 0.3, 0.9) infinite;
+        transform-origin: center center;
+      }
+    </style>
+  </head>
+  <body class="loading">
+    <!-- Main Content -->
+    <main class="main-content">
+      <section class="hero-section">
+        <!-- Simple Logo Header -->
+        <div class="simple-header animate-fade-in-up">
+          <img
+            src="/Login/image-8.png"
+            alt="Ordo Logo"
+            class="simple-logo pulse-on-hover"
+          />
+          <span class="simple-logo-text">Ordo</span>
+        </div>
+        <div class="hero-container">
+          <div class="hero-content">
+            <div class="hero-badge animate-fade-in-up">
+              <div class="badge-icon">✨</div>
+              <span class="font-cutive">New: AI-powered scheduling</span>
+            </div>
+
+            <h1 class="hero-title animate-fade-in-up animate-delay-100">
+              <span class="font-cutive">Your life,</span><br />
+              <span class="highlight font-cutive">more organized</span>
+            </h1>
+
+            <p class="hero-subtitle animate-fade-in-up animate-delay-200">
+              AI가 정리하고, 당신은 집중만 하세요. Ordo와 함께 더 체계적이고
+              효율적인 일상으로 더 나은 하루를 만들어보세요.
+            </p>
+
+            <div class="hero-buttons animate-fade-in-up animate-delay-300">
+              <a href="/Signup/signup.html" class="cta-button primary">
+                <span class="font-cutive">Start for free</span>
+                <span>→</span>
+              </a>
+              <a href="/Login/email-login.html" class="cta-button secondary">
+                <span class="font-cutive">Sign in</span>
+              </a>
+            </div>
+          </div>
+
+          <div
+            class="hero-image-container animate-fade-in-up animate-delay-400"
+          >
+            <div class="hero-image">
+              <img
+                src="/public/images/image-6.png"
+                alt="Ordo Calendar Preview"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-stats animate-fade-in-up animate-delay-400">
+          <div class="stat-item">
+            <span class="stat-number font-cutive" data-target="53">0%</span>
+            <span class="stat-label"
+              >하루에 대한 피드백, 사전 계획 수립으로 생산성 증가</span
+            >
+          </div>
+          <div class="stat-item">
+            <span class="stat-number font-cutive" data-target="42">0%</span>
+            <span class="stat-label"
+              >단지 글로만 목표를 작성하는 것만으로도 목표 달성 확률 증가</span
+            >
+          </div>
+          <div class="stat-item">
+            <span class="stat-number font-cutive" data-target="20">0%</span>
+            <span class="stat-label font-cutive"
+              >The percentage of people who did make a plan</span
+            >
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Features Section -->
+    <section class="features-section">
+      <div class="features-container">
+        <div class="features-header">
+          <h2 class="features-title">
+            <span class="font-cutive">Why choose Ordo?</span>
+          </h2>
+          <p class="features-subtitle">
+            모든 일정 관리 도구를 하나로. 더 스마트하고 직관적인 방식으로.
+          </p>
+        </div>
+
+        <div class="features-grid">
+          <div class="feature-card animate-on-scroll">
+            <div class="feature-icon">
+              <div class="calendar-wrapper">
+                <img
+                  src="/Main/public/images/calendericon.png"
+                  alt="Calendar"
+                  class="calendar-front"
+                  style="width: 32px; height: 32px; object-fit: contain"
+                />
+              </div>
+            </div>
+            <h3 class="feature-title">
+              <span class="font-cutive">01 CALENDAR</span>
+            </h3>
+            <p class="feature-description">
+              하루를 시각적으로 쉽게 정리하는 스마트 캘린더.
+            </p>
+          </div>
+
+          <div class="feature-card animate-on-scroll">
+            <div class="feature-icon">
+              <img
+                src="/Main/public/images/horae.png"
+                alt="HORAE"
+                class="icon-animation"
+                style="width: 32px; height: 32px; object-fit: contain"
+              />
+            </div>
+            <h3 class="feature-title">
+              <span class="font-cutive">02 AI</span>
+            </h3>
+            <p class="feature-description">
+              일정을 최적화하고 하루에 대한 감성적인 피드백을 주는 인공지능
+              HORAE.
+            </p>
+          </div>
+
+          <div class="feature-card animate-on-scroll">
+            <div class="feature-icon">
+              <img
+                src="/Main/public/images/check.png"
+                alt="Check"
+                class="icon-animation"
+                style="width: 32px; height: 32px; object-fit: contain"
+              />
+            </div>
+            <h3 class="feature-title">
+              <span class="font-cutive">03 TO-DO</span>
+            </h3>
+            <p class="feature-description">
+              우선순위와 카테고리 기반 할일 목록 관리.
+            </p>
+          </div>
+
+          <div class="feature-card animate-on-scroll">
+            <div class="feature-icon">
+              <img
+                src="/Main/public/images/handshake.png"
+                alt="Handshake"
+                class="icon-animation"
+                style="width: 32px; height: 32px; object-fit: contain"
+              />
+            </div>
+            <h3 class="feature-title">
+              <span class="font-cutive">04 COLLABO</span>
+            </h3>
+            <p class="feature-description">
+              일정을 팀원과 공유하고 함께 계획하는 협업기능.
+            </p>
+          </div>
+
+          <div class="feature-card animate-on-scroll">
+            <div class="feature-icon">
+              <img
+                src="/Main/public/images/collabo.png"
+                alt="Community"
+                class="icon-animation"
+                style="width: 32px; height: 32px; object-fit: contain"
+              />
+            </div>
+            <h3 class="feature-title">
+              <span class="font-cutive">05 COMMUNITY</span>
+            </h3>
+            <p class="feature-description">
+              일정 공유, 생산성 루틴을 나누는 사용자 커뮤니티.
+            </p>
+          </div>
+
+          <div class="feature-card animate-on-scroll">
+            <div class="feature-icon">
+              <img
+                src="/Main/public/images/personal.png"
+                alt="Personal"
+                class="icon-animation"
+                style="width: 32px; height: 32px; object-fit: contain"
+              />
+            </div>
+            <h3 class="feature-title">
+              <span class="font-cutive">06 PERSONAL</span>
+            </h3>
+            <p class="feature-description">나만의 일정 플래너.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <script>
+      // 테마 관리
+      let currentTheme = localStorage.getItem("theme") || "dark";
+
+      // 페이지 로드 시 초기화
+      document.addEventListener("DOMContentLoaded", () => {
+        // 테마 적용
+        applyTheme(currentTheme);
+
+        // 로딩 애니메이션
+        setTimeout(() => {
+          document.body.classList.remove("loading");
+        }, 100);
+
+        // 스크롤 애니메이션 초기화
+        initializeScrollAnimations();
+
+        // 구리색 강조 효과
+        initializeCopperEffects();
+
+        // 타자기 애니메이션 초기화
+        initializeTypewriter();
+
+        // 카운트업 애니메이션 초기화
+        initializeCountUp();
+
+        // 스크롤 기반 애니메이션 초기화
+        initializeAdvancedScrollAnimations();
+      });
+
+      // 테마 적용 함수
+      function applyTheme(theme) {
+        document.documentElement.setAttribute("data-theme", theme);
+        const themeIcon = document.querySelector(".theme-icon");
+        if (themeIcon) {
+          themeIcon.textContent = theme === "dark" ? "☀️" : "🌙";
+        }
+        localStorage.setItem("theme", theme);
+      }
+
+      // 테마 토글 함수
+      function toggleTheme() {
+        currentTheme = currentTheme === "light" ? "dark" : "light";
+        applyTheme(currentTheme);
+
+        // 부드러운 전환 효과
+        document.body.style.transition = "all 0.5s ease";
+        setTimeout(() => {
+          document.body.style.transition = "";
+        }, 500);
+      }
+
+      // 스크롤 애니메이션 초기화
+      function initializeScrollAnimations() {
+        const observerOptions = {
+          threshold: 0.1,
+          rootMargin: "0px 0px -50px 0px",
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("animate-on-scroll");
+              observer.unobserve(entry.target);
+            }
+          });
+        }, observerOptions);
+
+        // 모든 feature-card에 관찰자 추가
+        document.querySelectorAll(".feature-card").forEach((card) => {
+          observer.observe(card);
+        });
+      }
+
+      // 타자기 애니메이션 초기화 (일단 비활성화)
+      function initializeTypewriter() {
+        // 나중에 다시 구현
+      }
+
+      // 카운트업 애니메이션
+      function initializeCountUp() {
+        const statNumbers = document.querySelectorAll(".stat-number");
+
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                const target = parseInt(entry.target.dataset.target);
+                animateCount(entry.target, target);
+                observer.unobserve(entry.target);
+              }
+            });
+          },
+          { threshold: 0.5 }
+        );
+
+        statNumbers.forEach((stat) => observer.observe(stat));
+      }
+
+      function animateCount(element, target) {
+        let current = 0;
+        const increment = target / 120; // 120프레임으로 나누어 더 느리게
+        const timer = setInterval(() => {
+          current += increment;
+          if (current >= target) {
+            current = target;
+            clearInterval(timer);
+          }
+          element.textContent = Math.floor(current) + "%";
+        }, 25); // 40fps로 더 느리게
+      }
+
+      // 향상된 스크롤 애니메이션
+      function initializeAdvancedScrollAnimations() {
+        const observerOptions = {
+          threshold: 0.1,
+          rootMargin: "0px 0px -50px 0px",
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry, index) => {
+            if (entry.isIntersecting) {
+              entry.target.style.animationDelay = `${index * 0.1}s`;
+              entry.target.classList.add("animate-in");
+            }
+          });
+        }, observerOptions);
+
+        // 모든 기능 카드에 애니메이션 적용
+        document.querySelectorAll(".feature-card").forEach((card) => {
+          card.style.opacity = "0";
+          card.style.transform = "translateY(30px)";
+          observer.observe(card);
+        });
+      }
+
+      // 구리색 강조 효과 초기화
+      function initializeCopperEffects() {
+        // 마우스 따라다니는 구리색 글로우 효과
+        document.addEventListener("mousemove", (e) => {
+          const glowElements = document.querySelectorAll(".glow-effect");
+          glowElements.forEach((element) => {
+            const rect = element.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            if (x >= 0 && x <= rect.width && y >= 0 && y <= rect.height) {
+              element.style.setProperty("--mouse-x", x + "px");
+              element.style.setProperty("--mouse-y", y + "px");
+            }
+          });
+        });
+
+        // 스크롤에 따른 구리색 강도 변화
+        window.addEventListener("scroll", () => {
+          const scrolled = window.pageYOffset;
+          const rate = scrolled * -0.5;
+
+          document.querySelector(
+            ".hero-title .copper-text"
+          ).style.filter = `hue-rotate(${rate * 0.1}deg) brightness(${
+            1 + scrolled * 0.0005
+          })`;
+        });
+      }
+
+      // 부드러운 스크롤
+      document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+        anchor.addEventListener("click", function (e) {
+          e.preventDefault();
+          const target = document.querySelector(this.getAttribute("href"));
+          if (target) {
+            target.scrollIntoView({
+              behavior: "smooth",
+              block: "start",
+            });
+          }
+        });
+      });
+
+      // 패럴랙스 효과 - 구리색 강조
+      window.addEventListener("scroll", () => {
+        const scrolled = window.pageYOffset;
+        const parallax = document.querySelectorAll(".decoration-circle");
+
+        parallax.forEach((element, index) => {
+          const speed = (index + 1) * 0.3;
+          const rotation = scrolled * 0.05 * (index + 1);
+          element.style.transform = `translateY(${
+            scrolled * speed
+          }px) rotate(${rotation}deg) scale(${
+            1 + Math.sin(scrolled * 0.01) * 0.1
+          })`;
+        });
+      });
+
+      // 구리색 파티클 효과 (선택적)
+      function createCopperParticles() {
+        const particleCount = 20;
+        const container = document.querySelector(".bg-decoration");
+
+        for (let i = 0; i < particleCount; i++) {
+          const particle = document.createElement("div");
+          particle.style.cssText = `
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: var(--copper-primary);
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: float ${5 + Math.random() * 5}s ease-in-out infinite;
+            animation-delay: ${Math.random() * 5}s;
+            top: ${Math.random() * 100}%;
+            left: ${Math.random() * 100}%;
+          `;
+          container.appendChild(particle);
+        }
+      }
+
+      // 파티클 효과 활성화 (성능에 따라 선택적 사용)
+      // createCopperParticles();
+    </script>
+  </body>
+</html>

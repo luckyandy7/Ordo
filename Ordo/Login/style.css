@@ -1,0 +1,286 @@
+/* 
+ * 로그인 페이지 스타일시트
+ * 기본적인 로그인 폼과 반응형 디자인을 위한 CSS
+ */
+
+/* 기본 HTML 설정 */
+html {
+  font-size: 16px;  /* 기본 폰트 크기 */
+  box-sizing: border-box;  /* 박스 모델을 border-box로 설정 */
+}
+
+/* 모든 요소에 박스 모델 상속 */
+*, *::before, *::after {
+  box-sizing: inherit;
+}
+
+/* 페이지 전체 레이아웃 설정 */
+body {
+  font-family: 'Pretendard', sans-serif;  /* 한국어 최적화 폰트 */
+  line-height: 1.5;  /* 텍스트 줄간격 */
+  overflow-x: hidden;  /* 가로 스크롤 숨김 */
+  background-color: #f5f5f5;  /* 연한 회색 배경 */
+  display: flex;  /* 플렉스 레이아웃 */
+  justify-content: center;  /* 가로 중앙 정렬 */
+  align-items: center;  /* 세로 중앙 정렬 */
+  min-height: 100vh;  /* 뷰포트 높이의 100% */
+  padding: 20px;  /* 여백 */
+}
+
+/* 모바일 반응형 - 태블릿 이하 화면 크기 */
+@media (max-width: 768px) {
+  html {
+    font-size: 14px;  /* 모바일에서 폰트 크기 축소 */
+  }
+}
+
+/* 로그인 컨테이너 레이아웃 */
+.login-container {
+  max-width: 480px;  /* 최대 너비 제한 */
+  width: 90%;  /* 부모 요소의 90% 너비 */
+  margin: 0 auto;  /* 중앙 정렬 */
+  padding: 2rem 1rem;  /* 내부 여백 */
+}
+
+/* 구글 아이콘 애니메이션 설정 */
+.google-icon {
+  animation: fadeInMove 0.6s ease-out forwards;  /* 페이드인 + 이동 애니메이션 */
+  opacity: 0;  /* 초기 투명도 */
+  animation-fill-mode: forwards;  /* 애니메이션 종료 상태 유지 */
+  max-width: 100%;  /* 반응형 이미지 */
+  height: auto;  /* 비율 유지 */
+}
+
+/* 페이지 로딩 완료 후 구글 아이콘 표시 */
+body.loaded .google-icon {
+  opacity: 1;
+}
+
+/* 전체 페이지 높이 설정 */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* ===========================================
+   애니메이션 키프레임 정의
+=========================================== */
+
+/* 페이드인 + 위에서 아래로 이동 애니메이션 */
+@keyframes fadeInMove {
+  from {
+    opacity: 0;
+    transform: translateY(20px);  /* 20px 위에서 시작 */
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);  /* 원래 위치로 이동 */
+  }
+}
+
+/* 360도 회전 애니메이션 */
+@keyframes rotateG {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* 로고 팝업 애니메이션 (크기 변화 + 페이드인) */
+@keyframes logoPop {
+  from {
+    transform: scale(0.5);  /* 50% 크기에서 시작 */
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);  /* 100% 크기로 확대 */
+    opacity: 1;
+  }
+}
+
+/* ===========================================
+   애니메이션 클래스 
+=========================================== */
+
+/* 페이드인 기본 클래스 */
+.fade-in {
+  opacity: 0;
+  pointer-events: auto;
+  max-width: 100%;
+  height: auto;
+}
+
+/* 페이지 로딩 완료 후 페이드인 애니메이션 실행 */
+body.loaded .fade-in {
+  animation: fadeInMove 0.6s ease-out forwards;
+  animation-fill-mode: forwards;
+}
+
+/* ===========================================
+   호버 효과 및 인터랙션 
+=========================================== */
+
+/* 구글 버튼 호버 시 아이콘 회전 */
+.google-button:hover ~ .google-icon {
+  animation: rotateG 0.6s ease;
+  animation-fill-mode: forwards;
+}
+
+/* 카카오 버튼 호버 시 아이콘 회전 */
+.kakao-button:hover ~ .kakao-icon {
+  animation: rotateG 0.6s ease;
+  animation-fill-mode: forwards;
+}
+
+/* 모든 버튼 호버 효과 */
+button:hover {
+  transform: scale(1.02);  /* 2% 확대 */
+  box-shadow: 0 8px 16px rgba(0,0,0,0.15);  /* 그림자 강화 */
+  transition: all 0.2s ease;  /* 부드러운 전환 */
+}
+
+/* 반응형 폰트 및 패딩 설정 */
+button, input, .social-button {
+  font-size: clamp(0.9rem, 2.5vw, 1.1rem);  /* 화면 크기에 따른 폰트 크기 */
+  padding: 0.6em 1.2em;  /* 내부 여백 */
+}
+
+/* 입력 필드 포커스 효과 */
+input:focus {
+  border-color: #C96342;  /* 브랜드 컬러로 테두리 변경 */
+  box-shadow: 0 0 0 2px rgba(201, 99, 66, 0.2);  /* 포커스 링 */
+  transition: all 0.3s ease;  /* 부드러운 전환 */
+}
+
+/* 로고 애니메이션 */
+.logo {
+  animation: logoPop 0.8s ease-out;
+  max-width: 100%;
+  height: auto;
+}
+
+/* 소셜 버튼 호버 효과 */
+.social-button:hover {
+  background-color: #C96342;  /* 브랜드 컬러 배경 */
+  color: #F6F0EB;  /* 밝은 텍스트 */
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* 폼 호버 시 버튼 색상 변경 */
+form:hover > button {
+  background-color: #C96342 !important;
+}
+
+/* 소셜 버튼 프레임 호버 효과 */
+.google-button:hover + .social-frame,
+.social-button:hover + .social-frame {
+  background-color: #C96342;
+  transition: background-color 0.3s ease;
+}
+
+/* 회전 애니메이션 완료 표시 클래스 */
+.rotated-once {
+  animation: rotateG 0.6s ease forwards;
+}
+
+/* ===========================================
+   모바일 반응형 스타일
+=========================================== */
+
+/* 작은 화면 대응 */
+@media (max-width: 480px) {
+  .google-icon, .kakao-icon {
+    width: 48px;  /* 아이콘 크기 축소 */
+    height: 48px;
+  }
+
+  button {
+    width: 100%;  /* 버튼 전체 너비 */
+    font-size: 1rem;  /* 고정 폰트 크기 */
+  }
+}
+
+/* ===========================================
+   로그인 폼 스타일 
+=========================================== */
+
+/* 메인 컨테이너 */
+.container {
+  background-color: white;  /* 흰색 배경 */
+  padding: 30px;  /* 내부 여백 */
+  border-radius: 8px;  /* 둥근 모서리 */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);  /* 부드러운 그림자 */
+  width: 100%;
+  max-width: 400px;  /* 최대 너비 제한 */
+}
+
+/* 메인 제목 */
+h1 {
+  text-align: center;  /* 중앙 정렬 */
+  color: #333;  /* 진한 회색 */
+  margin-bottom: 30px;  /* 하단 여백 */
+}
+
+/* 폼 그룹 (라벨 + 입력 필드) */
+.form-group {
+  margin-bottom: 20px;  /* 그룹 간 여백 */
+}
+
+/* 라벨 스타일 */
+label {
+  display: block;  /* 블록 요소로 표시 */
+  margin-bottom: 5px;  /* 하단 여백 */
+  color: #666;  /* 중간 회색 */
+}
+
+/* 입력 필드 기본 스타일 */
+input {
+  width: 100%;  /* 전체 너비 */
+  padding: 10px;  /* 내부 여백 */
+  border: 1px solid #ddd;  /* 연한 회색 테두리 */
+  border-radius: 4px;  /* 둥근 모서리 */
+  font-size: 16px;  /* 폰트 크기 */
+}
+
+/* 입력 필드 포커스 기본 스타일 */
+input:focus {
+  outline: none;  /* 기본 아웃라인 제거 */
+  border-color: #4CAF50;  /* 초록색 테두리 */
+}
+
+/* 기본 버튼 스타일 */
+.btn-primary {
+  width: 100%;  /* 전체 너비 */
+  padding: 12px;  /* 내부 여백 */
+  background-color: #4CAF50;  /* 초록색 배경 */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.btn-primary:hover {
+  background-color: #45a049;
+}
+
+.message {
+  margin: 20px 0;
+  text-align: center;
+  min-height: 20px;
+}
+
+.links {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.links a {
+  color: #4CAF50;
+  text-decoration: none;
+  margin: 0 10px;
+}
+
+.links a:hover {
+  text-decoration: underline;
+}

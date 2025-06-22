@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <!-- 기본 문서 메타 정보 설정 -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>로그인 - Ordo</title>
+    <!-- 로그인 페이지 전용 스타일시트 연결 -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- 로그인 페이지 전체 컨테이너 -->
+    <div class="container">
+        <!-- 페이지 제목 -->
+        <h1>로그인</h1>
+        
+        <!-- 로그인 폼 (이메일, 비밀번호 입력) -->
+        <form id="loginForm">
+            <!-- 이메일 입력 필드 -->
+            <div class="form-group">
+                <label for="email">이메일</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            
+            <!-- 비밀번호 입력 필드 -->
+            <div class="form-group">
+                <label for="password">비밀번호</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            
+            <!-- 로그인 버튼 -->
+            <button type="submit" class="btn-primary">로그인</button>
+        </form>
+        
+        <!-- 서버 응답 메시지 표시 영역 -->
+        <p class="message"></p>
+        
+        <!-- 관련 링크들 (회원가입, 비밀번호 찾기) -->
+        <div class="links">
+            <a href="signup.html">회원가입</a>
+            <a href="/forgot-password">비밀번호 찾기</a>
+        </div>
+    </div>
+
+    <script>
+        /**
+         * 로그인 폼 이벤트 리스너
+         * 사용자가 로그인 폼을 제출할 때 실행되는 함수
+         */
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            // 폼의 기본 제출 동작 방지 (페이지 새로고침 방지)
+            e.preventDefault();
+            
+            // 입력된 이메일과 비밀번호 값 가져오기
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            // 메시지 표시용 DOM 요소 선택
+            const messageElement = document.querySelector('.message');
+            
+            try {
+                // 서버에 로그인 요청 전송
+                const response = await fetch('/api/login', {
+                    method: 'POST',  // POST 메서드로 데이터 전송
+                    headers: {
+                        'Content-Type': 'application/json'  // JSON 형식으로 데이터 전송
+                    },
+                    body: JSON.stringify({ email, password })  // 이메일과 비밀번호를 JSON으로 변환하여 전송
+                });
+                
+                // 서버 응답을 JSON으로 파싱
+                const data = await response.json();
+                
+                // 로그인 성공 처리
+                if (response.ok) {
+                    // 로그인 토큰을 브라우저 로컬 스토리지에 저장
+                    localStorage.setItem('token', data.data.token);
+                    // 메인 페이지로 리디렉션
+                    window.location.href = '/main';
+                } else {
+                    // 로그인 실패 시 에러 메시지 표시
+                    messageElement.style.color = 'red';
+                    messageElement.textContent = data.message;
+                }
+            } catch (error) {
+                // 네트워크 오류 또는 기타 예외 처리
+                messageElement.style.color = 'red';
+                messageElement.textContent = '서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.';
+            }
+        });
+    </script>
+</body>
+</html> 

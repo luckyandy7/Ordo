@@ -1,0 +1,918 @@
+<!--
+/**
+ * ============================================
+ * 📋 ORDO 게시판 목록 페이지 (list.html)
+ * ============================================
+ * 
+ * 📋 목적: ORDO 커뮤니티 게시판의 메인 페이지
+ * 🎯 기능:
+ *   - 게시글 목록 표시 (카테고리별 필터링)
+ *   - 카테고리별 게시글 분류 및 통계
+ *   - 인기글 사이드바 표시
+ *   - 새 글 작성 버튼
+ *   - 반응형 게시판 레이아웃
+ * 
+ * 🔧 주요 컴포넌트:
+ *   - 커뮤니티 헤더 (통계 정보 포함)
+ *   - 게시글 목록 (메인 콘텐츠)
+ *   - 카테고리 필터 사이드바
+ *   - 인기글 사이드바
+ * 
+ * 🎨 사용 스타일: 
+ *   - ORDO 브랜드 컬러 (구리색 테마)
+ *   - 카드 기반 레이아웃
+ *   - 호버 효과 및 애니메이션
+ * 
+ * 🔗 연관 파일:
+ *   - write.html (글쓰기 페이지)
+ *   - view.html (게시글 상세보기)
+ *   - board.css (게시판 공용 스타일)
+ * 
+ * 작성일: 2025년
+ * 작성자: ORDO 개발팀
+ * 버전: 1.0
+ */
+-->
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ordo - 커뮤니티</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cutive:wght@400&family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      @font-face {
+        font-family: "Freesentation";
+        src: url("/font/Freesentation.ttf") format("truetype");
+      }
+
+      :root {
+        /* Ordo Signature Colors */
+        --copper-primary: #c96342;
+        --copper-light: #e08b6f;
+        --copper-dark: #a54a2e;
+        --copper-bright: #f2a085;
+        --copper-shadow: rgba(201, 99, 66, 0.15);
+
+        /* Modern Neutral Palette */
+        --gray-50: #fafafa;
+        --gray-100: #f5f5f5;
+        --gray-200: #e5e5e5;
+        --gray-300: #d4d4d4;
+        --gray-400: #a3a3a3;
+        --gray-500: #737373;
+        --gray-600: #525252;
+        --gray-700: #404040;
+        --gray-800: #262626;
+        --gray-900: #171717;
+
+        /* Theme Colors */
+        --background: #f6f0eb;
+        --surface: #ffffff;
+        --surface-hover: #f5f5f5;
+        --border: #e5e5e5;
+        --text-primary: #171717;
+        --text-secondary: #525252;
+        --text-muted: #a3a3a3;
+
+        /* Shadows */
+        --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+        --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+        --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1),
+          0 2px 4px -2px rgb(0 0 0 / 0.1);
+        --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1),
+          0 4px 6px -4px rgb(0 0 0 / 0.1);
+        --shadow-copper: 0 4px 14px 0 rgba(201, 99, 66, 0.15);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Inter", "Freesentation", -apple-system, BlinkMacSystemFont,
+          sans-serif;
+        background: linear-gradient(
+          135deg,
+          var(--background) 0%,
+          #faf4f2 50%,
+          #f0e6e1 100%
+        );
+        background-attachment: fixed;
+        color: var(--text-primary);
+        line-height: 1.6;
+        min-height: 100vh;
+      }
+
+      .header {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-bottom: 1px solid var(--border);
+        padding: 1rem 0;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+
+      .header-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .brand-container {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .logo-image {
+        width: 40px;
+        height: 40px;
+        transition: transform 0.3s ease;
+      }
+
+      .logo-image:hover {
+        transform: rotate(15deg);
+      }
+
+      .brand {
+        font-family: "Cutive", serif;
+        font-size: 1.8rem;
+        color: var(--copper-primary);
+        font-weight: 400;
+        text-decoration: none;
+      }
+
+      .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+      }
+
+      .nav-link {
+        color: var(--text-secondary);
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.2s ease;
+      }
+
+      .nav-link:hover {
+        color: var(--copper-primary);
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 3rem 2rem;
+      }
+
+      .community-header {
+        text-align: center;
+        margin-bottom: 3rem;
+      }
+
+      .page-title {
+        font-family: "Cutive", serif;
+        font-size: 3rem;
+        color: var(--copper-primary);
+        margin-bottom: 1rem;
+        font-weight: 400;
+      }
+
+      .page-subtitle {
+        font-size: 1.125rem;
+        color: var(--text-secondary);
+        max-width: 600px;
+        margin: 0 auto 2rem;
+        font-family: "Freesentation", sans-serif;
+      }
+
+      .community-stats {
+        display: flex;
+        justify-content: center;
+        gap: 3rem;
+        margin-bottom: 3rem;
+      }
+
+      .stat-item {
+        text-align: center;
+      }
+
+      .stat-number {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--copper-primary);
+        display: block;
+      }
+
+      .stat-label {
+        font-size: 0.875rem;
+        color: var(--text-secondary);
+        margin-top: 0.5rem;
+      }
+
+      .content-area {
+        display: grid;
+        grid-template-columns: 1fr 300px;
+        gap: 3rem;
+        align-items: start;
+      }
+
+      .main-content {
+        background: var(--surface);
+        border-radius: 16px;
+        box-shadow: var(--shadow-lg);
+        overflow: hidden;
+      }
+
+      .content-header {
+        padding: 2rem;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .content-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--text-primary);
+      }
+
+      .write-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: var(--copper-primary);
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.2s ease;
+        box-shadow: var(--shadow-copper);
+      }
+
+      .write-button:hover {
+        background: var(--copper-dark);
+        transform: translateY(-2px);
+      }
+
+      .posts-container {
+        min-height: 400px;
+      }
+
+      .post-item {
+        padding: 1.5rem 2rem;
+        border-bottom: 1px solid var(--border);
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+      }
+
+      .post-item:hover {
+        background: var(--surface-hover);
+      }
+
+      .post-item:last-child {
+        border-bottom: none;
+      }
+
+      .post-content {
+        flex: 1;
+      }
+
+      .post-title {
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 0.5rem;
+        line-height: 1.4;
+      }
+
+      .post-preview {
+        color: var(--text-secondary);
+        font-size: 0.875rem;
+        line-height: 1.5;
+        margin-bottom: 0.75rem;
+      }
+
+      .post-meta {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        font-size: 0.8rem;
+        color: var(--text-muted);
+      }
+
+      .post-author {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .author-avatar {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: var(--copper-primary);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.7rem;
+        font-weight: 600;
+      }
+
+      .post-stats {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        font-size: 0.8rem;
+        color: var(--text-muted);
+      }
+
+      .sidebar {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+      }
+
+      .sidebar-card {
+        background: var(--surface);
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: var(--shadow);
+      }
+
+      .sidebar-title {
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 1rem;
+      }
+
+      .category-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      .category-item {
+        padding: 0.75rem;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .category-item:hover {
+        background: var(--surface-hover);
+      }
+
+      .category-item.active {
+        background: var(--copper-primary);
+        color: white;
+      }
+
+      .category-count {
+        font-size: 0.8rem;
+        background: var(--gray-200);
+        color: var(--text-secondary);
+        padding: 0.25rem 0.5rem;
+        border-radius: 12px;
+      }
+
+      .category-item.active .category-count {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+      }
+
+      .popular-posts {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+
+      .popular-post-item {
+        padding: 0.75rem;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        border: 1px solid var(--border);
+        background: var(--surface);
+      }
+
+      .popular-post-item:hover {
+        background: var(--surface-hover);
+        transform: translateY(-1px);
+        box-shadow: var(--shadow);
+      }
+
+      .popular-post-title {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 0.5rem;
+        line-height: 1.3;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+
+      .popular-post-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.75rem;
+        color: var(--text-muted);
+      }
+
+      .popular-post-stats {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .popular-post-rank {
+        width: 20px;
+        height: 20px;
+        border-radius: 4px;
+        background: var(--copper-primary);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.7rem;
+        font-weight: 600;
+        margin-right: 0.5rem;
+      }
+
+      .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        color: var(--text-secondary);
+      }
+
+      .empty-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        opacity: 0.5;
+      }
+
+      .empty-message {
+        font-size: 1.125rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .empty-description {
+        font-size: 0.875rem;
+        opacity: 0.7;
+      }
+
+      .loading {
+        text-align: center;
+        padding: 3rem;
+        color: var(--text-secondary);
+      }
+
+      .loading-spinner {
+        width: 40px;
+        height: 40px;
+        border: 3px solid var(--border);
+        border-top: 3px solid var(--copper-primary);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 1rem;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          padding: 2rem 1rem;
+        }
+
+        .content-area {
+          grid-template-columns: 1fr;
+          gap: 2rem;
+        }
+
+        .page-title {
+          font-size: 2rem;
+        }
+
+        .community-stats {
+          gap: 2rem;
+        }
+
+        .content-header {
+          padding: 1.5rem;
+          flex-direction: column;
+          gap: 1rem;
+          align-items: stretch;
+        }
+
+        .post-item {
+          padding: 1rem 1.5rem;
+          flex-direction: column;
+          gap: 1rem;
+        }
+
+        .nav-links {
+          display: none;
+        }
+      }
+    </style>
+  </head>  <body>
+    <!-- 📌 상단 헤더: 로고, 네비게이션, 브랜드명 -->
+    <header class="header">
+      <div class="header-content">
+        <div class="brand-container">
+          <img src="/Login/image-8.png" alt="Ordo Logo" class="logo-image" />
+          <a href="/Main/index.html" class="brand">Ordo</a>
+        </div>
+        <nav class="nav-links">
+          <a href="/Main/index.html" class="nav-link">대시보드</a>
+          <a
+            href="/board/list.html"
+            class="nav-link"
+            style="color: var(--copper-primary)"
+            >커뮤니티</a
+          >          <a href="/Collaboration/collaboration.html" class="nav-link">협업</a>
+        </nav>
+      </div>
+    </header>    <!-- 🏠 메인 컨테이너 -->
+    <div class="container">
+      <!-- 📊 커뮤니티 헤더: 제목, 설명, 통계 정보 -->
+      <div class="community-header">
+        <h1 class="page-title">커뮤니티</h1>
+        <p class="page-subtitle">
+          체계적인 일상 관리 노하우를 공유하고,<br />
+          다른 사용자들과 생산성 팁을 나누세요.
+        </p>        <!-- 📈 커뮤니티 통계 (게시글 수, 멤버 수, 오늘 작성 글 수) -->
+        <div class="community-stats">
+          <div class="stat-item">
+            <span class="stat-number" id="totalPosts">0</span>
+            <span class="stat-label">게시글</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number" id="totalMembers">0</span>
+            <span class="stat-label">멤버</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number" id="todayPosts">0</span>
+            <span class="stat-label">오늘 작성</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 🔄 메인 콘텐츠 영역 (게시글 목록 + 사이드바) -->
+      <div class="content-area">        <!-- 📝 메인 게시글 목록 영역 -->
+        <main class="main-content">
+          <div class="content-header">
+            <h2 class="content-title">최신 게시글</h2>
+            <!-- ✍️ 새 글 작성 버튼 -->
+            <a href="/board/write.html" class="write-button"> ✍️ 글쓰기 </a>
+          </div>
+          <!-- 📄 게시글 컨테이너 (동적으로 로드됨) -->
+          <div class="posts-container" id="postsContainer">
+            <div class="loading">
+              <div class="loading-spinner"></div>
+              <p>게시글을 불러오는 중...</p>
+            </div>
+          </div>
+        </main>
+
+        <!-- 📊 사이드바: 카테고리 필터 + 인기글 -->
+        <aside class="sidebar">          <!-- 🏷️ 카테고리 필터 카드 -->
+          <div class="sidebar-card">
+            <h3 class="sidebar-title">카테고리</h3>
+            <ul class="category-list">
+              <!-- 전체 카테고리 -->
+              <li class="category-item active" data-category="all">
+                <span>전체</span>
+                <span class="category-count" id="allCount">0</span>
+              </li>
+              <!-- 생산성 카테고리 -->
+              <li class="category-item" data-category="productivity">
+                <span>📈 생산성</span>
+                <span class="category-count" id="productivityCount">0</span>
+              </li>
+              <!-- 루틴 카테고리 -->
+              <li class="category-item" data-category="routine">
+                <span>🔄 루틴</span>
+                <span class="category-count" id="routineCount">0</span>
+              </li>
+              <!-- 팁 카테고리 -->
+              <li class="category-item" data-category="tips">
+                <span>💡 팁</span>
+                <span class="category-count" id="tipsCount">0</span>
+              </li>
+              <!-- Q&A 카테고리 -->
+              <li class="category-item" data-category="qna">
+                <span>❓ 질문답변</span>
+                <span class="category-count" id="qnaCount">0</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- 🔥 인기글 카드 -->
+          <div class="sidebar-card">
+            <h3 class="sidebar-title">🔥 인기글</h3>
+            <div id="popularPosts" class="popular-posts">
+              <div class="loading">
+                <div class="loading-spinner"></div>
+                <p>인기글을 불러오는 중...</p>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>    <!-- ⚙️ JavaScript: 게시판 기능 구현 -->
+    <script>
+      /**
+       * 🗂️ 전역 변수 선언
+       */
+      let allPosts = [];              // 전체 게시글 배열
+      let currentCategory = "all";    // 현재 선택된 카테고리
+
+      /**
+       * 📱 페이지 로딩 완료 후 초기화 함수
+       * - 게시글 로드
+       * - 카테고리 통계 로드  
+       * - 인기글 로드
+       * - 카테고리 필터 설정
+       */
+      document.addEventListener("DOMContentLoaded", async () => {
+        await loadPosts();           // 게시글 목록 불러오기
+        await loadCategoryStats();   // 카테고리별 통계 불러오기
+        await loadPopularPosts();    // 인기글 불러오기
+        setupCategoryFilters();      // 카테고리 필터 이벤트 설정
+      });
+
+      /**
+       * 📄 게시글 목록을 서버에서 불러오는 함수
+       * @returns {Promise<void>}
+       */
+      async function loadPosts() {
+        console.log("게시글 로딩 시작");
+        try {
+          const response = await fetch("/api/posts");
+          console.log("API 응답 상태:", response.status);
+
+          if (!response.ok) {
+            console.error("API 응답 실패:", response.status, response.statusText);
+            throw new Error(`Failed to fetch posts: ${response.status} ${response.statusText}`);
+          }
+
+          const responseData = await response.json();
+          console.log("받은 데이터:", responseData);
+
+          // 서버에서 { data: { posts: [...] } } 형태로 반환
+          if (responseData.status === "success" && responseData.data && responseData.data.posts) {
+            allPosts = responseData.data.posts;
+            console.log("게시글 개수:", allPosts.length);
+          } else {
+            console.error("예상하지 못한 데이터 구조:", responseData);
+            allPosts = [];
+          }
+
+          updateStats();
+          renderPosts(allPosts);
+          console.log("게시글 렌더링 완료");
+        } catch (error) {
+          console.error("게시글 로딩 오류:", error);
+          console.error("에러 상세:", error.message);
+          renderError();
+        }
+      }
+
+      // 카테고리 통계 로드
+      async function loadCategoryStats() {
+        try {
+          const response = await fetch("/api/posts/stats/categories");
+          if (!response.ok) throw new Error("Failed to fetch category stats");
+
+          const stats = await response.json();
+
+          // 카테고리별 카운트 업데이트
+          document.getElementById("allCount").textContent = stats.all || 0;
+          document.getElementById("productivityCount").textContent = stats.productivity || 0;
+          document.getElementById("routineCount").textContent = stats.routine || 0;
+          document.getElementById("tipsCount").textContent = stats.tips || 0;
+          document.getElementById("qnaCount").textContent = stats.qna || 0;
+
+          console.log("카테고리 통계 로드 완료:", stats);
+        } catch (error) {
+          console.error("카테고리 통계 로딩 오류:", error);
+        }
+      }
+
+      // 인기글 로드
+      async function loadPopularPosts() {
+        try {
+          const response = await fetch("/api/posts/popular?limit=5");
+          if (!response.ok) throw new Error("Failed to fetch popular posts");
+
+          const popularPosts = await response.json();
+          renderPopularPosts(popularPosts);
+
+          console.log("인기글 로드 완료:", popularPosts.length + "개");
+        } catch (error) {
+          console.error("인기글 로딩 오류:", error);
+          renderPopularPostsError();
+        }
+      }
+
+      // 인기글 렌더링
+      function renderPopularPosts(posts) {
+        const container = document.getElementById("popularPosts");
+
+        if (posts.length === 0) {
+          container.innerHTML = `
+            <div style="text-align: center; padding: 1rem; color: var(--text-muted); font-size: 0.875rem;">
+              아직 인기글이 없습니다
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = posts.map((post, index) => `
+          <div class="popular-post-item" onclick="location.href='/board/view.html?id=${post._id}'">
+            <div style="display: flex; align-items: flex-start; gap: 0.5rem;">
+              <span class="popular-post-rank">${index + 1}</span>
+              <div style="flex: 1;">
+                <div class="popular-post-title">${post.title}</div>
+                <div class="popular-post-meta">
+                  <span>${post.author}</span>
+                  <div class="popular-post-stats">
+                    <span>❤️ ${post.likesCount || 0}</span>
+                    <span>👀 ${post.views || 0}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        `).join("");
+      }
+
+      // 인기글 로딩 오류 처리
+      function renderPopularPostsError() {
+        const container = document.getElementById("popularPosts");
+        container.innerHTML = `
+          <div style="text-align: center; padding: 1rem; color: var(--text-muted); font-size: 0.875rem;">
+            인기글을 불러올 수 없습니다
+          </div>
+        `;
+      }
+
+      function updateStats() {
+        const today = new Date().toDateString();
+        const todayPosts = allPosts.filter(
+          (post) => new Date(post.createdAt).toDateString() === today
+        ).length;
+
+        document.getElementById("totalPosts").textContent = allPosts.length;
+        document.getElementById("totalMembers").textContent = new Set(
+          allPosts.map((p) => p.author)
+        ).size;
+        document.getElementById("todayPosts").textContent = todayPosts;
+      }
+
+      function renderPosts(posts) {
+        const container = document.getElementById("postsContainer");
+
+        if (posts.length === 0) {
+          container.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-icon">📝</div>
+                <div class="empty-message">아직 게시글이 없습니다</div>
+                <div class="empty-description">첫 번째 글을 작성해보세요!</div>
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = posts
+          .map(
+            (post) => `
+                <div class="post-item" onclick="location.href='/board/view.html?id=${
+                  post._id
+                }'">
+                    <div class="post-content">
+                        <h3 class="post-title">${post.title}</h3>
+                        <p class="post-preview">${post.content.substring(
+                          0,
+                          120
+                        )}${post.content.length > 120 ? "..." : ""}</p>
+                        <div class="post-meta">
+                            <div class="post-author">
+                                <div class="author-avatar">${post.author
+                                  .charAt(0)
+                                  .toUpperCase()}</div>
+                                <span>${post.author}</span>
+                            </div>
+                            <span>•</span>
+                            <span>${formatDate(post.createdAt)}</span>
+                        </div>
+                    </div>
+                    <div class="post-stats">
+                        <span>👀 ${post.views || 0}</span>
+                        <span>💬 ${post.comments || 0}</span>
+                        <span>❤️ ${post.likesCount || 0}</span>
+                    </div>
+                </div>
+            `
+          )
+          .join("");
+      }
+
+      function renderError() {
+        const container = document.getElementById("postsContainer");
+        container.innerHTML = `
+          <div class="empty-state">
+              <div class="empty-icon">⚠️</div>
+              <div class="empty-message">게시글을 불러올 수 없습니다</div>
+              <div class="empty-description">잠시 후 다시 시도해주세요</div>
+          </div>
+        `;
+      }
+
+      function setupCategoryFilters() {
+        const categoryItems = document.querySelectorAll(".category-item");
+        categoryItems.forEach((item) => {
+          item.addEventListener("click", () => {
+            // 이전 활성화 제거
+            categoryItems.forEach((ci) => ci.classList.remove("active"));
+            // 새로운 활성화
+            item.classList.add("active");
+
+            currentCategory = item.dataset.category;
+            filterPosts();
+          });
+        });
+      }
+
+      function filterPosts() {
+        let filteredPosts = allPosts;
+
+        if (currentCategory !== "all") {
+          // 실제 카테고리 필터링 로직
+          filteredPosts = allPosts.filter(
+            (post) => post.category === currentCategory
+          );
+        }
+
+        renderPosts(filteredPosts);
+      }
+
+      function formatDate(dateString) {
+        const date = new Date(dateString);
+        const now = new Date();
+        const diff = now - date;
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+
+        if (days === 0) {
+          const hours = Math.floor(diff / (1000 * 60 * 60));
+          if (hours === 0) {
+            const minutes = Math.floor(diff / (1000 * 60));
+            return minutes <= 0 ? "방금 전" : `${minutes}분 전`;
+          }
+          return `${hours}시간 전`;
+        } else if (days === 1) {
+          return "어제";
+        } else if (days < 7) {
+          return `${days}일 전`;
+        } else {
+          return date.toLocaleDateString("ko-KR", {
+            month: "short",
+            day: "numeric",
+          });
+        }
+      }
+    </script>
+  </body>
+</html>

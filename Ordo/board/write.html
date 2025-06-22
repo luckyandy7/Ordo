@@ -1,0 +1,1092 @@
+<!--
+/**
+ * ============================================
+ * ✍️ ORDO 게시글 작성 페이지 (write.html)
+ * ============================================
+ * 
+ * 📝 목적: ORDO 커뮤니티에 새로운 게시글을 작성하는 페이지
+ * 🎯 기능:
+ *   - 게시글 제목/내용 입력
+ *   - 카테고리 선택 (생산성, 루틴, 팁, Q&A)
+ *   - 태그 추가/관리
+ *   - 이미지 업로드 (드래그 앤 드롭 지원)
+ *   - 작성 팁 제공
+ *   - 실시간 글자 수 카운터
+ * 
+ * 🔧 주요 컴포넌트:
+ *   - 게시글 작성 폼 (제목, 내용, 카테고리)
+ *   - 태그 입력 시스템
+ *   - 이미지 업로드 영역
+ *   - 작성 팁 사이드바
+ * 
+ * 🎨 디자인 특징:
+ *   - ORDO 브랜드 컬러 사용
+ *   - 직관적인 폼 레이아웃
+ *   - 반응형 디자인
+ *   - 시각적 피드백 (호버, 포커스 효과)
+ * 
+ * 🔗 연관 파일:
+ *   - list.html (게시글 목록)
+ *   - view.html (게시글 상세보기)
+ *   - board.css (게시판 공용 스타일)
+ * 
+ * 작성일: 2025년 6월 10일
+ * 작성자: ORDO 개발팀
+ * 버전: 1.0
+ */
+-->
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ordo - 새 글 작성</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cutive:wght@400&family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      @font-face {
+        font-family: "Freesentation";
+        src: url("/font/Freesentation.ttf") format("truetype");
+      }
+
+      :root {
+        /* Ordo Signature Colors */
+        --copper-primary: #c96342;
+        --copper-light: #e08b6f;
+        --copper-dark: #a54a2e;
+        --copper-bright: #f2a085;
+        --copper-shadow: rgba(201, 99, 66, 0.15);
+
+        /* Modern Neutral Palette */
+        --gray-50: #fafafa;
+        --gray-100: #f5f5f5;
+        --gray-200: #e5e5e5;
+        --gray-300: #d4d4d4;
+        --gray-400: #a3a3a3;
+        --gray-500: #737373;
+        --gray-600: #525252;
+        --gray-700: #404040;
+        --gray-800: #262626;
+        --gray-900: #171717;
+
+        /* Theme Colors */
+        --background: #f6f0eb;
+        --surface: #ffffff;
+        --surface-hover: #f5f5f5;
+        --border: #e5e5e5;
+        --text-primary: #171717;
+        --text-secondary: #525252;
+        --text-muted: #a3a3a3;
+
+        /* Shadows */
+        --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+        --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+        --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1),
+          0 2px 4px -2px rgb(0 0 0 / 0.1);
+        --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1),
+          0 4px 6px -4px rgb(0 0 0 / 0.1);
+        --shadow-copper: 0 4px 14px 0 rgba(201, 99, 66, 0.15);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Inter", "Freesentation", -apple-system, BlinkMacSystemFont,
+          sans-serif;
+        background: linear-gradient(
+          135deg,
+          var(--background) 0%,
+          #faf4f2 50%,
+          #f0e6e1 100%
+        );
+        background-attachment: fixed;
+        color: var(--text-primary);
+        line-height: 1.6;
+        min-height: 100vh;
+      }
+
+      .header {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-bottom: 1px solid var(--border);
+        padding: 1rem 0;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+
+      .header-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .brand-container {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .logo-image {
+        width: 40px;
+        height: 40px;
+        transition: transform 0.3s ease;
+      }
+
+      .logo-image:hover {
+        transform: rotate(15deg);
+      }
+
+      .brand {
+        font-family: "Cutive", serif;
+        font-size: 1.8rem;
+        color: var(--copper-primary);
+        font-weight: 400;
+        text-decoration: none;
+      }
+
+      .nav-breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--text-secondary);
+        font-size: 0.875rem;
+      }
+
+      .breadcrumb-link {
+        color: var(--text-secondary);
+        text-decoration: none;
+        transition: color 0.2s ease;
+      }
+
+      .breadcrumb-link:hover {
+        color: var(--copper-primary);
+      }
+
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 3rem 2rem;
+      }
+
+      .write-header {
+        text-align: center;
+        margin-bottom: 3rem;
+      }
+
+      .page-title {
+        font-family: "Cutive", serif;
+        font-size: 2.5rem;
+        color: var(--copper-primary);
+        margin-bottom: 1rem;
+        font-weight: 400;
+      }
+
+      .page-subtitle {
+        font-size: 1rem;
+        color: var(--text-secondary);
+        margin-bottom: 2rem;
+        font-family: "Freesentation", sans-serif;
+      }
+
+      .form-container {
+        background: var(--surface);
+        border-radius: 16px;
+        box-shadow: var(--shadow-lg);
+        overflow: hidden;
+      }
+
+      .form-header {
+        padding: 2rem;
+        border-bottom: 1px solid var(--border);
+        background: linear-gradient(
+          135deg,
+          var(--copper-primary),
+          var(--copper-light)
+        );
+        color: white;
+      }
+
+      .form-header h2 {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .form-header p {
+        opacity: 0.9;
+        font-size: 0.875rem;
+      }
+
+      .form-body {
+        padding: 2rem;
+      }
+
+      .form-group {
+        margin-bottom: 2rem;
+      }
+
+      .form-label {
+        display: block;
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 0.5rem;
+      }
+
+      .form-label.required::after {
+        content: " *";
+        color: var(--copper-primary);
+      }
+
+      .form-input {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 2px solid var(--border);
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: all 0.2s ease;
+        background: var(--surface);
+        color: var(--text-primary);
+      }
+
+      .form-input:focus {
+        outline: none;
+        border-color: var(--copper-primary);
+        box-shadow: 0 0 0 3px var(--copper-shadow);
+      }
+
+      .form-textarea {
+        min-height: 300px;
+        resize: vertical;
+        font-family: inherit;
+        line-height: 1.6;
+      }
+
+      .category-selector {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 0.75rem;
+        margin-top: 0.5rem;
+      }
+
+      .category-option {
+        position: relative;
+      }
+
+      .category-option input[type="radio"] {
+        position: absolute;
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .category-label {
+        display: block;
+        padding: 0.75rem;
+        border: 2px solid var(--border);
+        border-radius: 8px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        background: var(--surface);
+        font-size: 0.875rem;
+      }
+
+      .category-option input[type="radio"]:checked + .category-label {
+        border-color: var(--copper-primary);
+        background: var(--copper-primary);
+        color: white;
+      }
+
+      .category-label:hover {
+        border-color: var(--copper-light);
+        background: var(--surface-hover);
+      }
+
+      .tags-input-container {
+        position: relative;
+      }
+
+      .tags-display {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-bottom: 0.75rem;
+        min-height: 32px;
+        padding: 0.5rem;
+        border: 2px solid var(--border);
+        border-radius: 8px;
+        background: var(--surface);
+      }
+
+      .tag-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: var(--copper-primary);
+        color: white;
+        padding: 0.25rem 0.75rem;
+        border-radius: 16px;
+        font-size: 0.8rem;
+      }
+
+      .tag-remove {
+        cursor: pointer;
+        opacity: 0.7;
+        transition: opacity 0.2s ease;
+      }
+
+      .tag-remove:hover {
+        opacity: 1;
+      }
+
+      .tags-input {
+        border: none;
+        outline: none;
+        padding: 0.25rem;
+        background: transparent;
+        flex: 1;
+        min-width: 100px;
+      }
+
+      .form-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: flex-end;
+        margin-top: 3rem;
+        padding-top: 2rem;
+        border-top: 1px solid var(--border);
+      }
+
+      .btn {
+        padding: 0.75rem 2rem;
+        border-radius: 8px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        text-decoration: none;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        border: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .btn-secondary {
+        background: var(--surface);
+        color: var(--text-secondary);
+        border: 2px solid var(--border);
+      }
+
+      .btn-secondary:hover {
+        background: var(--surface-hover);
+        border-color: var(--copper-primary);
+      }
+
+      .btn-primary {
+        background: var(--copper-primary);
+        color: white;
+        box-shadow: var(--shadow-copper);
+      }
+
+      .btn-primary:hover {
+        background: var(--copper-dark);
+        transform: translateY(-2px);
+      }
+
+      .btn-primary:disabled {
+        background: var(--gray-300);
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      .character-count {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        text-align: right;
+        margin-top: 0.5rem;
+      }
+
+      .tips-card {
+        background: linear-gradient(
+          135deg,
+          var(--copper-light),
+          var(--copper-bright)
+        );
+        color: white;
+        padding: 1.5rem;
+        border-radius: 12px;
+        margin-bottom: 2rem;
+      }
+
+      .tips-title {
+        font-size: 1rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+      }
+
+      .tips-list {
+        list-style: none;
+        font-size: 0.875rem;
+        line-height: 1.6;
+      }
+
+      .tips-list li {
+        margin-bottom: 0.5rem;
+        padding-left: 1rem;
+        position: relative;
+      }
+
+      .tips-list li::before {
+        content: "💡";
+        position: absolute;
+        left: 0;
+      }
+
+      /* Image Upload Styles */
+      .image-upload-section {
+        border: 2px dashed var(--border);
+        border-radius: 12px;
+        padding: 2rem;
+        text-align: center;
+        transition: all 0.3s ease;
+        background: var(--surface);
+        margin-top: 1rem;
+      }
+
+      .image-upload-section.dragover {
+        border-color: var(--copper-primary);
+        background: var(--copper-shadow);
+        transform: scale(1.02);
+      }
+
+      .upload-icon {
+        font-size: 3rem;
+        color: var(--copper-primary);
+        margin-bottom: 1rem;
+      }
+
+      .upload-text {
+        color: var(--text-secondary);
+        margin-bottom: 1rem;
+      }
+
+      .upload-text strong {
+        color: var(--copper-primary);
+      }
+
+      .file-input {
+        display: none;
+      }
+
+      .upload-btn {
+        background: linear-gradient(
+          135deg,
+          var(--copper-primary),
+          var(--copper-light)
+        );
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 0.875rem;
+        font-weight: 600;
+        transition: all 0.2s ease;
+        box-shadow: var(--shadow-copper);
+      }
+
+      .upload-btn:hover {
+        background: linear-gradient(
+          135deg,
+          var(--copper-dark),
+          var(--copper-primary)
+        );
+        transform: translateY(-2px);
+      }
+
+      .image-preview-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 1rem;
+        margin-top: 1.5rem;
+      }
+
+      .image-preview-item {
+        position: relative;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: var(--shadow);
+        transition: transform 0.2s ease;
+      }
+
+      .image-preview-item:hover {
+        transform: translateY(-2px);
+      }
+
+      .preview-image {
+        width: 100%;
+        height: 120px;
+        object-fit: cover;
+        display: block;
+      }
+
+      .image-remove-btn {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        background: rgba(0, 0, 0, 0.7);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 24px;
+        height: 24px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        transition: background 0.2s ease;
+      }
+
+      .image-remove-btn:hover {
+        background: var(--copper-primary);
+      }
+
+      .upload-progress {
+        width: 100%;
+        height: 4px;
+        background: var(--gray-200);
+        border-radius: 2px;
+        margin-top: 1rem;
+        overflow: hidden;
+        display: none;
+      }
+
+      .upload-progress-bar {
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          var(--copper-primary),
+          var(--copper-light)
+        );
+        width: 0%;
+        transition: width 0.3s ease;
+      }
+
+      .upload-info {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 0.5rem;
+        font-size: 0.8rem;
+        color: var(--text-muted);
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          padding: 2rem 1rem;
+        }
+
+        .page-title {
+          font-size: 2rem;
+        }
+
+        .form-body {
+          padding: 1.5rem;
+        }
+
+        .form-actions {
+          flex-direction: column;
+        }
+
+        .category-selector {
+          grid-template-columns: 1fr 1fr;
+        }
+
+        .image-upload-section {
+          padding: 1.5rem;
+        }
+
+        .upload-icon {
+          font-size: 2rem;
+        }
+
+        .image-preview-container {
+          grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        }
+
+        .preview-image {
+          height: 80px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- 📌 상단 헤더: 브랜드명 + 브레드크럼 네비게이션 -->
+    <header class="header">
+      <div class="header-content">
+        <div class="brand-container">
+          <img src="/Login/image-8.png" alt="Ordo Logo" class="logo-image" />
+          <a href="/Main/index.html" class="brand">Ordo</a>
+        </div>
+        <!-- 🗺️ 브레드크럼 네비게이션 (대시보드 > 커뮤니티 > 글쓰기) -->
+        <nav class="nav-breadcrumb">
+          <a href="/Main/index.html" class="breadcrumb-link">대시보드</a>
+          <span>›</span>
+          <a href="/board/list.html" class="breadcrumb-link">커뮤니티</a>
+          <span>›</span>
+          <span>글쓰기</span>
+        </nav>
+      </div>
+    </header>
+
+    <!-- 🏠 메인 컨테이너 -->
+    <div class="container">
+      <!-- ✍️ 페이지 헤더: 제목과 설명 -->
+      <div class="write-header">
+        <h1 class="page-title">새 글 작성</h1>
+        <p class="page-subtitle">
+          당신의 생산성 노하우를 커뮤니티와 공유해보세요
+        </p>
+      </div>
+
+      <!-- 💡 작성 팁 카드 -->
+      <div class="tips-card">
+        <h3 class="tips-title">📝 좋은 글을 위한 팁</h3>
+        <ul class="tips-list">
+          <li>구체적이고 실용적인 경험을 공유해주세요</li>
+          <li>다른 사용자가 쉽게 따라할 수 있도록 단계별로 설명해주세요</li>
+          <li>관련 태그를 추가하여 더 많은 사람들이 찾을 수 있게 해주세요</li>
+          <li>예의 바른 언어를 사용하여 건전한 커뮤니티를 만들어주세요</li>
+        </ul>
+      </div>
+
+      <!-- 📝 게시글 작성 폼 -->
+      <form class="form-container" id="postForm">
+        <!-- 📋 폼 헤더 -->
+        <div class="form-header">
+          <h2>글 작성하기</h2>
+          <p>체계적인 일상 관리에 대한 이야기를 들려주세요</p>
+        </div>
+
+        <div class="form-body">
+          <div class="form-group">
+            <label for="title" class="form-label required">제목</label>
+            <input
+              type="text"
+              id="title"
+              class="form-input"
+              placeholder="흥미로운 제목을 입력해주세요"
+              maxlength="100"
+              required
+            />
+            <div class="character-count">
+              <span id="titleCount">0</span>/100
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">카테고리</label>
+            <div class="category-selector">
+              <div class="category-option">
+                <input
+                  type="radio"
+                  id="productivity"
+                  name="category"
+                  value="productivity"
+                  checked
+                />
+                <label for="productivity" class="category-label"
+                  >📈 생산성</label
+                >
+              </div>
+              <div class="category-option">
+                <input
+                  type="radio"
+                  id="routine"
+                  name="category"
+                  value="routine"
+                />
+                <label for="routine" class="category-label">🔄 루틴</label>
+              </div>
+              <div class="category-option">
+                <input type="radio" id="tips" name="category" value="tips" />
+                <label for="tips" class="category-label">💡 팁</label>
+              </div>
+              <div class="category-option">
+                <input type="radio" id="qna" name="category" value="qna" />
+                <label for="qna" class="category-label">❓ 질문답변</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="content" class="form-label required">내용</label>
+            <textarea
+              id="content"
+              class="form-input form-textarea"
+              placeholder="여기에 내용을 작성해주세요...
+
+예시:
+• 어떤 문제를 해결했나요?
+• 어떤 방법을 사용했나요?
+• 결과는 어땠나요?
+• 다른 사람들에게 어떤 도움이 될까요?"
+              maxlength="5000"
+              required
+            ></textarea>
+            <div class="character-count">
+              <span id="contentCount">0</span>/5000
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">태그</label>
+            <div class="tags-input-container">
+              <div class="tags-display" id="tagsDisplay">
+                <input
+                  type="text"
+                  class="tags-input"
+                  id="tagsInput"
+                  placeholder="태그를 입력하고 Enter를 누르세요"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">이미지 첨부</label>
+            <div class="image-upload-section" id="imageUploadSection">
+              <div class="upload-icon">📷</div>
+              <div class="upload-text">
+                <strong>클릭하여 이미지를 선택</strong>하거나<br />
+                이미지를 여기로 드래그해주세요
+              </div>
+              <button type="button" class="upload-btn" id="uploadBtn">
+                📎 이미지 선택
+              </button>
+              <input
+                type="file"
+                id="imageInput"
+                class="file-input"
+                multiple
+                accept="image/*"
+              />
+              <div class="upload-progress" id="uploadProgress">
+                <div class="upload-progress-bar" id="uploadProgressBar"></div>
+              </div>
+            </div>
+            <div class="upload-info">
+              <span>최대 5개, 각 5MB 이하 (JPG, PNG, GIF)</span>
+              <span id="imageCount">0/5</span>
+            </div>
+            <div
+              class="image-preview-container"
+              id="imagePreviewContainer"
+            ></div>
+          </div>
+
+          <div class="form-actions">
+            <a href="/board/list.html" class="btn btn-secondary"> 취소 </a>
+            <button type="submit" class="btn btn-primary" id="submitBtn">
+              📝 게시하기
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <script>
+      let tags = [];
+      let uploadedImages = [];
+
+      document.addEventListener("DOMContentLoaded", () => {
+        setupCharacterCount();
+        setupTagsInput();
+        setupImageUpload();
+        setupFormSubmission();
+        loadUserInfo();
+      });
+
+      function setupCharacterCount() {
+        const titleInput = document.getElementById("title");
+        const contentInput = document.getElementById("content");
+        const titleCount = document.getElementById("titleCount");
+        const contentCount = document.getElementById("contentCount");
+
+        titleInput.addEventListener("input", () => {
+          titleCount.textContent = titleInput.value.length;
+        });
+
+        contentInput.addEventListener("input", () => {
+          contentCount.textContent = contentInput.value.length;
+        });
+      }
+
+      function setupTagsInput() {
+        const tagsInput = document.getElementById("tagsInput");
+        const tagsDisplay = document.getElementById("tagsDisplay");
+
+        tagsInput.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" || e.key === ",") {
+            e.preventDefault();
+            addTag(tagsInput.value.trim());
+            tagsInput.value = "";
+          }
+        });
+
+        tagsInput.addEventListener("blur", () => {
+          if (tagsInput.value.trim()) {
+            addTag(tagsInput.value.trim());
+            tagsInput.value = "";
+          }
+        });
+      }
+
+      function addTag(tagText) {
+        if (!tagText || tags.includes(tagText) || tags.length >= 5) return;
+
+        tags.push(tagText);
+        renderTags();
+      }
+
+      function removeTag(tagText) {
+        tags = tags.filter((tag) => tag !== tagText);
+        renderTags();
+      }
+
+      function renderTags() {
+        const tagsDisplay = document.getElementById("tagsDisplay");
+        const tagsInput = document.getElementById("tagsInput");
+
+        // 기존 태그 제거
+        const existingTags = tagsDisplay.querySelectorAll(".tag-item");
+        existingTags.forEach((tag) => tag.remove());
+
+        // 새 태그 추가
+        tags.forEach((tag) => {
+          const tagElement = document.createElement("div");
+          tagElement.className = "tag-item";
+          tagElement.innerHTML = `
+                    <span>${tag}</span>
+                    <span class="tag-remove" onclick="removeTag('${tag}')">×</span>
+                `;
+          tagsDisplay.insertBefore(tagElement, tagsInput);
+        });
+      }
+
+      function setupImageUpload() {
+        const uploadSection = document.getElementById("imageUploadSection");
+        const fileInput = document.getElementById("imageInput");
+        const uploadBtn = document.getElementById("uploadBtn");
+
+        // 클릭 이벤트
+        uploadBtn.addEventListener("click", () => fileInput.click());
+        uploadSection.addEventListener("click", (e) => {
+          if (
+            e.target === uploadSection ||
+            e.target.classList.contains("upload-icon") ||
+            e.target.classList.contains("upload-text")
+          ) {
+            fileInput.click();
+          }
+        });
+
+        // 파일 선택 이벤트
+        fileInput.addEventListener("change", handleFileSelect);
+
+        // 드래그 앤 드롭 이벤트
+        uploadSection.addEventListener("dragover", handleDragOver);
+        uploadSection.addEventListener("dragleave", handleDragLeave);
+        uploadSection.addEventListener("drop", handleDrop);
+      }
+
+      function handleDragOver(e) {
+        e.preventDefault();
+        e.currentTarget.classList.add("dragover");
+      }
+
+      function handleDragLeave(e) {
+        e.preventDefault();
+        e.currentTarget.classList.remove("dragover");
+      }
+
+      function handleDrop(e) {
+        e.preventDefault();
+        e.currentTarget.classList.remove("dragover");
+        const files = Array.from(e.dataTransfer.files).filter((file) =>
+          file.type.startsWith("image/")
+        );
+        processFiles(files);
+      }
+
+      function handleFileSelect(e) {
+        const files = Array.from(e.target.files);
+        processFiles(files);
+        e.target.value = ""; // 같은 파일을 다시 선택할 수 있도록
+      }
+
+      function processFiles(files) {
+        if (uploadedImages.length + files.length > 5) {
+          alert("최대 5개의 이미지만 업로드할 수 있습니다.");
+          return;
+        }
+
+        files.forEach((file) => {
+          if (file.size > 5 * 1024 * 1024) {
+            alert(`${file.name}는 5MB를 초과합니다.`);
+            return;
+          }
+          uploadImage(file);
+        });
+      }
+
+      async function uploadImage(file) {
+        const formData = new FormData();
+        formData.append("image", file);
+
+        const progressBar = document.getElementById("uploadProgressBar");
+        const progressContainer = document.getElementById("uploadProgress");
+
+        progressContainer.style.display = "block";
+        progressBar.style.width = "0%";
+
+        try {
+          const response = await fetch("/api/posts/upload-image", {
+            method: "POST",
+            body: formData,
+          });
+
+          if (!response.ok) {
+            throw new Error("이미지 업로드에 실패했습니다.");
+          }
+
+          const result = await response.json();
+          console.log("이미지 업로드 응답:", result); // 디버깅용
+
+          // 서버 응답에서 data 객체 추출
+          const uploadData = result.data || result;
+
+          // 업로드된 이미지 정보 저장
+          const imageData = {
+            id: uploadData.fileId,
+            name: uploadData.originalName || file.name,
+            url: uploadData.url || `/api/posts/images/${uploadData.fileId}`,
+            size: uploadData.size || file.size,
+          };
+
+          uploadedImages.push(imageData);
+          renderImagePreviews();
+          updateImageCount();
+
+          progressBar.style.width = "100%";
+          setTimeout(() => {
+            progressContainer.style.display = "none";
+          }, 500);
+        } catch (error) {
+          console.error("이미지 업로드 오류:", error);
+          alert("이미지 업로드 중 오류가 발생했습니다.");
+          progressContainer.style.display = "none";
+        }
+      }
+
+      function renderImagePreviews() {
+        const container = document.getElementById("imagePreviewContainer");
+        container.innerHTML = "";
+
+        uploadedImages.forEach((image, index) => {
+          const imageItem = document.createElement("div");
+          imageItem.className = "image-preview-item";
+          imageItem.innerHTML = `
+            <img src="${image.url}" alt="${image.name}" class="preview-image" />
+            <button type="button" class="image-remove-btn" onclick="removeImage(${index})">×</button>
+          `;
+          container.appendChild(imageItem);
+        });
+      }
+
+      function removeImage(index) {
+        uploadedImages.splice(index, 1);
+        renderImagePreviews();
+        updateImageCount();
+      }
+
+      function updateImageCount() {
+        const countElement = document.getElementById("imageCount");
+        countElement.textContent = `${uploadedImages.length}/5`;
+      }
+
+      function setupFormSubmission() {
+        const form = document.getElementById("postForm");
+        const submitBtn = document.getElementById("submitBtn");
+
+        form.addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          submitBtn.disabled = true;
+          submitBtn.innerHTML = "📤 게시 중...";
+
+          try {
+            const user = JSON.parse(localStorage.getItem("user") || "{}");
+            const formData = {
+              title: document.getElementById("title").value,
+              content: document.getElementById("content").value,
+              category: document.querySelector('input[name="category"]:checked')
+                .value,
+              tags: tags,
+              author: user.name || "익명",
+              images: uploadedImages.map((img) => ({
+                fileId: img.id,
+                originalName: img.name,
+                url: img.url,
+                uploadedAt: new Date(),
+              })),
+            };
+
+            const response = await fetch("/api/posts", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(formData),
+            });
+
+            if (response.ok) {
+              // 성공 시 목록 페이지로 이동
+              window.location.href = "/board/list.html";
+            } else {
+              throw new Error("게시글 작성에 실패했습니다.");
+            }
+          } catch (error) {
+            console.error("게시글 작성 오류:", error);
+            alert("게시글 작성 중 오류가 발생했습니다. 다시 시도해주세요.");
+
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = "📝 게시하기";
+          }
+        });
+      }
+
+      function loadUserInfo() {
+        const user = JSON.parse(localStorage.getItem("user") || "{}");
+        if (!user.name) {
+          // 로그인하지 않은 경우 로그인 페이지로 리다이렉트
+          if (
+            confirm("로그인이 필요합니다. 로그인 페이지로 이동하시겠습니까?")
+          ) {
+            window.location.href = "/Login/email-login.html";
+          }
+        }
+      }
+    </script>
+  </body>
+</html>

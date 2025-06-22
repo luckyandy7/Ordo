@@ -1,0 +1,915 @@
+/* 
+ * Ordo 로그인 페이지 고급 스타일시트
+ * 다크/라이트 테마 지원, 반응형 디자인, 애니메이션 효과 포함
+ * 
+ * 주요 기능:
+ * - CSS 커스텀 프로퍼티를 활용한 테마 시스템
+ * - 브랜드 컬러 체계 (Copper 색상 팔레트)
+ * - 모던한 그리드 레이아웃
+ * - 부드러운 애니메이션과 트랜지션
+ * - 완전한 반응형 디자인
+ */
+
+/* ===========================================
+   CSS 커스텀 프로퍼티 (CSS Variables) 정의
+=========================================== */
+
+:root {
+  /* Ordo 브랜드 컬러 팔레트 - Copper 계열 */
+  --copper-primary: #c96342;    /* 메인 브랜드 컬러 */
+  --copper-light: #e08b6f;      /* 밝은 브랜드 컬러 */
+  --copper-dark: #a54a2e;       /* 어두운 브랜드 컬러 */
+  --copper-bright: #f2a085;     /* 하이라이트 컬러 */
+  --copper-shadow: rgba(201, 99, 66, 0.15);  /* 브랜드 컬러 그림자 */
+
+  /* 모던 중성 컬러 팔레트 (회색 계열) */
+  --gray-50: #fafafa;    /* 가장 밝은 회색 */
+  --gray-100: #f5f5f5;   /* 매우 밝은 회색 */
+  --gray-200: #e5e5e5;   /* 밝은 회색 */
+  --gray-300: #d4d4d4;   /* 중간-밝은 회색 */
+  --gray-400: #a3a3a3;   /* 중간 회색 */
+  --gray-500: #737373;   /* 표준 회색 */
+  --gray-600: #525252;   /* 중간-어두운 회색 */
+  --gray-700: #404040;   /* 어두운 회색 */
+  --gray-800: #262626;   /* 매우 어두운 회색 */
+  --gray-900: #171717;   /* 가장 어두운 회색 */
+
+  /* 라이트 테마 컬러 (기본값) */
+  --background: #ffffff;     /* 페이지 배경색 */
+  --surface: #fafafa;        /* 카드/표면 배경색 */
+  --surface-hover: #f5f5f5;  /* 호버 시 표면색 */
+  --border: #e5e5e5;         /* 테두리 색상 */
+  --text-primary: #171717;   /* 메인 텍스트 색상 */
+  --text-secondary: #525252; /* 보조 텍스트 색상 */
+  --text-muted: #a3a3a3;     /* 흐린 텍스트 색상 */
+
+  /* 그림자 효과 단계별 정의 */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);    /* 작은 그림자 */
+  --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);  /* 기본 그림자 */
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);  /* 중간 그림자 */
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);  /* 큰 그림자 */
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);  /* 특대 그림자 */
+
+  /* 브랜드 컬러 특화 그림자 */
+  --shadow-copper: 0 4px 14px 0 rgba(201, 99, 66, 0.15);       /* 브랜드 컬러 그림자 */
+  --shadow-copper-lg: 0 10px 25px -3px rgba(201, 99, 66, 0.2);  /* 큰 브랜드 컬러 그림자 */
+
+  /* 간격(Spacing) 시스템 */
+  --space-1: 0.25rem;   /* 4px */
+  --space-2: 0.5rem;    /* 8px */
+  --space-3: 0.75rem;   /* 12px */
+  --space-4: 1rem;      /* 16px */
+  --space-6: 1.5rem;    /* 24px */
+  --space-8: 2rem;      /* 32px */
+  --space-12: 3rem;     /* 48px */
+  --space-16: 4rem;     /* 64px */
+  --space-20: 5rem;     /* 80px */
+  --space-24: 6rem;     /* 96px */
+
+  /* 모서리 둥글기(Border Radius) 시스템 */
+  --radius-sm: 0.375rem;   /* 6px */
+  --radius: 0.5rem;        /* 8px */
+  --radius-md: 0.75rem;    /* 12px */
+  --radius-lg: 1rem;       /* 16px */
+  --radius-xl: 1.5rem;     /* 24px */
+  --radius-2xl: 2rem;      /* 32px */
+
+  /* 상태 표시 컬러 */
+  --success-color: #22c55e;  /* 성공 (초록색) */
+  --error-color: #ef4444;    /* 오류 (빨간색) */
+}
+
+/* ===========================================
+   다크 테마 컬러 재정의
+=========================================== */
+
+[data-theme="dark"] {
+  /* 다크 테마 배경 및 표면 색상 */
+  --background: #0a0a0a;     /* 어두운 페이지 배경 */
+  --surface: #171717;        /* 어두운 카드 배경 */
+  --surface-hover: #262626;  /* 어두운 호버 배경 */
+  --border: #404040;         /* 어두운 테두리 */
+  
+  /* 다크 테마 텍스트 색상 (반전) */
+  --text-primary: #fafafa;   /* 밝은 메인 텍스트 */
+  --text-secondary: #d4d4d4; /* 밝은 보조 텍스트 */
+  --text-muted: #737373;     /* 어두운 테마의 흐린 텍스트 */
+  
+  /* 다크 테마용 강화된 그림자 */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+  --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.4), 0 1px 2px -1px rgb(0 0 0 / 0.4);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.4);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.4), 0 4px 6px -4px rgb(0 0 0 / 0.4);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.4), 0 8px 10px -6px rgb(0 0 0 / 0.4);
+}
+
+/* ===========================================
+   기본 리셋 및 전역 스타일
+=========================================== */
+
+/* 모든 요소 기본 스타일 리셋 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;  /* 패딩과 테두리를 요소 크기에 포함 */
+}
+
+/* 페이지 전체 기본 스타일 */
+body {
+  /* 폰트 스택: Inter(메인) → Freesentation(한글) → 시스템 폰트 */
+  font-family: "Inter", "Freesentation", -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--background);     /* CSS 변수로 배경색 설정 */
+  color: var(--text-primary);        /* CSS 변수로 텍스트 색상 설정 */
+  line-height: 1.6;                  /* 읽기 좋은 줄간격 */
+  font-weight: 400;                  /* 기본 폰트 굵기 */
+  -webkit-font-smoothing: antialiased;      /* macOS/iOS 폰트 렌더링 최적화 */
+  -moz-osx-font-smoothing: grayscale;       /* Firefox 폰트 렌더링 최적화 */
+  transition: all 0.2s ease;         /* 모든 변화에 부드러운 전환 효과 */
+  min-height: 100vh;                 /* 최소 높이를 뷰포트 높이로 설정 */
+  opacity: 0;                        /* 초기 로딩 시 투명 */
+}
+
+/* 로딩 중 상태 */
+body.loading {
+  opacity: 0;  /* 완전히 투명 */
+}
+
+/* 로딩 완료 상태 */
+body.loaded {
+  opacity: 1;                       /* 완전히 불투명 */
+  transition: opacity 0.5s ease;    /* 페이드인 효과 */
+}
+
+/* Cutive 폰트 적용 클래스 (브랜드 텍스트용) */
+.font-cutive {
+  font-family: "Cutive", serif;
+}
+
+/* ===========================================
+   메인 레이아웃 컨테이너 
+=========================================== */
+
+/* 전체 페이지 그리드 레이아웃 */
+.container {
+  min-height: 100vh;               /* 최소 높이 = 뷰포트 높이 */
+  display: grid;                   /* CSS Grid 레이아웃 사용 */
+  grid-template-columns: 1fr 1fr;  /* 좌우 1:1 비율로 분할 */
+  position: relative;              /* 절대 위치 요소의 기준점 */
+  overflow: hidden;                /* 넘치는 내용 숨김 */
+}
+
+/* ===========================================
+   테마 토글 버튼
+=========================================== */
+
+/* 다크모드 전환 버튼 */
+.theme-toggle {
+  position: fixed;              /* 화면에 고정 위치 */
+  top: var(--space-6);         /* 상단에서 24px */
+  right: var(--space-6);       /* 우측에서 24px */
+  width: 48px;                 /* 가로 크기 */
+  height: 48px;                /* 세로 크기 */
+  border-radius: 50%;          /* 완전한 원형 */
+  border: 1px solid var(--border);  /* 테두리 */
+  background: var(--surface);  /* 배경색 */
+  cursor: pointer;             /* 클릭 가능 표시 */
+  display: flex;               /* 플렉스 레이아웃 */
+  align-items: center;         /* 세로 중앙 정렬 */
+  justify-content: center;     /* 가로 중앙 정렬 */
+  transition: all 0.2s ease;   /* 부드러운 전환 */
+  z-index: 1000;              /* 다른 요소 위에 표시 */
+  box-shadow: var(--shadow);   /* 기본 그림자 */
+}
+
+/* 테마 토글 버튼 호버 효과 */
+.theme-toggle:hover {
+  background: var(--surface-hover);  /* 호버 배경색 */
+  transform: scale(1.05);            /* 5% 확대 */
+  box-shadow: var(--shadow-lg);      /* 큰 그림자 */
+}
+
+/* 테마 아이콘 스타일 */
+.theme-icon {
+  font-size: 1.25rem;           /* 아이콘 크기 */
+  transition: all 0.2s ease;    /* 부드러운 전환 */
+}
+
+/* ===========================================
+   좌측 브랜딩 섹션 
+=========================================== */
+
+/* 브랜드 소개 영역 */
+.branding-section {
+  /* 구리색 그라데이션 배경 */
+  background: linear-gradient(135deg, var(--copper-primary), var(--copper-dark));
+  display: flex;               /* 플렉스 레이아웃 */
+  align-items: center;         /* 세로 중앙 정렬 */
+  justify-content: center;     /* 가로 중앙 정렬 */
+  padding: var(--space-12);    /* 내부 여백 48px */
+  position: relative;          /* 절대 위치 요소의 기준점 */
+  overflow: hidden;            /* 넘치는 내용 숨김 */
+}
+
+/* 브랜딩 섹션 배경 패턴 (점 무늬) */
+.branding-section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  /* SVG를 이용한 점 패턴 배경 */
+  background: url('data:image/svg+xml,<svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><g fill="%23ffffff" fill-opacity="0.05"><circle cx="30" cy="30" r="1"/></g></svg>');
+  opacity: 0.3;  /* 배경 패턴 투명도 */
+}
+
+/* 브랜드 콘텐츠 컨테이너 */
+.brand-content {
+  position: relative;    /* 배경 패턴 위에 표시 */
+  z-index: 1;           /* 레이어 순서 */
+  text-align: center;   /* 중앙 정렬 */
+  max-width: 400px;     /* 최대 너비 제한 */
+}
+
+/* 브랜드 헤더 (로고 + 제목) */
+.brand-header {
+  display: flex;               /* 플렉스 레이아웃 */
+  align-items: center;         /* 세로 중앙 정렬 */
+  justify-content: center;     /* 가로 중앙 정렬 */
+  gap: var(--space-3);        /* 요소 간 간격 12px */
+  margin-bottom: var(--space-8);  /* 하단 여백 32px */
+}
+
+/* 브랜드 로고 이미지 */
+.brand-logo {
+  width: 48px;   /* 가로 크기 */
+  height: 48px;  /* 세로 크기 */
+  filter: brightness(0) invert(1);
+  transition: all 0.2s ease;
+}
+
+.brand-logo:hover {
+  transform: scale(1.1) rotate(5deg);
+}
+
+.brand-title {
+  font-size: 2rem;
+  font-weight: 400;
+  color: white;
+  letter-spacing: -0.025em;
+}
+
+.brand-headline {
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1.1;
+  color: white;
+  margin-bottom: var(--space-6);
+  letter-spacing: -0.025em;
+}
+
+.brand-headline .highlight {
+  opacity: 0.9;
+}
+
+.brand-description {
+  font-size: 1.125rem;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: var(--space-8);
+  line-height: 1.6;
+}
+
+.brand-features {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  align-items: flex-start;
+}
+
+.feature-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.feature-icon {
+  font-size: 1.25rem;
+}
+
+/* Right Form Section */
+.form-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-12);
+  background: var(--surface);
+  min-height: 100vh;
+}
+
+.login-card {
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-12);
+  width: 100%;
+  max-width: 480px;
+  box-shadow: var(--shadow-lg);
+  transition: all 0.2s ease;
+}
+
+.login-card:hover {
+  box-shadow: var(--shadow-xl);
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: var(--space-8);
+}
+
+.login-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: var(--space-2);
+  letter-spacing: -0.025em;
+}
+
+.login-subtitle {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* Form Styles */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.form-group label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-wrapper.focused {
+  transform: translateY(-1px);
+}
+
+.input-icon {
+  position: absolute;
+  left: var(--space-3);
+  font-size: 1rem;
+  color: var(--text-muted);
+  z-index: 1;
+  transition: all 0.2s ease;
+}
+
+.input-wrapper input {
+  width: 100%;
+  padding: var(--space-3) var(--space-12) var(--space-3) var(--space-12);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 0.875rem;
+  background: var(--background);
+  color: var(--text-primary);
+  transition: all 0.2s ease;
+}
+
+.input-wrapper input:focus {
+  outline: none;
+  border-color: var(--copper-primary);
+  box-shadow: 0 0 0 3px var(--copper-shadow);
+}
+
+.input-wrapper input:focus + .input-icon {
+  color: var(--copper-primary);
+}
+
+.password-toggle {
+  position: absolute;
+  right: var(--space-3);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  color: var(--text-muted);
+  transition: all 0.2s ease;
+  z-index: 1;
+}
+
+.password-toggle:hover {
+  color: var(--copper-primary);
+  transform: scale(1.1);
+}
+
+/* Form Options */
+.form-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: var(--space-2) 0;
+}
+
+.remember-me {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  cursor: pointer;
+  font-size: 0.875rem;
+}
+
+.remember-me input[type="checkbox"] {
+  display: none;
+}
+
+.checkmark {
+  width: 18px;
+  height: 18px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--background);
+  position: relative;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.remember-me:hover .checkmark {
+  border-color: var(--copper-primary);
+}
+
+.remember-me input:checked ~ .checkmark {
+  background: var(--copper-primary);
+  border-color: var(--copper-primary);
+}
+
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+  left: 5px;
+  top: 2px;
+  width: 4px;
+  height: 8px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.remember-me input:checked ~ .checkmark:after {
+  display: block;
+}
+
+.forgot-password {
+  color: var(--copper-primary);
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.forgot-password:hover {
+  text-decoration: underline;
+}
+
+/* Login Button */
+.login-btn {
+  width: 100%;
+  padding: var(--space-3) var(--space-6);
+  background: var(--copper-primary);
+  color: white;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+  margin-top: var(--space-2);
+  box-shadow: var(--shadow-copper);
+}
+
+.login-btn:hover {
+  background: var(--copper-dark);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-copper-lg);
+}
+
+.login-btn:active {
+  transform: translateY(0);
+}
+
+.login-btn.loading {
+  pointer-events: none;
+}
+
+.login-btn.loading .btn-text {
+  opacity: 0;
+}
+
+.btn-loader {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top: 2px solid white;
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.login-btn.loading .btn-loader {
+  opacity: 1;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+/* Divider */
+.divider {
+  position: relative;
+  text-align: center;
+  margin: var(--space-8) 0;
+}
+
+.divider::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--border);
+}
+
+.divider span {
+  background: var(--background);
+  padding: 0 var(--space-4);
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+/* Social Buttons */
+.social-login {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.social-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-6);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--background);
+  color: var(--text-primary);
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.social-btn:hover {
+  background: var(--surface-hover);
+  border-color: var(--copper-primary);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow);
+}
+
+.social-btn img {
+  width: 20px;
+  height: 20px;
+}
+
+.kakao-btn:hover {
+  background: #fee500;
+  transform: translateY(-1px);
+}
+
+.google-btn:hover {
+  box-shadow: 0 2px 8px rgba(66, 133, 244, 0.15);
+}
+
+/* Signup Section */
+.signup-section {
+  text-align: center;
+  margin-top: var(--space-8);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--border);
+}
+
+.signup-text {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+}
+
+.signup-link {
+  color: var(--copper-primary);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.signup-link:hover {
+  text-decoration: underline;
+}
+
+/* Background Decoration */
+.bg-decoration {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: -1;
+  overflow: hidden;
+}
+
+.decoration-circle {
+  position: absolute;
+  border-radius: 50%;
+  background: linear-gradient(
+    135deg,
+    var(--copper-primary),
+    var(--copper-light)
+  );
+  opacity: 0.05;
+  animation: float 6s ease-in-out infinite;
+}
+
+.circle-1 {
+  width: 200px;
+  height: 200px;
+  top: 10%;
+  right: 10%;
+  animation-delay: 0s;
+}
+
+.circle-2 {
+  width: 150px;
+  height: 150px;
+  bottom: 20%;
+  left: 15%;
+  animation-delay: 2s;
+}
+
+.circle-3 {
+  width: 100px;
+  height: 100px;
+  top: 60%;
+  right: 20%;
+  animation-delay: 4s;
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-20px) rotate(180deg);
+  }
+}
+
+/* Loading Overlay */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(4px);
+}
+
+.loading-overlay.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top: 3px solid var(--copper-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: var(--space-4);
+}
+
+.loading-text {
+  color: white;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+/* Alert Modal */
+.alert-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(4px);
+}
+
+.alert-modal.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.alert-content {
+  background: var(--background);
+  border-radius: var(--radius-lg);
+  padding: var(--space-8);
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+  box-shadow: var(--shadow-xl);
+  transform: scale(0.9);
+  transition: transform 0.3s ease;
+}
+
+.alert-modal.show .alert-content {
+  transform: scale(1);
+}
+
+.alert-icon {
+  font-size: 3rem;
+  margin-bottom: var(--space-4);
+}
+
+.alert-content h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: var(--space-3);
+}
+
+.alert-content p {
+  color: var(--text-secondary);
+  margin-bottom: var(--space-6);
+  line-height: 1.5;
+}
+
+.alert-btn {
+  background: var(--copper-primary);
+  color: white;
+  border: none;
+  border-radius: var(--radius);
+  padding: var(--space-3) var(--space-6);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.alert-btn:hover {
+  background: var(--copper-dark);
+  transform: translateY(-1px);
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .container {
+    grid-template-columns: 1fr;
+  }
+
+  .branding-section {
+    padding: var(--space-8);
+    min-height: 40vh;
+  }
+
+  .brand-headline {
+    font-size: 2rem;
+  }
+
+  .brand-features {
+    flex-direction: row;
+    justify-content: center;
+    gap: var(--space-6);
+  }
+
+  .form-section {
+    padding: var(--space-8);
+  }
+
+  .login-card {
+    padding: var(--space-8);
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    grid-template-columns: 1fr;
+  }
+
+  .branding-section {
+    padding: var(--space-6);
+    min-height: 30vh;
+  }
+
+  .brand-headline {
+    font-size: 1.75rem;
+  }
+
+  .brand-features {
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .form-section {
+    padding: var(--space-6);
+  }
+
+  .login-card {
+    padding: var(--space-6);
+  }
+
+  .login-title {
+    font-size: 1.75rem;
+  }
+
+  .theme-toggle {
+    top: var(--space-4);
+    right: var(--space-4);
+    width: 44px;
+    height: 44px;
+  }
+
+  .theme-icon {
+    font-size: 1.125rem;
+  }
+
+  .form-options {
+    flex-direction: column;
+    gap: var(--space-3);
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 480px) {
+  .login-card {
+    padding: var(--space-4);
+  }
+
+  .social-login {
+    gap: var(--space-2);
+  }
+
+  .social-btn {
+    padding: var(--space-2) var(--space-4);
+    font-size: 0.8rem;
+  }
+}

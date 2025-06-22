@@ -1,0 +1,336 @@
+/* ==================== Ordo Personal Page 스타일 ==================== */
+/* 사용자 개인 대시보드 페이지의 스타일 정의 */
+
+/* 브랜드 타이틀 스타일 */
+.title {
+  left: 10px;
+  top: 51px;
+  position: absolute;
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
+  color: #c96342;                /* Ordo 브랜드 컬러 */
+  font-size: 32px;
+  font-family: Cutive;           /* 브랜드 전용 폰트 */
+  font-weight: 400;
+  line-height: 48px;
+  word-wrap: break-word;
+}
+
+/* 개인화된 인사말 스타일 */
+.greeting {
+  left: 128px;
+  top: 124px;
+  position: absolute;
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
+  color: #c96342;                /* Ordo 브랜드 컬러 */
+  font-size: 40px;
+  font-family: Freesentation;    /* 한국어 폰트 */
+  font-weight: 900;              /* 굵은 폰트로 강조 */
+  line-height: 60px;
+  word-wrap: break-word;
+}
+
+/* 응원 메시지 스타일 */
+.subtitle {
+  left: 131px;
+  top: 184px;
+  position: absolute;
+  text-align: center;
+  color: #a0a0a0;                /* 회색으로 부드러운 느낌 */
+  font-size: 15px;
+  font-family: Freesentation;
+  font-weight: 400;
+  word-wrap: break-word;
+}
+
+/* 캘린더 관련 라벨 공통 스타일 */
+.calendar-label {
+  position: absolute;
+  font-family: Cutive;
+  font-weight: 400;
+  line-height: 36px;
+  word-wrap: break-word;
+  color: #c96342;                /* 브랜드 컬러로 통일 */
+}
+
+/* 캘린더 날짜 숫자 스타일 */
+.calendar-day {
+  position: absolute;
+  font-family: Cutive;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 36px;
+  word-wrap: break-word;
+  color: #a0a0a0;                /* 기본 날짜는 회색 */
+}
+
+/* 오늘 날짜 하이라이트 스타일 */
+.calendar-number-highlight {
+  width: 31px;
+  height: 32px;
+  position: absolute;
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
+  color: #F6F0EB;                /* 하이라이트된 텍스트 색상 */
+  font-size: 20px;
+  font-family: Cutive;
+  font-weight: 400;
+  line-height: 30px;
+  word-wrap: break-word;
+  background: #C96342;           /* 브랜드 컬러 배경 */
+  border-radius: 9999px;         /* 완전한 원형 */
+}
+
+/* 시간 라벨 공통 스타일 */
+.time-label {
+  font-family: Cutive;
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 30px;
+  position: absolute;
+  left: 32px;
+}
+
+/* 이른 시간대 스타일 (8AM) */
+.time-label.early {
+  color: #c00707;                /* 빨간색으로 이른 시간 강조 */
+}
+
+/* 일반 시간대 스타일 (10AM 이후) */
+.time-label.late {
+  color: #797979;                /* 회색으로 일반 시간 표시 */
+}
+
+/* 일정 박스 공통 스타일 */
+.event-box {
+  background: #cdc1bd;           /* 연한 베이지 배경 */
+  border-radius: 15px;           /* 둥근 모서리 */
+  padding: 10px 20px;            /* 내부 여백 */
+  width: 900px;                  /* 넓은 가로 길이 */
+  height: auto;                  /* 내용에 따른 높이 자동 조절 */
+  display: flex;
+  align-items: center;
+  font-family: Cutive;
+  font-size: 20px;
+  color: black;
+}
+
+/* 일정 텍스트 스타일 */
+.event-text {
+  margin-left: 20px;             /* 왼쪽 여백 */
+  font-size: 20px;
+  font-family: Freesentation;    /* 한국어 폰트 */
+  font-weight: 900;              /* 굵은 글씨로 강조 */
+}
+
+/* 각 일정 타입별 색상 (확장 가능) */
+.event-text.meeting {
+  color: #000000;                /* 미팅: 검은색 */
+}
+
+.event-text.lunch {
+  color: #000000;                /* 점심: 검은색 */
+}
+
+.event-text.project {
+  color: #000000;                /* 프로젝트: 검은색 */
+}
+
+/* Horae 추천 일정 버튼 박스 스타일 */
+.recommend-box {
+  background: none;              /* 투명 배경 */
+  border: 2px solid #c96342;     /* 브랜드 컬러 테두리 */
+  border-radius: 12px;           /* 둥근 모서리 */
+  padding: 10px 20px;            /* 내부 여백 */
+  display: flex;
+  align-items: center;
+  font-family: Cutive;
+  font-size: 20px;
+  color: #c96342;                /* 브랜드 컬러 텍스트 */
+}
+
+/* Horae 추천 라벨 스타일 */
+.recommend-label {
+  position: absolute;
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
+  font-family: Freesentation;
+  font-weight: 400;
+  line-height: 30px;
+  word-wrap: break-word;
+  color: #c96342;                /* 브랜드 컬러 */
+  font-size: 20px;
+}
+
+/* Horae 텍스트 (첫 번째 span) */
+.recommend-label span:first-child {
+  color: #C96342;
+  font-size: 20px;
+  font-family: Cutive;           /* 브랜드 폰트 */
+  font-weight: 400;
+  line-height: 30px;
+  word-wrap: break-word;
+}
+
+/* "의 추천 일정" 텍스트 (두 번째 span) */
+.recommend-label span:last-child {
+  color: #C96342;
+  font-size: 20px;
+  font-family: Freesentation;    /* 한국어 폰트 */
+  font-weight: 400;
+  line-height: 30px;
+  word-wrap: break-word;
+}
+
+/* Daily 한마디 버튼 박스 스타일 */
+.comment-box {
+  background: #c96342;           /* 브랜드 컬러 배경 */
+  color: #f6f0eb;                /* 밝은 텍스트 색상 */
+  border-radius: 12px;           /* 둥근 모서리 */
+  padding: 10px 20px;            /* 내부 여백 */
+  display: flex;
+  align-items: center;
+  font-family: Cutive;
+  font-size: 20px;
+}
+
+/* Daily 한마디 라벨 스타일 */
+.comment-label {
+  position: absolute;
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
+  font-family: Freesentation;
+  font-weight: 700;              /* 굵은 글씨 */
+  line-height: 30px;
+  word-wrap: break-word;
+  color: #f6f0eb;                /* 밝은 색상 */
+  font-size: 20px;
+}
+
+/* "Daily" 텍스트 (첫 번째 span) */
+.comment-label span:first-child {
+  color: #F6F0EB;
+  font-size: 20px;
+  font-family: Cutive;           /* 영문 폰트 */
+  font-weight: 400;
+  line-height: 30px;
+  word-wrap: break-word;
+}
+
+/* "한마디" 텍스트 (두 번째 span) */
+.comment-label span:last-child {
+  color: #F6F0EB;
+  font-size: 20px;
+  font-family: Freesentation;    /* 한국어 폰트 */
+  font-weight: 700;              /* 강조를 위한 굵은 글씨 */
+  line-height: 30px;
+  word-wrap: break-word;
+}
+
+/* 원형 인디케이터 (상태 표시용) */
+.circle-indicator {
+  width: 13px;
+  height: 13px;
+  position: absolute;
+  border-radius: 50%;            /* 완전한 원형 */
+  background: #c96342;           /* 브랜드 컬러 */
+}
+
+.top-logo {
+  width: 48px;
+  height: 48px;
+  position: absolute;
+  border-radius: 50%;
+  background: #c96342;
+}
+
+.calendar-heading {
+  left: 134px;
+  top: 222px;
+  position: absolute;
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
+  color: #C96342;
+  font-size: 40px;
+  font-family: Cutive;
+  font-weight: 400;
+  line-height: 60px;
+  word-wrap: break-word;
+}
+
+.calendar-month {
+  left: 134px;
+  top: 296px;
+  position: absolute;
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
+  color: #797979;
+  font-size: 20px;
+  font-family: Cutive;
+  font-weight: 400;
+  line-height: 30px;
+  word-wrap: break-word;
+}
+
+.calendar-number {
+  width: 31px;
+  height: 32px;
+  position: absolute;
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
+  color: #A0A0A0;
+  font-size: 20px;
+  font-family: Cutive;
+  font-weight: 400;
+  line-height: 30px;
+  word-wrap: break-word;
+}
+
+.line-divider {
+  position: absolute;
+  width: 1000px;
+  height: 1px;
+  background-color: #a0a0a0;
+  left: 140px;
+}
+
+.calendar-background {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: #f6f0eb;
+}
+
+.calendar-label-black {
+  position: absolute;
+  font-family: Cutive;
+  font-weight: 400;
+  line-height: 36px;
+  word-wrap: break-word;
+  color: #000000;
+}
+
+.recommend-img {
+  width: 50px;
+  height: 50px;
+  position: absolute;
+  border-radius: 10px;
+}
+
+body {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  background: #F6F0EB;
+  overflow: hidden;
+  margin: 0;
+}

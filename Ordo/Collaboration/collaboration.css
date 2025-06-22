@@ -1,0 +1,200 @@
+.leave-workspace {
+  margin: 16px 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  border-radius: 0;
+  box-shadow: none;
+  transition: none;
+}
+
+.leave-workspace:hover {
+  border-color: transparent;
+  background: transparent;
+}
+
+.leave-workspace-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 28px;
+  background: #ff4d4f;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  font-family: "Freesentation", sans-serif;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.leave-workspace-btn::before {
+  content: "🚪";
+  font-size: 18px;
+  margin-right: 0;
+}
+
+.leave-workspace-btn:hover {
+  background: #d9363e;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 77, 79, 0.18);
+}
+
+.leave-workspace-btn:active {
+  background: #d9363e;
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(255, 77, 79, 0.12);
+}
+
+/* 다크 모드 지원 */
+@media (prefers-color-scheme: dark) {
+  .leave-workspace {
+    background: transparent;
+    border-color: transparent;
+    box-shadow: none;
+  }
+  
+  .leave-workspace:hover {
+    border-color: transparent;
+    background: transparent;
+  }
+  
+  .leave-workspace-btn {
+    background: #ff4d4f;
+    color: #fff;
+  }
+  
+  .leave-workspace-btn:hover {
+    background: #d9363e;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 77, 79, 0.18);
+  }
+  
+  .leave-workspace-btn:active {
+    background: #d9363e;
+    transform: translateY(0);
+  }
+}
+
+/* 확인 모달 스타일 */
+.chat-style-modal {
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  padding: 32px;
+  max-width: 450px;
+  width: 90%;
+  text-align: center;
+}
+
+.chat-style-modal .modal-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  font-family: "Freesentation", sans-serif;
+}
+
+.chat-style-modal .modal-title::before {
+  content: "🚪";
+  font-size: 28px;
+  animation: door 2s infinite;
+}
+
+.chat-style-modal .modal-message {
+  font-size: 16px;
+  color: #666;
+  line-height: 1.6;
+  margin-bottom: 32px;
+  font-family: "Freesentation", sans-serif;
+}
+
+.chat-style-modal .modal-buttons {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+}
+
+.chat-style-modal .modal-btn {
+  padding: 14px 28px;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  font-family: "Freesentation", sans-serif;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  min-width: 120px;
+  border: none;
+}
+
+.chat-style-modal .modal-btn.confirm {
+  background: #ff4d4f;
+  color: #fff;
+  box-shadow: none;
+}
+
+.chat-style-modal .modal-btn.confirm:hover {
+  background: #d9363e;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 77, 79, 0.18);
+}
+
+.chat-style-modal .modal-btn.cancel {
+  background: #f5f5f5;
+  color: #666;
+  border: 2px solid #ddd;
+}
+
+.chat-style-modal .modal-btn.cancel:hover {
+  background: #e0e0e0;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.chat-style-modal .modal-btn:active {
+  transform: translateY(0);
+}
+
+@keyframes door {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-10deg); }
+  75% { transform: rotate(10deg); }
+}
+
+/* 다크 모드 확인 모달 스타일 */
+@media (prefers-color-scheme: dark) {
+  .chat-style-modal {
+    background: rgba(36, 52, 71, 0.98);
+    backdrop-filter: blur(20px);
+    border-color: rgba(91, 141, 212, 0.3);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  }
+
+  .chat-style-modal .modal-title {
+    color: #e2e8f0;
+  }
+
+  .chat-style-modal .modal-message {
+    color: #cbd5e1;
+  }
+
+  .chat-style-modal .modal-btn.cancel {
+    background: rgba(36, 52, 71, 0.8);
+    color: #cbd5e1;
+    border-color: rgba(91, 141, 212, 0.3);
+  }
+
+  .chat-style-modal .modal-btn.cancel:hover {
+    background: rgba(36, 52, 71, 0.9);
+    border-color: rgba(91, 141, 212, 0.5);
+  }
+} 

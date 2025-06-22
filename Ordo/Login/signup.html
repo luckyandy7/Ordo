@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <!-- 기본 문서 메타 정보 설정 -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ordo - 회원가입</title>
+    
+    <!-- 회원가입 페이지 스타일시트 연결 -->
+    <link rel="stylesheet" href="styles.css" />
+    
+    <!-- Google Fonts에서 Cutive 폰트 가져오기 -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cutive&display=swap"
+      rel="stylesheet"
+    />
+    
+    <!-- 로컬 폰트 (Freesentation) 설정 -->
+    <style>
+      @font-face {
+        font-family: "Freesentation";
+        src: url("../font/Freesentation.ttf") format("truetype");
+      }
+    </style>
+  </head>
+  <body>
+    <!-- 회원가입 페이지 전체 컨테이너 -->
+    <div class="container">
+      <!-- 회원가입 박스 (중앙 배치) -->
+      <div class="login-box">
+        <!-- 브랜드 로고/이름 -->
+        <h1 class="brand">Ordo</h1>
+        
+        <!-- 회원가입 폼 -->
+        <form id="signupForm" class="login-form">
+          <!-- 이름 입력 필드 -->
+          <div class="input-group">
+            <label for="name">이름</label>
+            <input type="text" id="name" name="name" required />
+          </div>
+          
+          <!-- 이메일 입력 필드 -->
+          <div class="input-group">
+            <label for="email">이메일</label>
+            <input type="email" id="email" name="email" required />
+          </div>
+          
+          <!-- 비밀번호 입력 필드 -->
+          <div class="input-group">
+            <label for="password">비밀번호</label>
+            <input type="password" id="password" name="password" required />
+          </div>
+          
+          <!-- 비밀번호 확인 입력 필드 -->
+          <div class="input-group">
+            <label for="confirmPassword">비밀번호 확인</label>
+            <input
+              type="password"
+              id="confirmPassword"
+              name="confirmPassword"
+              required
+            />
+          </div>
+          
+          <!-- 회원가입 버튼 -->
+          <button type="submit" class="login-button">회원가입</button>
+          
+          <!-- 카카오 로그인 버튼 섹션 -->
+          <div style="margin-top: 20px; text-align: center;">
+            <!-- 카카오 OAuth 로그인 링크 -->
+            <a
+              href="https://kauth.kakao.com/oauth/authorize?client_id=1a2a5fc4e84d66a54edc97105d1953fa=http://localhost:5001/auth/kakao/callback&response_type=code"
+            >
+              <!-- 카카오 공식 로그인 버튼 이미지 -->
+              <img
+                src="https://developers.kakao.com/assets/img/about/logos/kakaologin/kr/kakao_account_login_btn_medium_narrow.png"
+                alt="카카오 로그인"
+                style="width: 200px;"
+              />
+            </a>
+          </div>
+        </form>
+        
+        <!-- 로그인 페이지로 이동 링크 -->
+        <p class="signup-text">
+          이미 계정이 있으신가요? <a href="/login">로그인</a>
+        </p>
+      </div>
+    </div>
+    
+    <!-- 회원가입 로직을 담은 JavaScript 파일 연결 -->
+    <script src="signup.js"></script>
+  </body>
+</html>

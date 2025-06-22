@@ -1,0 +1,1043 @@
+<!--
+/**
+ * ============================================
+ * ✏️ ORDO 게시글 수정 페이지 (edit.html)
+ * ============================================
+ * 
+ * 📝 목적: 기존 게시글을 수정하는 페이지
+ * 🎯 기능:
+ *   - 기존 게시글 데이터 로드 및 표시
+ *   - 제목, 내용, 카테고리 수정
+ *   - 태그 수정/추가/삭제
+ *   - 이미지 추가/삭제
+ *   - 수정된 내용 저장
+ *   - 작성자 권한 확인
+ * 
+ * 🔧 주요 컴포넌트:
+ *   - 게시글 수정 폼 (기존 데이터 pre-fill)
+ *   - 카테고리 선택기
+ *   - 태그 관리 시스템
+ *   - 이미지 업로드/삭제 기능
+ *   - 저장/취소 버튼
+ * 
+ * 🎨 디자인 특징:
+ *   - write.html과 동일한 UI/UX
+ *   - 수정 중임을 명시하는 헤더
+ *   - 기존 데이터 표시
+ *   - 변경사항 확인 가능
+ * 
+ * 🔗 연관 파일:
+ *   - write.html (새 글 작성)
+ *   - view.html (게시글 상세보기)
+ *   - list.html (게시글 목록)
+ * 
+ * 작성일: 2025년 6월 10일
+ * 작성자: ORDO 개발팀
+ * 버전: 1.0
+ */
+-->
+<!DOCTYPE html>
+<html lang="ko" style="color-scheme: light;">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>게시글 수정 - Ordo 커뮤니티</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cutive:wght@400&family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <style>
+      @font-face {
+        font-family: "Freesentation";
+        src: url("/font/Freesentation.ttf") format("truetype");
+      }
+
+      :root {
+        /* Ordo 메인 색상 테마 */
+        --primary-color: #c96342;
+        --primary-light: #faf4f2;
+        --primary-dark: #a84f35;
+        --background-color: #f6f0eb;
+        --surface-color: #ffffff;
+        --gray-color: #797979;
+        --light-gray: #a0a0a0;
+        --border-color: #e0e0e0;
+        --hover-color: #f0f0f0;
+        --shadow-color: rgba(201, 99, 66, 0.1);
+        --text-primary: #2d2419;
+        --text-secondary: #6b5b47;
+        --text-muted: #9ca3af;
+        --success: #10b981;
+        --error: #ef4444;
+        --warning: #f59e0b;
+
+        /* 구리색 계열 확장 */
+        --copper-accent: #cd7f32;
+        --copper-light: #d4a574;
+        --copper-dark: #8b5a2b;
+        --copper-soft: #f4ede5;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Freesentation", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        line-height: 1.6;
+        color: var(--text-primary);
+        background: linear-gradient(135deg, var(--background-color) 0%, var(--primary-light) 50%, #f0e6e1 100%);
+        background-attachment: fixed;
+        min-height: 100vh;
+        /* 라이트모드 강제 고정 */
+        color-scheme: light;
+      }
+
+      .header {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid var(--border-color);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        box-shadow: 0 4px 12px var(--shadow-color);
+      }
+
+      .header-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 1rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .brand-container {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+
+      .logo-image {
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        transition: transform 0.3s ease;
+      }
+
+      .logo-image:hover {
+        transform: rotate(15deg);
+      }
+
+      .brand {
+        font-family: "Cutive", serif;
+        font-size: 1.8rem;
+        font-weight: 400;
+        color: var(--primary-color);
+        text-decoration: none;
+        letter-spacing: -0.025em;
+        transition: color 0.3s ease;
+      }
+
+      .brand:hover {
+        color: var(--primary-dark);
+      }
+
+      .nav-breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.875rem;
+        color: var(--text-secondary);
+        background: var(--copper-soft);
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        border: 1px solid var(--copper-light);
+      }
+
+      .breadcrumb-link {
+        color: var(--text-secondary);
+        text-decoration: none;
+        transition: color 0.2s;
+        font-weight: 500;
+      }
+
+      .breadcrumb-link:hover {
+        color: var(--primary-color);
+      }
+
+      .breadcrumb-separator {
+        color: var(--copper-accent);
+        font-weight: 600;
+      }
+
+      .container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 3rem 2rem;
+      }
+
+      .page-header {
+        text-align: center;
+        margin-bottom: 3rem;
+        position: relative;
+      }
+
+      .page-header::before {
+        content: '';
+        position: absolute;
+        top: -20px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 4px;
+        background: linear-gradient(90deg, var(--primary-color), var(--copper-accent));
+        border-radius: 2px;
+      }
+
+      .page-title {
+        font-family: "Cutive", serif;
+        font-size: 2.5rem;
+        font-weight: 400;
+        color: var(--primary-color);
+        margin-bottom: 0.5rem;
+        letter-spacing: -0.025em;
+        text-shadow: 0 2px 4px rgba(201, 99, 66, 0.15);
+      }
+
+      .page-subtitle {
+        color: var(--text-secondary);
+        font-size: 1.1rem;
+        font-weight: 400;
+      }
+
+      .form-container {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-radius: 24px;
+        box-shadow: 
+          0 20px 40px rgba(201, 99, 66, 0.08),
+          0 8px 16px rgba(201, 99, 66, 0.04),
+          inset 0 1px 0 rgba(255, 255, 255, 0.8);
+        border: 1px solid rgba(201, 99, 66, 0.1);
+        overflow: hidden;
+        position: relative;
+        /* 라이트모드 강제 고정 */
+        color-scheme: light;
+      }
+
+      .form-container::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--primary-color), var(--copper-accent), var(--primary-color));
+      }
+
+      .form-header {
+        padding: 2rem 2.5rem 1.5rem;
+        border-bottom: 1px solid rgba(201, 99, 66, 0.1);
+        background: linear-gradient(135deg, var(--primary-light), rgba(250, 244, 242, 0.8));
+      }
+
+      .form-title {
+        font-family: "Cutive", serif;
+        font-size: 1.5rem;
+        font-weight: 400;
+        color: var(--primary-color);
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+
+      .form-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, var(--primary-color), var(--copper-accent));
+        border-radius: 12px;
+        color: white;
+        font-size: 1.1rem;
+      }
+
+      .form-description {
+        color: var(--text-secondary);
+        font-size: 0.95rem;
+        font-weight: 400;
+      }
+
+      .form-content {
+        padding: 2.5rem;
+      }
+
+      .form-group {
+        margin-bottom: 2rem;
+        position: relative;
+      }
+
+      .form-label {
+        display: block;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 0.75rem;
+        font-size: 0.95rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .required {
+        color: var(--error);
+        font-weight: 700;
+      }
+
+      .label-icon {
+        color: var(--copper-accent);
+        font-size: 0.9rem;
+      }
+
+      .form-input {
+        width: 100%;
+        padding: 1rem 1.25rem;
+        border: 2px solid var(--border-color);
+        border-radius: 16px;
+        font-size: 1rem;
+        line-height: 1.5;
+        transition: all 0.3s ease;
+        background: var(--surface-color);
+        font-family: inherit;
+        color: var(--text-primary);
+        /* 라이트모드 강제 고정 */
+        color-scheme: light;
+      }
+
+      .form-input:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 
+          0 0 0 4px rgba(201, 99, 66, 0.1),
+          0 8px 24px rgba(201, 99, 66, 0.12);
+        transform: translateY(-2px);
+      }
+
+      .form-textarea {
+        min-height: 240px;
+        resize: vertical;
+        font-family: inherit;
+        line-height: 1.8;
+      }
+
+      .category-group {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-top: 0.75rem;
+      }
+
+      .category-option {
+        position: relative;
+      }
+
+      .category-radio {
+        position: absolute;
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .category-label {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 1rem 1.25rem;
+        border: 2px solid var(--border-color);
+        border-radius: 16px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: var(--surface-color);
+        font-weight: 500;
+        color: var(--text-secondary);
+      }
+
+      .category-label:hover {
+        border-color: var(--primary-color);
+        background: var(--copper-soft);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(201, 99, 66, 0.12);
+      }
+
+      .category-radio:checked + .category-label {
+        border-color: var(--primary-color);
+        background: linear-gradient(135deg, var(--primary-color), var(--copper-accent));
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(201, 99, 66, 0.2);
+      }
+
+      .category-icon {
+        font-size: 1.2rem;
+        width: 24px;
+        text-align: center;
+      }
+
+      .form-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        margin-top: 3rem;
+        padding-top: 2rem;
+        border-top: 1px solid rgba(201, 99, 66, 0.1);
+      }
+
+      .btn {
+        padding: 1rem 2rem;
+        border: none;
+        border-radius: 16px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        min-width: 140px;
+        font-family: inherit;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+      }
+
+      .btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.5s ease;
+      }
+
+      .btn:hover::before {
+        left: 100%;
+      }
+
+      .submit-btn {
+        background: linear-gradient(135deg, var(--primary-color), var(--copper-accent));
+        color: white;
+        box-shadow: 0 8px 24px rgba(201, 99, 66, 0.2);
+      }
+
+      .submit-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 32px rgba(201, 99, 66, 0.3);
+      }
+
+      .submit-btn:active {
+        transform: translateY(-1px);
+      }
+
+      .cancel-btn {
+        background: var(--surface-color);
+        color: var(--text-secondary);
+        border: 2px solid var(--border-color);
+      }
+
+      .cancel-btn:hover {
+        background: var(--copper-soft);
+        border-color: var(--copper-accent);
+        color: var(--primary-color);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(201, 99, 66, 0.12);
+      }
+
+      .delete-btn {
+        background: linear-gradient(135deg, var(--error), #dc2626);
+        color: white;
+        box-shadow: 0 8px 24px rgba(239, 68, 68, 0.2);
+      }
+
+      .delete-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 32px rgba(239, 68, 68, 0.3);
+      }
+
+      .loading-state {
+        display: none;
+        text-align: center;
+        padding: 2rem;
+        color: var(--text-secondary);
+      }
+
+      .loading-spinner {
+        display: inline-block;
+        width: 40px;
+        height: 40px;
+        border: 4px solid var(--border-color);
+        border-top: 4px solid var(--primary-color);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-bottom: 1rem;
+      }
+
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+
+      /* 반응형 디자인 */
+      @media (max-width: 768px) {
+        .container {
+          padding: 2rem 1rem;
+        }
+
+        .header-content {
+          padding: 1rem;
+        }
+
+        .brand {
+          font-size: 1.5rem;
+        }
+
+        .page-title {
+          font-size: 2rem;
+        }
+
+        .form-content {
+          padding: 2rem 1.5rem;
+        }
+
+        .form-header {
+          padding: 1.5rem;
+        }
+
+        .form-buttons {
+          flex-direction: column;
+        }
+
+        .category-group {
+          grid-template-columns: 1fr;
+        }
+
+        .nav-breadcrumb {
+          display: none;
+        }
+      }
+
+      /* 라이트모드 고정 - 다크모드 제거 */
+
+      /* 접근성 향상 */
+      .btn:focus {
+        outline: 3px solid rgba(201, 99, 66, 0.3);
+        outline-offset: 2px;
+      }
+
+      .form-input:focus {
+        outline: 3px solid rgba(201, 99, 66, 0.3);
+        outline-offset: 2px;
+      }
+
+      /* 애니메이션 효과 */
+      .form-container {
+        animation: slideInUp 0.6s ease-out;
+      }
+
+      @keyframes slideInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .page-header {
+        animation: fadeIn 0.8s ease-out 0.2s both;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
+  </head>  <body>
+    <!-- 📌 상단 헤더: 브랜드명 + 브레드크럼 네비게이션 -->
+    <header class="header">
+      <div class="header-content">
+        <div class="brand-container">
+          <img src="/Login/image-8.png" alt="Ordo Logo" class="logo-image" />
+          <a href="/Main/index.html" class="brand">Ordo</a>
+        </div>
+        <!-- 🗺️ 브레드크럼 네비게이션 (홈 > 커뮤니티 > 수정) -->
+        <nav class="nav-breadcrumb">
+          <a href="/Main/index.html" class="breadcrumb-link">
+            <i class="fas fa-home"></i> 홈
+          </a>
+          <span class="breadcrumb-separator">•</span>
+          <a href="/board/list.html" class="breadcrumb-link">
+            <i class="fas fa-comments"></i> 커뮤니티
+          </a>
+          <span class="breadcrumb-separator">•</span>
+          <span class="breadcrumb-current">
+            <i class="fas fa-edit"></i> 게시글 수정
+          </span>
+        </nav>
+      </div>
+    </header>    <!-- 🏠 메인 컨테이너 -->
+    <div class="container">
+      <!-- ✏️ 페이지 헤더 -->
+      <div class="page-header">
+        <h1 class="page-title">게시글 수정</h1>
+        <p class="page-subtitle">내용을 수정하고 커뮤니티와 다시 공유하세요</p>
+      </div>
+
+      <!-- 📝 게시글 수정 폼 컨테이너 -->
+      <div class="form-container">        <!-- 📋 폼 헤더 -->
+        <div class="form-header">
+          <h2 class="form-title">
+            <span class="form-icon">
+              <i class="fas fa-edit"></i>
+            </span>
+            게시글 편집
+          </h2>
+          <p class="form-description">
+            게시글의 내용을 자유롭게 수정할 수 있습니다. 변경사항은 즉시 반영됩니다.
+          </p>
+        </div>
+
+        <div class="form-content">
+          <form id="editForm" enctype="multipart/form-data">
+            <div class="form-group">
+              <label for="title" class="form-label">
+                <i class="fas fa-heading label-icon"></i>
+                제목 <span class="required">*</span>
+              </label>
+              <input
+                type="text"
+                id="title"
+                name="title"
+                class="form-input"
+                placeholder="게시글의 제목을 입력하세요"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">
+                <i class="fas fa-tag label-icon"></i>
+                카테고리 <span class="required">*</span>
+              </label>
+              <div class="category-group">
+                <div class="category-option">
+                  <input
+                    type="radio"
+                    id="productivity"
+                    name="category"
+                    value="productivity"
+                    class="category-radio"
+                    required
+                  />
+                  <label for="productivity" class="category-label">
+                    <span class="category-icon">📈</span>
+                    생산성
+                  </label>
+                </div>
+                <div class="category-option">
+                  <input
+                    type="radio"
+                    id="routine"
+                    name="category"
+                    value="routine"
+                    class="category-radio"
+                  />
+                  <label for="routine" class="category-label">
+                    <span class="category-icon">🔄</span>
+                    루틴
+                  </label>
+                </div>
+                <div class="category-option">
+                  <input
+                    type="radio"
+                    id="tips"
+                    name="category"
+                    value="tips"
+                    class="category-radio"
+                  />
+                  <label for="tips" class="category-label">
+                    <span class="category-icon">💡</span>
+                    팁 & 노하우
+                  </label>
+                </div>
+                <div class="category-option">
+                  <input
+                    type="radio"
+                    id="qna"
+                    name="category"
+                    value="qna"
+                    class="category-radio"
+                  />
+                  <label for="qna" class="category-label">
+                    <span class="category-icon">❓</span>
+                    질문 & 답변
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="content" class="form-label">
+                <i class="fas fa-align-left label-icon"></i>
+                내용 <span class="required">*</span>
+              </label>
+              <textarea
+                id="content"
+                name="content"
+                class="form-input form-textarea"
+                placeholder="게시글의 내용을 자세히 작성해 주세요. 다른 사용자들에게 도움이 되는 정보를 공유해보세요!"
+                required
+              ></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="images" class="form-label">
+                <i class="fas fa-images label-icon"></i>
+                이미지 첨부 (선택사항)
+              </label>
+              <input
+                type="file"
+                id="images"
+                name="images"
+                class="form-input"
+                multiple
+                accept="image/*"
+              />
+              <div id="imagePreview" class="image-preview"></div>
+            </div>
+
+            <div class="loading-state" id="loadingState">
+              <div class="loading-spinner"></div>
+              <p>게시글을 수정하고 있습니다...</p>
+            </div>
+
+            <div class="form-buttons">
+              <button type="button" class="btn cancel-btn" onclick="goBack()">
+                <i class="fas fa-times"></i>
+                취소
+              </button>
+              <button type="button" class="btn delete-btn" onclick="deletePost()">
+                <i class="fas fa-trash"></i>
+                삭제
+              </button>
+              <button type="submit" class="btn submit-btn">
+                <i class="fas fa-save"></i>
+                수정 완료
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>    <!-- ⚙️ JavaScript: 게시글 수정 기능 구현 -->
+    <script>
+      /**
+       * 🌐 전역 변수 선언
+       */
+      let postId = null;          // 수정할 게시글 ID
+      let currentPost = null;     // 현재 게시글 정보
+
+      /**
+       * 📋 초기화: URL에서 게시글 ID 추출 및 인증 확인
+       */
+      // URL에서 postId 추출
+      const urlParams = new URLSearchParams(window.location.search);
+      postId = urlParams.get('id');
+
+      if (!postId) {
+        alert('게시글 ID가 없습니다.');
+        location.href = '/board/list.html';
+      }
+
+      // 사용자 인증 확인
+      const token = localStorage.getItem('token');
+      if (!token) {
+        alert('로그인이 필요합니다.');
+        location.href = '/Login/email-login.html';
+      }
+
+      /**
+       * 📱 페이지 로딩 완료 후 게시글 데이터 로드
+       */
+      document.addEventListener('DOMContentLoaded', function() {
+        loadPostData();
+      });
+
+      /**
+       * 📖 게시글 데이터 로드 함수
+       * - 서버에서 게시글 정보 가져오기
+       * - 작성자 권한 확인
+       * - 폼에 기존 데이터 채우기
+       */
+      async function loadPostData() {
+        try {
+          console.log('게시글 로딩 시작:', postId);
+          
+          const response = await fetch(`/api/posts/${postId}`, {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
+
+          console.log('응답 상태:', response.status);
+
+          if (!response.ok) {
+            const errorText = await response.text();
+            console.error('서버 응답 오류:', errorText);
+            throw new Error(`게시글을 불러오는데 실패했습니다. (${response.status})`);
+          }
+
+          const data = await response.json();
+          console.log('받은 데이터:', data);
+          
+          const post = data.post || data; // 데이터 구조에 따라 유연하게 처리
+          currentPost = post; // 전역 변수에 저장
+
+          // 작성자 권한 확인
+          const user = getUserInfo();
+          const userIdentifier = getUserIdentifier();
+          console.log('현재 사용자:', user);
+          console.log('현재 사용자 식별자:', userIdentifier);
+          console.log('게시글 작성자:', post.author);
+          
+          if (!user || !userIdentifier) {
+            alert('사용자 정보를 확인할 수 없습니다. 다시 로그인해주세요.');
+            location.href = '/Login/email-login.html';
+            return;
+          }
+
+          // author가 문자열인지 객체인지 확인하여 적절히 처리
+          const postAuthor = typeof post.author === 'object' ? post.author.email || post.author.name : post.author;
+          
+          // 이메일 또는 이름으로 작성자 확인
+          const isAuthor = (user.email && postAuthor === user.email) || 
+                          (user.name && postAuthor === user.name) ||
+                          postAuthor === userIdentifier;
+          
+          if (!isAuthor) {
+            alert('게시글 수정 권한이 없습니다.');
+            location.href = '/board/list.html';
+            return;
+          }
+
+          // 폼에 기존 데이터 채우기
+          document.getElementById('title').value = post.title || '';
+          document.getElementById('content').value = post.content || '';
+          
+          // 카테고리 설정
+          if (post.category) {
+            const categoryRadio = document.querySelector(`input[name="category"][value="${post.category}"]`);
+            if (categoryRadio) {
+              categoryRadio.checked = true;
+            }
+          }
+
+          console.log('게시글 데이터 로딩 완료');
+
+        } catch (error) {
+          console.error('게시글 로딩 오류:', error);
+          alert(`게시글을 불러오는데 실패했습니다: ${error.message}`);
+          location.href = '/board/list.html';
+        }
+      }
+
+      /**
+       * 💾 게시글 수정 처리 함수
+       * - 폼 데이터 검증
+       * - 서버에 수정된 데이터 전송
+       * - 성공 시 상세보기 페이지로 이동
+       */
+
+      // 폼 제출 처리
+      document.getElementById('editForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        // 폼 유효성 검사
+        const title = document.getElementById('title').value.trim();
+        const content = document.getElementById('content').value.trim();
+        const selectedCategory = document.querySelector('input[name="category"]:checked');
+        
+        if (!title) {
+          alert('제목을 입력해주세요.');
+          document.getElementById('title').focus();
+          return;
+        }
+        
+        if (!content) {
+          alert('내용을 입력해주세요.');
+          document.getElementById('content').focus();
+          return;
+        }
+        
+        if (!selectedCategory) {
+          alert('카테고리를 선택해주세요.');
+          return;
+        }
+        
+        const loadingState = document.getElementById('loadingState');
+        const formButtons = document.querySelector('.form-buttons');
+        
+        // 로딩 상태 표시
+        loadingState.style.display = 'block';
+        formButtons.style.display = 'none';
+
+        try {
+          const formData = new FormData();
+          formData.append('title', title);
+          formData.append('content', content);
+          formData.append('category', selectedCategory.value);
+
+          // 이미지 파일들 추가
+          const imageFiles = document.getElementById('images').files;
+          for (let i = 0; i < imageFiles.length; i++) {
+            formData.append('images', imageFiles[i]);
+          }
+
+          // 작성자 확인을 위한 정보 추가 - URL 쿼리로 전송
+          const user = getUserInfo();
+          const postAuthor = typeof currentPost.author === 'object' ? currentPost.author.email || currentPost.author.name : currentPost.author;
+          
+          const response = await fetch(`/api/posts/${postId}?authorCheck=${encodeURIComponent(postAuthor)}`, {
+            method: 'PUT',
+            headers: {
+              'Authorization': `Bearer ${token}`
+            },
+            body: formData
+          });
+
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || '게시글 수정에 실패했습니다.');
+          }
+
+          const result = await response.json();
+          alert('게시글이 성공적으로 수정되었습니다!');
+          location.href = `/board/view.html?id=${postId}`;
+
+        } catch (error) {
+          console.error('Error updating post:', error);
+          alert(error.message || '게시글 수정에 실패했습니다.');
+        } finally {
+          // 로딩 상태 숨기기
+          loadingState.style.display = 'none';
+          formButtons.style.display = 'flex';
+        }
+      });
+
+      // 게시글 삭제
+      async function deletePost() {
+        if (!confirm('정말로 이 게시글을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.')) {
+          return;
+        }
+
+        try {
+          const user = getUserInfo();
+          const postAuthor = typeof currentPost.author === 'object' ? currentPost.author.email || currentPost.author.name : currentPost.author;
+          const response = await fetch(`/api/posts/${postId}?authorCheck=${encodeURIComponent(postAuthor)}`, {
+            method: 'DELETE',
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
+
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || '게시글 삭제에 실패했습니다.');
+          }
+
+          alert('게시글이 성공적으로 삭제되었습니다.');
+          location.href = '/board/list.html';
+
+        } catch (error) {
+          console.error('Error deleting post:', error);
+          alert(error.message || '게시글 삭제에 실패했습니다.');
+        }
+      }
+
+      // 취소 버튼
+      function goBack() {
+        if (confirm('수정을 취소하고 이전 페이지로 돌아가시겠습니까?')) {
+          location.href = `/board/view.html?id=${postId}`;
+        }
+      }
+
+      // localStorage에서 사용자 정보 가져오기
+      function getUserInfo() {
+        try {
+          const userString = localStorage.getItem('user');
+          if (!userString) {
+            console.error('localStorage에 사용자 정보가 없습니다.');
+            return null;
+          }
+          
+          const user = JSON.parse(userString);
+          console.log('localStorage 사용자 정보:', user); // 디버깅용
+          return user;
+        } catch (error) {
+          console.error('사용자 정보 파싱 오류:', error);
+          return null;
+        }
+      }
+
+      // 사용자 이메일 또는 이름 가져오기
+      function getUserIdentifier() {
+        const user = getUserInfo();
+        if (!user) return null;
+        
+        // 이메일이 있으면 이메일을, 없으면 이름을 반환
+        return user.email || user.name || null;
+      }
+
+      // 이미지 미리보기 (추후 구현 시 사용)
+      document.getElementById('images').addEventListener('change', function(e) {
+        const preview = document.getElementById('imagePreview');
+        preview.innerHTML = '';
+        
+        Array.from(e.target.files).forEach(file => {
+          if (file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+              const img = document.createElement('img');
+              img.src = e.target.result;
+              img.style.cssText = 'max-width: 100px; max-height: 100px; margin: 5px; border-radius: 8px; object-fit: cover;';
+              preview.appendChild(img);
+            };
+            reader.readAsDataURL(file);
+          }
+        });
+      });
+
+      // 페이지 진입 애니메이션
+      document.body.style.opacity = '0';
+      window.addEventListener('load', function() {
+        document.body.style.transition = 'opacity 0.5s ease';
+        document.body.style.opacity = '1';
+      });
+    </script>
+  </body>
+</html> 
